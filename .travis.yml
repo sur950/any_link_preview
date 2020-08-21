@@ -15,7 +15,7 @@ env:
     - FLUTTER_UP=../flutter/bin/flutter
     - FLUTTER_GITHUB=https://github.com/flutter/flutter.git
     - CODECOV=https://codecov.io/bash
-    - PACKAGES=.packages
+    - PACKAGES=packages
     - APP=lib
     - ANDROID_API=28
 
