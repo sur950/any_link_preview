@@ -15,8 +15,8 @@ env:
     - FLUTTER_UP=../flutter/bin/flutter
     - FLUTTER_GITHUB=https://github.com/flutter/flutter.git
     - CODECOV=https://codecov.io/bash
-    - PACKAGES=packages
-    - APP=app
+    - PACKAGES=.packages
+    - APP=lib
     - ANDROID_API=28
 
 install:
@@ -29,12 +29,6 @@ jobs:
     - stage: Formatting
       script:
         - $DARTFMT -n $PACKAGES --set-exit-if-changed
-
-    - stage: Packages' Flutter Test
-      script:
-        - $FLUTTER test --coverage $PACKAGES
-      after_success:
-        - bash <(curl -s $CODECOV)
 
     - stage: App's Flutter Test
       script:
@@ -56,7 +50,7 @@ jobs:
         - brew link --overwrite cocoapods
       script:
         - cd $APP
-        - $FLUTTER_UP driver --target=test_driver/app.dart77
+        - $FLUTTER_UP driver --target=main.dart
 
     - stage: Android Integration Tests
       language: android
@@ -88,4 +82,4 @@ jobs:
         - $FLUTTER doctor
         - cd $APP
         - $FLUTTER_UP devices
-        - $FLUTTER_UP driver --target=test_driver/app.dart
+        - $FLUTTER_UP driver --target=main.dart
