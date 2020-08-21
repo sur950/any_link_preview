@@ -33,8 +33,8 @@ A flutter package/plugin which will help you to show preview of the web url's wi
 ## Notes
 
 - IOS developers who can help me in implementing native methods for fetching meta data are most welcome, which might give us promising results for all sort of public url's.
-- Do you have any suggestions in improving the Package/Plugin? I really love to do this kind of stuff. Do contact me via Homepage link.
-- If you use have used it in your application, drop a smile & your app link to me, I will be adding those to the same page.
+- Do you have any suggestions in improving the Package/Plugin? I really love to do this kind of stuff. Do contact me here `https://www.linkedin.com/public-profile/in/suresh-konakanchi-b47602117`.
+- If you have used this package in your application, drop a smile & your app link to me, I will be adding those to the same page.
 
 ## Properties 🔖
 
