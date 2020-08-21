@@ -154,8 +154,13 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
     );
   }
 
-  Widget _buildLinkContainer(double _height,
-      {String title = '', String desc = '', String image = ''}) {
+  Widget _buildLinkContainer(
+    double _height, {
+    String title = '',
+    String desc = '',
+    String image = '',
+    bool isIcon = false,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: widget.backgroundColor,
@@ -176,6 +181,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
               bodyTextOverflow: widget.bodyTextOverflow,
               bodyMaxLines: widget.bodyMaxLines,
               showMultiMedia: widget.showMultimedia,
+              isIcon: isIcon,
             )
           : LinkViewVertical(
               key: widget.key,
@@ -189,6 +195,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
               bodyTextOverflow: widget.bodyTextOverflow,
               bodyMaxLines: widget.bodyMaxLines,
               showMultiMedia: widget.showMultimedia,
+              isIcon: isIcon,
             ),
     );
   }
@@ -238,6 +245,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
             image: WebAnalyzer.isNotEmpty(info.image)
                 ? info.image
                 : WebAnalyzer.isNotEmpty(info.icon) ? info.icon : _errorImage,
+            isIcon: WebAnalyzer.isNotEmpty(info.image) ? false : true,
           );
   }
 }
