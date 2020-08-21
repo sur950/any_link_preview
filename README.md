@@ -8,12 +8,11 @@
 [![Build Status](https://travis-ci.org/sur950/any_link_preview.svg?branch=master)](https://travis-ci.org/sur950/any_link_preview)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/suresh950?locale.x=en_GB)
 
-A flutter package/plugin which will help you to show preview of the web url's with beautiful & completely customizable design. Can be useful for Chat application 🤓🤓
+A flutter package which will help you to show preview of the web url's with beautiful & completely customizable design. Can be useful for Chat application 🤓🤓
 
 ## Features 💚
 
-- In android, uses native jsoup to fetch meta data
-- In All other platforms, uses web parser to fetch meta data
+- Uses web parser to fetch meta data
 - Highly customizable
 - Placeholder which can be used while the state is in loading.
 - Error widget which can be used when unidentified error are detected
@@ -32,8 +31,8 @@ A flutter package/plugin which will help you to show preview of the web url's wi
 
 ## Notes
 
-- IOS developers who can help me in implementing native methods for fetching meta data are most welcome, which might give us promising results for all sort of public url's.
-- Do you have any suggestions in improving the Package/Plugin? I really love to do this kind of stuff. Do contact me here `https://www.linkedin.com/public-profile/in/suresh-konakanchi-b47602117`.
+- Native developers who can help me in implementing native methods for fetching meta data are most welcome, which might give us promising results for all sort of public url's.
+- Do you have any suggestions in improving the Package/Plugin? I really love to do this kind of stuff. Do contact me <a href="https://www.linkedin.com/public-profile/in/suresh-konakanchi-b47602117">here</a>.
 - If you have used this package in your application, drop a smile & your app link to me, I will be adding those to the same page.
 
 ## Properties 🔖
@@ -103,7 +102,7 @@ A flutter package/plugin which will help you to show preview of the web url's wi
 
 ## Active Apps which use the plugin ✨
 
-Thanks to everyone whoever suggested their thoughts to improve this package. And special thanks goes to these apps who used the plugin & given continous feedback to improve the package:
+Thanks to everyone whoever suggested their thoughts to improve this package. And special thanks goes to these apps who used package & given continous feedback to improve:
 
 <table>
   <tr>

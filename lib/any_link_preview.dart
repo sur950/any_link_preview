@@ -1,9 +1,9 @@
+library any_link_preview;
+
 import 'dart:async';
-import 'dart:io';
 
 import 'package:any_link_preview/ui/link_view_vertical.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'ui/link_view_horizontal.dart';
@@ -99,7 +99,6 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
   InfoBase _info;
   String _errorImage, _errorTitle, _errorBody, _url;
   bool _loading = false;
-  final MethodChannel _channel = MethodChannel('any_link_preview');
 
   @override
   void initState() {
@@ -118,33 +117,16 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
   }
 
   Future<void> _getInfo() async {
-    if (Platform.isAndroid) {
-      var _meta = await _channel.invokeMethod('metaData', {'url': widget.link});
-      WebInfo _i = WebInfo(
-        description: _meta['desc'],
-        title: _meta['title'],
-        image: _meta['imageUrl'],
-        icon: _meta['favicon'],
-      );
-      _info = _i;
-      if (this.mounted)
+    if (_url.startsWith("http") || _url.startsWith("https")) {
+      _info = await WebAnalyzer.getInfo(_url,
+          cache: widget.cache, multimedia: true);
+      if (this.mounted) {
         setState(() {
           _loading = false;
         });
-    } else {
-      if (_url.startsWith("http")) {
-        _info = await WebAnalyzer.getInfo(
-          _url,
-          cache: widget.cache,
-          multimedia: widget.showMultimedia,
-        );
-        if (this.mounted)
-          setState(() {
-            _loading = false;
-          });
-      } else {
-        print("$_url is not starting with either http or https");
       }
+    } else {
+      print("$_url is not starting with either http or https");
     }
   }
 
@@ -253,8 +235,9 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
             desc: WebAnalyzer.isNotEmpty(info.description)
                 ? info.description
                 : _errorBody,
-            image:
-                WebAnalyzer.isNotEmpty(info.image) ? info.image : _errorImage,
+            image: WebAnalyzer.isNotEmpty(info.image)
+                ? info.image
+                : WebAnalyzer.isNotEmpty(info.icon) ? info.icon : _errorImage,
           );
   }
 }
