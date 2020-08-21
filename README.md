@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="460"  src="https://i.ibb.co/X5qxF7x/export-banner.png">
+  <img width="460"  src="https://github.com/sur950/any_link_preview/blob/master/demo_images/main.jpg">
 </p>
 
 <a href = "https://pub.dev/packages/any_link_preview"><img src="https://img.shields.io/pub/v/any_link_preview"></a>
@@ -23,7 +23,7 @@ A flutter package/plugin which will help you to show preview of the web url's wi
 
 #### Demo
 
-<img src="https://raw.githubusercontent.com/adar2378/pin_code_fields/master/demo_media/pin_code_example.gif" width="240" height="480">
+<img src="https://github.com/sur950/any_link_preview/blob/master/demo_images/demo.jpg" width="240" height="480">
 
 
 ## Notes
@@ -99,13 +99,13 @@ A flutter package/plugin which will help you to show preview of the web url's wi
 
 ## Active Apps which use the plugin ✨
 
-Thanks to everyone whoever suggested their thoughts to improve this package. And special thanks goes to these people:
+Thanks to everyone whoever suggested their thoughts to improve this package. And special thanks goes to these apps who used the plugin & given continous feedback to improve the package:
 
 <table>
   <tr>
-    <td align="center"><a href="https://www.chant.fan/"><img src="https://avatars0.githubusercontent.com/u/21370666?v=3" width="100px;" alt="Chant LLC"/><br /><sub><b>Chant</b></sub></a></td>
-    <td align="center"><a href="https://vardaan.app/"><img src="https://atiq.info/images/logo.png" width="100px;" alt="Vardaan"/><br /><sub><b>Vardaan</b></sub></a></td>
-    <td align="center"><a href="https://vardaan.app/"><img src="https://atiq.info/images/logo.png" width="100px;" alt="Vardaan"/><br /><sub><b>Vardaan</b></sub></a></td>
+    <td align="center"><a href="https://www.chant.fan/"><img src="https://github.com/sur950/any_link_preview/blob/master/demo_images/chant.png" width="100px;" alt="Chant LLC"/><br /><sub><b>Chant</b></sub></a></td>
+    <td align="center"><a href="https://vardaan.app/"><img src="https://github.com/sur950/any_link_preview/blob/master/demo_images/vardaan.png" width="100px;" alt="Vardaan"/><br /><sub><b>Vardaan</b></sub></a></td>
+    <td align="center"><a href="https://myflat.io/"><img src="https://github.com/sur950/any_link_preview/blob/master/demo_images/myFlat.png" width="100px;" alt="myFlat"/><br /><sub><b>myFlat</b></sub></a></td>
   </tr>
 </table>
 
@@ -113,7 +113,7 @@ Thanks to everyone whoever suggested their thoughts to improve this package. And
 
 ```Dart
 AnyLinkPreview(
-    link: "https://google.com/",
+    link: "https://vardaan.app/",
     displayDirection: UIDirection.UIDirectionHorizontal,
     showMultimedia: false,
     bodyMaxLines: 5,
