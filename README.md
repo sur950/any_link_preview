@@ -1,8 +1,12 @@
+# Any_link_preview
+
 <p align="center">
   <img width="460"  src="https://github.com/sur950/any_link_preview/blob/master/demo_images/main.jpg">
 </p>
 
-<a href = "https://pub.dev/packages/any_link_preview"><img src="https://img.shields.io/pub/v/any_link_preview"></a>
+[![Pub](https://img.shields.io/pub/v/any_link_preview.svg)](https://pub.dartlang.org/packages/any_link_preview)
+[![Build Status](https://travis-ci.org/sur950/any_link_preview.svg?branch=master)](https://travis-ci.org/sur950/any_link_preview)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/suresh950?locale.x=en_GB)
 
 A flutter package/plugin which will help you to show preview of the web url's with beautiful & completely customizable design. Can be useful for Chat application 🤓🤓
 
@@ -28,7 +32,7 @@ A flutter package/plugin which will help you to show preview of the web url's wi
 
 ## Notes
 
-- IOS developers who can help me in implementing native methods for fetching meta data are most welcomed which might give us promising results for all sort of public url's.
+- IOS developers who can help me in implementing native methods for fetching meta data are most welcome, which might give us promising results for all sort of public url's.
 - Do you have any suggestions in improving the Package/Plugin? I really love to do this kind of stuff. Do contact me via Homepage link.
 - If you use have used it in your application, drop a smile & your app link to me, I will be adding those to the same page.
 
