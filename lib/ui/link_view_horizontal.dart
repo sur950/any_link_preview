@@ -11,6 +11,7 @@ class LinkViewHorizontal extends StatelessWidget {
   final bool showMultiMedia;
   final TextOverflow bodyTextOverflow;
   final int bodyMaxLines;
+  final bool isIcon;
 
   LinkViewHorizontal({
     Key key,
@@ -24,6 +25,7 @@ class LinkViewHorizontal extends StatelessWidget {
     this.showMultiMedia,
     this.bodyTextOverflow,
     this.bodyMaxLines,
+    this.isIcon = false,
   })  : assert(imageUri != null),
         assert(title != null),
         assert(url != null),
@@ -85,7 +87,7 @@ class LinkViewHorizontal extends StatelessWidget {
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                   image: NetworkImage(imageUri),
-                                  fit: BoxFit.cover,
+                                  fit: isIcon ? BoxFit.contain : BoxFit.cover,
                                 ),
                                 borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(12),

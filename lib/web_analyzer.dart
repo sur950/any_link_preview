@@ -53,7 +53,7 @@ class WebAnalyzer {
 
   /// Is it an empty string
   static bool isNotEmpty(String str) {
-    return str != null && str.isNotEmpty;
+    return str != null && str.isNotEmpty && str.trim().length > 0;
   }
 
   /// Get web information
@@ -229,6 +229,14 @@ class WebAnalyzer {
       String html;
       try {
         html = const Utf8Decoder().convert(response.bodyBytes);
+        if (url.contains("twitter.com")) {
+          String temp = html.replaceAll("\\", "");
+          temp = temp.replaceAll("u003C", "<");
+          temp = temp.replaceAll("u003E", ">");
+          print(temp);
+        } else {
+          // print(html);
+        }
       } catch (e) {
         try {
           html = gbk.decode(response.bodyBytes);
@@ -306,7 +314,8 @@ class WebAnalyzer {
     return null;
   }
 
-  static String _analyzeTitle(Document document) {
+  static String _analyzeTitle(Document document, {bool isTwitter = false}) {
+    if (isTwitter) return "";
     final title = _getMetaContent(document, "property", "og:title");
     if (title != null) return title;
     final list = document.head.getElementsByTagName("title");
@@ -374,7 +383,11 @@ class WebAnalyzer {
 
   static String _analyzeImage(Document document, Uri uri) {
     final image = _getMetaContent(document, "property", "og:image");
-    return _handleUrl(uri, image);
+    return uri.host.contains("twitter.com")
+        ? "https://github.com/sur950/any_link_preview/blob/master/lib/assets/twitter.png"
+        : uri.host.contains("facebook.com")
+            ? "https://github.com/sur950/any_link_preview/blob/master/lib/assets/facebook.png"
+            : _handleUrl(uri, image);
   }
 
   static String _handleUrl(Uri uri, String source) {

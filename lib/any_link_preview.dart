@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:any_link_preview/ui/link_view_vertical.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'ui/link_view_horizontal.dart';
 import 'web_analyzer.dart';
 
@@ -103,11 +102,14 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
   @override
   void initState() {
     _errorImage = widget.errorImage ??
-        "https://firebasestorage.googleapis.com/v0/b/chant2019.appspot.com/o/giphy.gif?alt=media&token=875d7c29-f7fb-4d0e-a6d7-987f870e597f";
+        "https://github.com/sur950/any_link_preview/blob/master/lib/assets/giphy.gif";
     _errorTitle = widget.errorTitle ?? "Something went wrong!";
     _errorBody = widget.errorBody ??
         "Oops! Unable to parse the url. We have sent feedback to our developers & we will try to fix this in our next release. Thanks!";
     _url = widget.link.trim();
+    // if (_url.contains("twitter.com")) {
+    //   _url = "https://publish.twitter.com/oembed?url=$_url";
+    // }
     _info = WebAnalyzer.getInfoFromCache(_url);
     if (_info == null) {
       _loading = true;
@@ -154,8 +156,13 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
     );
   }
 
-  Widget _buildLinkContainer(double _height,
-      {String title = '', String desc = '', String image = ''}) {
+  Widget _buildLinkContainer(
+    double _height, {
+    String title = '',
+    String desc = '',
+    String image = '',
+    bool isIcon = false,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: widget.backgroundColor,
@@ -176,6 +183,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
               bodyTextOverflow: widget.bodyTextOverflow,
               bodyMaxLines: widget.bodyMaxLines,
               showMultiMedia: widget.showMultimedia,
+              isIcon: isIcon,
             )
           : LinkViewVertical(
               key: widget.key,
@@ -189,6 +197,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
               bodyTextOverflow: widget.bodyTextOverflow,
               bodyMaxLines: widget.bodyMaxLines,
               showMultiMedia: widget.showMultimedia,
+              isIcon: isIcon,
             ),
     );
   }
@@ -238,6 +247,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
             image: WebAnalyzer.isNotEmpty(info.image)
                 ? info.image
                 : WebAnalyzer.isNotEmpty(info.icon) ? info.icon : _errorImage,
+            isIcon: WebAnalyzer.isNotEmpty(info.image) ? false : true,
           );
   }
 }

@@ -11,6 +11,7 @@ class LinkViewVertical extends StatelessWidget {
   final bool showMultiMedia;
   final TextOverflow bodyTextOverflow;
   final int bodyMaxLines;
+  final bool isIcon;
 
   LinkViewVertical({
     Key key,
@@ -24,6 +25,7 @@ class LinkViewVertical extends StatelessWidget {
     this.showMultiMedia,
     this.bodyTextOverflow,
     this.bodyMaxLines,
+    this.isIcon = false,
   })  : assert(imageUri != null),
         assert(title != null),
         assert(url != null),
@@ -84,7 +86,8 @@ class LinkViewVertical extends StatelessWidget {
                                 ),
                                 image: DecorationImage(
                                   image: NetworkImage(imageUri),
-                                  fit: BoxFit.fitWidth,
+                                  fit:
+                                      isIcon ? BoxFit.contain : BoxFit.fitWidth,
                                 ),
                               ),
                             ),
