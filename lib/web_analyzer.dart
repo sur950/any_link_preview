@@ -233,7 +233,7 @@ class WebAnalyzer {
           String temp = html.replaceAll("\\", "");
           temp = temp.replaceAll("u003C", "<");
           temp = temp.replaceAll("u003E", ">");
-          print(temp);
+          // print(temp);
         } else {
           // print(html);
         }
@@ -328,7 +328,8 @@ class WebAnalyzer {
 
   static String _analyzeDescription(Document document, String html) {
     final desc = _getMetaContent(document, "property", "og:description");
-    if (desc != null) return desc;
+    if (desc != null &&
+        !desc.contains('JavaScript is disabled in your browser')) return desc;
 
     final description = _getMetaContent(document, "name", "description") ??
         _getMetaContent(document, "name", "Description");
@@ -341,8 +342,12 @@ class WebAnalyzer {
         body = body.substring(0, 300);
       }
       // print("html cost ${DateTime.now().difference(start).inMilliseconds}");
+      if (body.contains('JavaScript is disabled in your browser')) return '';
       return body;
     }
+
+    if (description.contains('JavaScript is disabled in your browser'))
+      return '';
     return description;
   }
 
@@ -384,9 +389,9 @@ class WebAnalyzer {
   static String _analyzeImage(Document document, Uri uri) {
     final image = _getMetaContent(document, "property", "og:image");
     return uri.host.contains("twitter.com")
-        ? "https://github.com/sur950/any_link_preview/blob/master/lib/assets/twitter.png"
+        ? "https://github.com/sur950/any_link_preview/blob/master/lib/assets/twitter.png?raw=true"
         : uri.host.contains("facebook.com")
-            ? "https://github.com/sur950/any_link_preview/blob/master/lib/assets/facebook.png"
+            ? "https://github.com/sur950/any_link_preview/blob/master/lib/assets/facebook.jpg?raw=true"
             : _handleUrl(uri, image);
   }
 

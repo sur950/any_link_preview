@@ -62,8 +62,7 @@ class _MyAppState extends State<MyApp> {
                 displayDirection: UIDirection.UIDirectionHorizontal,
                 link: _url3,
                 errorBody: 'Show my custom error body',
-                errorTitle:
-                    'Show my custom error title. Next one is youtube link',
+                errorTitle: 'Next one is youtube link, error title',
               ),
               SizedBox(height: 25),
               AnyLinkPreview(link: _url4),
