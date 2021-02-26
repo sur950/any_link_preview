@@ -28,7 +28,6 @@ A flutter package which will help you to show preview of the web url's with beau
 
 <img src="https://github.com/sur950/any_link_preview/blob/master/demo_images/demo.jpg?raw=true" width="240" height="480">
 
-
 ## Notes
 
 - Native developers who can help me in implementing native methods for fetching meta data are most welcome, which might give us promising results for all sort of public url's.
@@ -98,6 +97,12 @@ A flutter package which will help you to show preview of the web url's with beau
   /// Show or Hide image if available defaults to `true`
   final bool showMultimedia;
 
+  /// BorderRadius for the card. Deafults to `12`
+  final double borderRadius;
+
+  /// Box shadow for the card. Deafults to `[BoxShadow(blurRadius: 3, color: Colors.grey)]`
+  final List<BoxShadow> boxShadow;
+
 ```
 
 ## Active Apps which use the plugin ✨
@@ -135,7 +140,9 @@ AnyLinkPreview(
     ),
     errorImage: "https://google.com/",
     cache: Duration(days: 7),
-    backgroundColor: Colors.grey[300]
+    backgroundColor: Colors.grey[300],
+    borderRadius: 12,
+    boxShadow: [BoxShadow(blurRadius: 3, color: Colors.grey)];
 )
 ```
 
