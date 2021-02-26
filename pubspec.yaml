@@ -1,6 +1,6 @@
 name: any_link_preview
 description: A flutter package/plugin which will help you to show preview of web links. Can be useful in chat for example.
-version: 1.0.5
+version: 1.0.6
 # author: Suresh Konakanchi
 homepage: https://github.com/sur950/
 repository: https://github.com/sur950/any_link_preview

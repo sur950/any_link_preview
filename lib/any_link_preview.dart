@@ -71,6 +71,12 @@ class AnyLinkPreview extends StatefulWidget {
   /// Show or Hide image if available defaults to `true`
   final bool showMultimedia;
 
+  /// BorderRadius for the card. Deafults to `12`
+  final double borderRadius;
+
+  /// Box shadow for the card. Deafults to `[BoxShadow(blurRadius: 3, color: Colors.grey)]`
+  final List<BoxShadow> boxShadow;
+
   AnyLinkPreview({
     this.key,
     @required this.link,
@@ -87,6 +93,8 @@ class AnyLinkPreview extends StatefulWidget {
     this.errorBody,
     this.errorImage,
     this.errorTitle,
+    this.borderRadius,
+    this.boxShadow,
   })  : assert(link != null),
         super(key: key);
 
@@ -166,8 +174,9 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
     return Container(
       decoration: BoxDecoration(
         color: widget.backgroundColor,
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-        boxShadow: [BoxShadow(blurRadius: 3, color: Colors.grey)],
+        borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
+        boxShadow:
+            widget.boxShadow ?? [BoxShadow(blurRadius: 3, color: Colors.grey)],
       ),
       height: _height,
       child: (widget.displayDirection == UIDirection.UIDirectionHorizontal)
@@ -184,6 +193,8 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
               bodyMaxLines: widget.bodyMaxLines,
               showMultiMedia: widget.showMultimedia,
               isIcon: isIcon,
+              bgColor: widget.backgroundColor,
+              radius: widget.borderRadius ?? 12,
             )
           : LinkViewVertical(
               key: widget.key,
@@ -198,6 +209,8 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
               bodyMaxLines: widget.bodyMaxLines,
               showMultiMedia: widget.showMultimedia,
               isIcon: isIcon,
+              bgColor: widget.backgroundColor,
+              radius: widget.borderRadius ?? 12,
             ),
     );
   }
@@ -246,7 +259,9 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
                 : _errorBody,
             image: WebAnalyzer.isNotEmpty(info.image)
                 ? info.image
-                : WebAnalyzer.isNotEmpty(info.icon) ? info.icon : _errorImage,
+                : WebAnalyzer.isNotEmpty(info.icon)
+                    ? info.icon
+                    : _errorImage,
             isIcon: WebAnalyzer.isNotEmpty(info.image) ? false : true,
           );
   }

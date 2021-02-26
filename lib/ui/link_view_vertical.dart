@@ -12,6 +12,8 @@ class LinkViewVertical extends StatelessWidget {
   final TextOverflow bodyTextOverflow;
   final int bodyMaxLines;
   final bool isIcon;
+  final double radius;
+  final Color bgColor;
 
   LinkViewVertical({
     Key key,
@@ -26,6 +28,8 @@ class LinkViewVertical extends StatelessWidget {
     this.bodyTextOverflow,
     this.bodyMaxLines,
     this.isIcon = false,
+    this.bgColor,
+    this.radius,
   })  : assert(imageUri != null),
         assert(title != null),
         assert(url != null),
@@ -76,14 +80,16 @@ class LinkViewVertical extends StatelessWidget {
                   ? Expanded(
                       flex: 2,
                       child: imageUri == ""
-                          ? Container(color: Colors.grey)
+                          ? Container(color: bgColor ?? Colors.grey)
                           : Container(
-                              padding: EdgeInsets.only(bottom: 15.0),
+                              padding: EdgeInsets.only(bottom: 15),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(12.0),
-                                  topRight: Radius.circular(12.0),
-                                ),
+                                borderRadius: radius == 0
+                                    ? BorderRadius.zero
+                                    : BorderRadius.only(
+                                        topLeft: Radius.circular(12),
+                                        topRight: Radius.circular(12),
+                                      ),
                                 image: DecorationImage(
                                   image: NetworkImage(imageUri),
                                   fit:

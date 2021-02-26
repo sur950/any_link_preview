@@ -1,3 +1,4 @@
+[1.0.6] - Border Radius, Color, Box shadow for card effect, are now customizable.
 [1.0.5] - Twitter posts are private, so added default twitter image for the same.
 [1.0.4] - Adjustment of UI.
 [1.0.3] - Added the list of apps that are already using this package.

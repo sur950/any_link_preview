@@ -12,6 +12,8 @@ class LinkViewHorizontal extends StatelessWidget {
   final TextOverflow bodyTextOverflow;
   final int bodyMaxLines;
   final bool isIcon;
+  final double radius;
+  final Color bgColor;
 
   LinkViewHorizontal({
     Key key,
@@ -26,6 +28,8 @@ class LinkViewHorizontal extends StatelessWidget {
     this.bodyTextOverflow,
     this.bodyMaxLines,
     this.isIcon = false,
+    this.bgColor,
+    this.radius,
   })  : assert(imageUri != null),
         assert(title != null),
         assert(url != null),
@@ -81,7 +85,7 @@ class LinkViewHorizontal extends StatelessWidget {
                   ? Expanded(
                       flex: 2,
                       child: imageUri == ""
-                          ? Container(color: Colors.grey)
+                          ? Container(color: bgColor ?? Colors.grey)
                           : Container(
                               margin: EdgeInsets.only(right: 5),
                               decoration: BoxDecoration(
@@ -89,10 +93,12 @@ class LinkViewHorizontal extends StatelessWidget {
                                   image: NetworkImage(imageUri),
                                   fit: isIcon ? BoxFit.contain : BoxFit.cover,
                                 ),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(12),
-                                  bottomLeft: Radius.circular(12),
-                                ),
+                                borderRadius: radius == 0
+                                    ? BorderRadius.zero
+                                    : BorderRadius.only(
+                                        topLeft: Radius.circular(radius),
+                                        bottomLeft: Radius.circular(radius),
+                                      ),
                               ),
                             ),
                     )
