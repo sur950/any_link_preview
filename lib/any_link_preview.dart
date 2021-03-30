@@ -74,6 +74,10 @@ class AnyLinkPreview extends StatefulWidget {
   /// BorderRadius for the card. Deafults to `12`
   final double borderRadius;
 
+  /// To remove the card elevation set it to `true`
+  /// Default value is `false`
+  final bool removeElevation;
+
   /// Box shadow for the card. Deafults to `[BoxShadow(blurRadius: 3, color: Colors.grey)]`
   final List<BoxShadow> boxShadow;
 
@@ -95,6 +99,7 @@ class AnyLinkPreview extends StatefulWidget {
     this.errorTitle,
     this.borderRadius,
     this.boxShadow,
+    this.removeElevation = false,
   })  : assert(link != null),
         super(key: key);
 
@@ -144,7 +149,11 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      throw 'Could not launch $url';
+      try {
+        await launch(url);
+      } catch (err) {
+        throw 'Could not launch $url. Error: $err';
+      }
     }
   }
 
@@ -174,9 +183,11 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
     return Container(
       decoration: BoxDecoration(
         color: widget.backgroundColor,
-        borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
-        boxShadow:
-            widget.boxShadow ?? [BoxShadow(blurRadius: 3, color: Colors.grey)],
+        borderRadius: BorderRadius.circular(widget.borderRadius ?? 12),
+        boxShadow: widget.removeElevation
+            ? []
+            : widget.boxShadow ??
+                [BoxShadow(blurRadius: 3, color: Colors.grey)],
       ),
       height: _height,
       child: (widget.displayDirection == UIDirection.UIDirectionHorizontal)
@@ -230,7 +241,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
             height: _height,
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(widget.borderRadius ?? 12),
               color: Colors.grey[200],
             ),
             alignment: Alignment.center,

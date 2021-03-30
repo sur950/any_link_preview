@@ -100,7 +100,12 @@ A flutter package which will help you to show preview of the web url's with beau
   /// BorderRadius for the card. Deafults to `12`
   final double borderRadius;
 
-  /// Box shadow for the card. Deafults to `[BoxShadow(blurRadius: 3, color: Colors.grey)]`
+  /// To remove the card elevation set it to `true`
+  /// Default value is `false`
+  final bool removeElevation;
+
+  /// Box shadow for the card. Deafults to
+  /// `[BoxShadow(blurRadius: 3, color: Colors.grey)]`
   final List<BoxShadow> boxShadow;
 
 ```
@@ -142,6 +147,7 @@ AnyLinkPreview(
     cache: Duration(days: 7),
     backgroundColor: Colors.grey[300],
     borderRadius: 12,
+    removeElevation: false,
     boxShadow: [BoxShadow(blurRadius: 3, color: Colors.grey)];
 )
 ```
@@ -219,6 +225,8 @@ class _MyAppState extends State<MyApp> {
                 displayDirection: UIDirection.UIDirectionHorizontal,
                 link: _url3,
                 errorBody: 'Show my custom error body',
+                removeElevation:true,
+                borderRadius:0,
                 errorTitle: 'Show my custom error title',
               ),
               SizedBox(height: 25),
