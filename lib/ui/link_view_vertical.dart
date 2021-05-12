@@ -6,22 +6,22 @@ class LinkViewVertical extends StatelessWidget {
   final String description;
   final String imageUri;
   final Function(String) onTap;
-  final TextStyle titleTextStyle;
-  final TextStyle bodyTextStyle;
-  final bool showMultiMedia;
-  final TextOverflow bodyTextOverflow;
-  final int bodyMaxLines;
+  final TextStyle? titleTextStyle;
+  final TextStyle? bodyTextStyle;
+  final bool? showMultiMedia;
+  final TextOverflow? bodyTextOverflow;
+  final int? bodyMaxLines;
   final bool isIcon;
-  final double radius;
-  final Color bgColor;
+  final double? radius;
+  final Color? bgColor;
 
   LinkViewVertical({
-    Key key,
-    @required this.url,
-    @required this.title,
-    @required this.description,
-    @required this.imageUri,
-    @required this.onTap,
+    Key? key,
+    required this.url,
+    required this.title,
+    required this.description,
+    required this.imageUri,
+    required this.onTap,
     this.titleTextStyle,
     this.bodyTextStyle,
     this.showMultiMedia,
@@ -30,12 +30,7 @@ class LinkViewVertical extends StatelessWidget {
     this.isIcon = false,
     this.bgColor,
     this.radius,
-  })  : assert(imageUri != null),
-        assert(title != null),
-        assert(url != null),
-        assert(description != null),
-        assert(onTap != null),
-        super(key: key);
+  }) : super(key: key);
 
   double computeTitleFontSize(double height) {
     double size = height * 0.13;
@@ -49,7 +44,7 @@ class LinkViewVertical extends StatelessWidget {
     return layoutHeight - layoutWidth < 50 ? 1 : 2;
   }
 
-  int computeBodyLines(layoutHeight) {
+  int? computeBodyLines(layoutHeight) {
     return layoutHeight ~/ 60 == 0 ? 1 : layoutHeight ~/ 60;
   }
 
@@ -76,7 +71,7 @@ class LinkViewVertical extends StatelessWidget {
           onTap: () => onTap(url),
           child: Column(
             children: <Widget>[
-              showMultiMedia
+              showMultiMedia!
                   ? Expanded(
                       flex: 2,
                       child: imageUri == ""
