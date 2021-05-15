@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 
-import 'package:charset_converter/charset_converter.dart';
+import 'package:fast_gbk/fast_gbk.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:html/dom.dart' hide Text;
 import 'package:html/parser.dart' as parser;
@@ -237,7 +237,7 @@ class WebAnalyzer {
         }
       } catch (e) {
         try {
-          html = await CharsetConverter.decode("GBK", response.bodyBytes);
+          html = gbk.decode(response.bodyBytes);
         } catch (e) {
           print("Web page resolution failure from:$url Error:$e");
         }
