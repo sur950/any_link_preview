@@ -6,22 +6,22 @@ class LinkViewHorizontal extends StatelessWidget {
   final String description;
   final String imageUri;
   final Function(String) onTap;
-  final TextStyle titleTextStyle;
-  final TextStyle bodyTextStyle;
-  final bool showMultiMedia;
-  final TextOverflow bodyTextOverflow;
-  final int bodyMaxLines;
+  final TextStyle? titleTextStyle;
+  final TextStyle? bodyTextStyle;
+  final bool? showMultiMedia;
+  final TextOverflow? bodyTextOverflow;
+  final int? bodyMaxLines;
   final bool isIcon;
-  final double radius;
-  final Color bgColor;
+  final double? radius;
+  final Color? bgColor;
 
   LinkViewHorizontal({
-    Key key,
-    @required this.url,
-    @required this.title,
-    @required this.description,
-    @required this.imageUri,
-    @required this.onTap,
+    Key? key,
+    required this.url,
+    required this.title,
+    required this.description,
+    required this.imageUri,
+    required this.onTap,
     this.titleTextStyle,
     this.bodyTextStyle,
     this.showMultiMedia,
@@ -30,12 +30,7 @@ class LinkViewHorizontal extends StatelessWidget {
     this.isIcon = false,
     this.bgColor,
     this.radius,
-  })  : assert(imageUri != null),
-        assert(title != null),
-        assert(url != null),
-        assert(description != null),
-        assert(onTap != null),
-        super(key: key);
+  }) : super(key: key);
 
   double computeTitleFontSize(double width) {
     double size = width * 0.13;
@@ -50,9 +45,9 @@ class LinkViewHorizontal extends StatelessWidget {
   }
 
   int computeBodyLines(layoutHeight) {
-    var lines = 1;
+    int lines = 1;
     if (layoutHeight > 40) {
-      lines += (layoutHeight - 40.0) ~/ 15.0;
+      lines += (layoutHeight - 40.0) ~/ 15.0 as int;
     }
     return lines;
   }
@@ -81,7 +76,7 @@ class LinkViewHorizontal extends StatelessWidget {
           onTap: () => onTap(url),
           child: Row(
             children: <Widget>[
-              showMultiMedia
+              showMultiMedia!
                   ? Expanded(
                       flex: 2,
                       child: imageUri == ""
@@ -96,8 +91,8 @@ class LinkViewHorizontal extends StatelessWidget {
                                 borderRadius: radius == 0
                                     ? BorderRadius.zero
                                     : BorderRadius.only(
-                                        topLeft: Radius.circular(radius),
-                                        bottomLeft: Radius.circular(radius),
+                                        topLeft: Radius.circular(radius!),
+                                        bottomLeft: Radius.circular(radius!),
                                       ),
                               ),
                             ),

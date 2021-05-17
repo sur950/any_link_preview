@@ -1,3 +1,7 @@
+# 2.0.0
+
+- Migrated to null safety
+
 # 1.0.8
 
 - `borderRadius` giving it zero has some issue which is fixed

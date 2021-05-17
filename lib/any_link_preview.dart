@@ -11,7 +11,7 @@ import 'web_analyzer.dart';
 enum UIDirection { UIDirectionVertical, UIDirectionHorizontal }
 
 class AnyLinkPreview extends StatefulWidget {
-  final Key key;
+  final Key? key;
 
   /// Display direction. One among `UIDirectionVertical, UIDirectionHorizontal`
   /// By default it is `UIDirectionVertical`
@@ -24,31 +24,31 @@ class AnyLinkPreview extends StatefulWidget {
 
   /// Customize background colour
   /// Deaults to `Color.fromRGBO(235, 235, 235, 1)`
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// Widget that need to be shown when
   /// plugin is trying to fetch metadata
   /// If not given anything then default one will be shown
-  final Widget placeholderWidget;
+  final Widget? placeholderWidget;
 
   /// Widget that need to be shown if something goes wrong
   /// Defaults to plain container with given background colour
   /// If the issue is know then we will show customized UI
   /// Other options of error params are used
-  final Widget errorWidget;
+  final Widget? errorWidget;
 
   /// Title that need to be shown if something goes wrong
   /// Deaults to `Something went wrong!`
-  final String errorTitle;
+  final String? errorTitle;
 
   /// Body that need to be shown if something goes wrong
   /// Deaults to `Oops! Unable to parse the url. We have sent feedback to our developers & we will try to fix this in our next release. Thanks!`
-  final String errorBody;
+  final String? errorBody;
 
   /// Image that will be shown if something goes wrong
   /// & when multimedia enabled & no meta data is available
   /// Deaults to `A semi-soccer ball image that looks like crying`
-  final String errorImage;
+  final String? errorImage;
 
   /// Give the overflow type for body text (Description)
   /// Deaults to `TextOverflow.ellipsis`
@@ -63,27 +63,27 @@ class AnyLinkPreview extends StatefulWidget {
   final Duration cache;
 
   /// Customize body `TextStyle`
-  final TextStyle titleStyle;
+  final TextStyle? titleStyle;
 
   /// Customize body `TextStyle`
-  final TextStyle bodyStyle;
+  final TextStyle? bodyStyle;
 
   /// Show or Hide image if available defaults to `true`
   final bool showMultimedia;
 
   /// BorderRadius for the card. Deafults to `12`
-  final double borderRadius;
+  final double? borderRadius;
 
   /// To remove the card elevation set it to `true`
   /// Default value is `false`
   final bool removeElevation;
 
   /// Box shadow for the card. Deafults to `[BoxShadow(blurRadius: 3, color: Colors.grey)]`
-  final List<BoxShadow> boxShadow;
+  final List<BoxShadow>? boxShadow;
 
   AnyLinkPreview({
     this.key,
-    @required this.link,
+    required this.link,
     this.cache = const Duration(days: 30),
     this.titleStyle,
     this.bodyStyle,
@@ -100,16 +100,15 @@ class AnyLinkPreview extends StatefulWidget {
     this.borderRadius,
     this.boxShadow,
     this.removeElevation = false,
-  })  : assert(link != null),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   _AnyLinkPreviewState createState() => _AnyLinkPreviewState();
 }
 
 class _AnyLinkPreviewState extends State<AnyLinkPreview> {
-  InfoBase _info;
-  String _errorImage, _errorTitle, _errorBody, _url;
+  InfoBase? _info;
+  String? _errorImage, _errorTitle, _errorBody, _url;
   bool _loading = false;
 
   @override
@@ -132,7 +131,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
   }
 
   Future<void> _getInfo() async {
-    if (_url.startsWith("http") || _url.startsWith("https")) {
+    if (_url!.startsWith("http") || _url!.startsWith("https")) {
       _info = await WebAnalyzer.getInfo(_url,
           cache: widget.cache, multimedia: true);
       if (this.mounted) {
@@ -175,9 +174,9 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
 
   Widget _buildLinkContainer(
     double _height, {
-    String title = '',
-    String desc = '',
-    String image = '',
+    String? title = '',
+    String? desc = '',
+    String? image = '',
     bool isIcon = false,
   }) {
     return Container(
@@ -194,9 +193,9 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
           ? LinkViewHorizontal(
               key: widget.key,
               url: widget.link,
-              title: title,
-              description: desc,
-              imageUri: image,
+              title: title!,
+              description: desc!,
+              imageUri: image!,
               onTap: _launchURL,
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,
@@ -210,9 +209,9 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
           : LinkViewVertical(
               key: widget.key,
               url: widget.link,
-              title: title,
-              description: desc,
-              imageUri: image,
+              title: title!,
+              description: desc!,
+              imageUri: image!,
               onTap: _launchURL,
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,
@@ -228,7 +227,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
 
   @override
   Widget build(BuildContext context) {
-    final WebInfo info = _info;
+    final WebInfo? info = _info as WebInfo?;
     double _height =
         (widget.displayDirection == UIDirection.UIDirectionHorizontal ||
                 !widget.showMultimedia)
@@ -249,7 +248,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
           );
 
     if (_info is WebImageInfo) {
-      String img = (_info as WebImageInfo).image;
+      String img = (_info as WebImageInfo).image!;
       return _buildLinkContainer(
         _height,
         title: _errorTitle,
@@ -260,11 +259,11 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
 
     return _info == null
         ? widget.errorWidget ??
-            _buildPlaceHolder(widget.backgroundColor, _height)
+            _buildPlaceHolder(widget.backgroundColor!, _height)
         : _buildLinkContainer(
             _height,
             title:
-                WebAnalyzer.isNotEmpty(info.title) ? info.title : _errorTitle,
+                WebAnalyzer.isNotEmpty(info!.title) ? info.title : _errorTitle,
             desc: WebAnalyzer.isNotEmpty(info.description)
                 ? info.description
                 : _errorBody,

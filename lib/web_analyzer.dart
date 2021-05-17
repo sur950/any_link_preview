@@ -1,42 +1,44 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 
-import 'package:gbk2utf8/gbk2utf8.dart';
+import 'package:fast_gbk/fast_gbk.dart';
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:html/dom.dart' hide Text;
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 
 abstract class InfoBase {
-  DateTime _timeout;
+  late DateTime _timeout;
 }
 
 /// Web Information
 class WebInfo extends InfoBase {
-  final String title;
-  final String icon;
-  final String description;
-  final String image;
+  final String? title;
+  final String? icon;
+  final String? description;
+  final String? image;
 
   WebInfo({this.title, this.icon, this.description, this.image});
 }
 
 /// Image Information
 class WebImageInfo extends InfoBase {
-  final String image;
+  final String? image;
 
   WebImageInfo({this.image});
 }
 
 /// Video Information
 class WebVideoInfo extends WebImageInfo {
-  WebVideoInfo({String image}) : super(image: image);
+  WebVideoInfo({String? image}) : super(image: image);
 }
 
 /// Web analyzer
 class WebAnalyzer {
-  static final Map<String, InfoBase> _map = {};
+  static final Map<String?, InfoBase> _map = {};
   static final RegExp _bodyReg =
       RegExp(r"<body[^>]*>([\s\S]*?)<\/body>", caseSensitive: false);
   static final RegExp _htmlReg = RegExp(
@@ -52,14 +54,14 @@ class WebAnalyzer {
   static final RegExp _spaceReg = RegExp(r"\s+");
 
   /// Is it an empty string
-  static bool isNotEmpty(String str) {
+  static bool isNotEmpty(String? str) {
     return str != null && str.isNotEmpty && str.trim().length > 0;
   }
 
   /// Get web information
   /// return [InfoBase]
-  static InfoBase getInfoFromCache(String url) {
-    final InfoBase info = _map[url];
+  static InfoBase? getInfoFromCache(String? url) {
+    final InfoBase? info = _map[url];
     if (info != null) {
       if (!info._timeout.isAfter(DateTime.now())) {
         _map.remove(url);
@@ -70,18 +72,18 @@ class WebAnalyzer {
 
   /// Get web information
   /// return [InfoBase]
-  static Future<InfoBase> getInfo(String url,
+  static Future<InfoBase?> getInfo(String? url,
       {Duration cache = const Duration(hours: 24),
       bool multimedia = true}) async {
     // final start = DateTime.now();
 
-    InfoBase info = getInfoFromCache(url);
+    InfoBase? info = getInfoFromCache(url);
     if (info != null) return info;
     try {
       // info = await _getInfo(url, multimedia);
       info = await _getInfoByIsolate(url, multimedia);
 
-      if (cache != null && info != null) {
+      if (info != null) {
         info._timeout = DateTime.now().add(cache);
         _map[url] = info;
       }
@@ -94,13 +96,13 @@ class WebAnalyzer {
     return info;
   }
 
-  static Future<InfoBase> _getInfo(String url, bool multimedia) async {
+  static Future<InfoBase?> _getInfo(String url, bool? multimedia) async {
     final response = await _requestUrl(url);
 
     if (response == null) return null;
     // print("$url ${response.statusCode}");
-    if (multimedia) {
-      final String contentType = response.headers["content-type"];
+    if (multimedia!) {
+      final String? contentType = response.headers["content-type"];
       if (contentType != null) {
         if (contentType.contains("image/")) {
           return WebImageInfo(image: url);
@@ -113,16 +115,17 @@ class WebAnalyzer {
     return _getWebInfo(response, url, multimedia);
   }
 
-  static Future<InfoBase> _getInfoByIsolate(String url, bool multimedia) async {
+  static Future<InfoBase?> _getInfoByIsolate(
+      String? url, bool multimedia) async {
     final sender = ReceivePort();
     final Isolate isolate = await Isolate.spawn(_isolate, sender.sendPort);
     final sendPort = await sender.first as SendPort;
     final answer = ReceivePort();
 
     sendPort.send([answer.sendPort, url, multimedia]);
-    final List<String> res = await answer.first;
+    final List<String?>? res = await answer.first;
 
-    InfoBase info;
+    InfoBase? info;
     if (res != null) {
       if (res[0] == "0") {
         info = WebInfo(
@@ -145,36 +148,32 @@ class WebAnalyzer {
     final port = ReceivePort();
     sendPort.send(port.sendPort);
     port.listen((message) async {
-      final SendPort sender = message[0];
+      final SendPort? sender = message[0];
       final String url = message[1];
-      final bool multimedia = message[2];
+      final bool? multimedia = message[2];
 
       final info = await _getInfo(url, multimedia);
 
       if (info is WebInfo) {
-        sender.send(["0", info.title, info.description, info.icon, info.image]);
+        sender!
+            .send(["0", info.title, info.description, info.icon, info.image]);
       } else if (info is WebVideoInfo) {
-        sender.send(["1", info.image]);
+        sender!.send(["1", info.image]);
       } else if (info is WebImageInfo) {
-        sender.send(["2", info.image]);
+        sender!.send(["2", info.image]);
       } else {
-        sender.send(null);
+        sender!.send(null);
       }
       port.close();
     });
   }
 
-  static final Map<String, String> _cookies = {
-    "weibo.com":
-        "YF-Page-G0=02467fca7cf40a590c28b8459d93fb95|1596707497|1596707497; SUB=_2AkMod12Af8NxqwJRmf8WxGjna49_ygnEieKeK6xbJRMxHRl-yT9kqlcftRB6A_dzb7xq29tqJiOUtDsy806R_ZoEGgwS; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9W59fYdi4BXCzHNAH7GabuIJ"
-  };
-
   static bool _certificateCheck(X509Certificate cert, String host, int port) =>
       true;
 
-  static Future<Response> _requestUrl(String url,
-      {int count = 0, String cookie}) async {
-    Response res;
+  static Future<Response?> _requestUrl(String url,
+      {int count = 0, String? cookie}) async {
+    Response? res;
     final uri = Uri.parse(url);
     final ioClient = HttpClient()..badCertificateCallback = _certificateCheck;
     final client = IOClient(ioClient);
@@ -183,7 +182,6 @@ class WebAnalyzer {
       ..headers["User-Agent"] =
           "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
       ..headers["cache-control"] = "no-cache"
-      ..headers["Cookie"] = cookie ?? _cookies[uri.host]
       ..headers["accept"] = "*/*";
     // print(request.headers);
     final stream = await client.send(request);
@@ -191,7 +189,7 @@ class WebAnalyzer {
     if (stream.statusCode == HttpStatus.movedTemporarily ||
         stream.statusCode == HttpStatus.movedPermanently) {
       if (stream.isRedirect && count < 6) {
-        final String location = stream.headers['location'];
+        final String? location = stream.headers['location'];
         if (location != null) {
           url = location;
           if (location.startsWith("/")) {
@@ -223,10 +221,10 @@ class WebAnalyzer {
     return res;
   }
 
-  static Future<InfoBase> _getWebInfo(
-      Response response, String url, bool multimedia) async {
+  static Future<InfoBase?> _getWebInfo(
+      Response response, String url, bool? multimedia) async {
     if (response.statusCode == HttpStatus.ok) {
-      String html;
+      String? html;
       try {
         html = const Utf8Decoder().convert(response.bodyBytes);
         if (url.contains("twitter.com")) {
@@ -258,7 +256,7 @@ class WebAnalyzer {
       final uri = Uri.parse(url);
 
       // get image or video
-      if (multimedia) {
+      if (multimedia!) {
         final gif = _analyzeGif(document, uri);
         if (gif != null) return gif;
 
@@ -281,17 +279,15 @@ class WebAnalyzer {
     html = html.replaceFirst(_bodyReg, "<body></body>");
     final matchs = _metaReg.allMatches(html);
     final StringBuffer head = StringBuffer("<html><head>");
-    if (matchs != null) {
-      matchs.forEach((element) {
-        final String str = element.group(0);
-        if (str.contains(_titleReg)) head.writeln(str);
-      });
-    }
+    matchs.forEach((element) {
+      final String str = element.group(0)!;
+      if (str.contains(_titleReg)) head.writeln(str);
+    });
     head.writeln("</head></html>");
     return head.toString();
   }
 
-  static InfoBase _analyzeGif(Document document, Uri uri) {
+  static InfoBase? _analyzeGif(Document document, Uri uri) {
     if (_getMetaContent(document, "property", "og:image:type") == "image/gif") {
       final gif = _getMetaContent(document, "property", "og:image");
       if (gif != null) return WebImageInfo(image: _handleUrl(uri, gif));
@@ -299,17 +295,17 @@ class WebAnalyzer {
     return null;
   }
 
-  static InfoBase _analyzeVideo(Document document, Uri uri) {
+  static InfoBase? _analyzeVideo(Document document, Uri uri) {
     final video = _getMetaContent(document, "property", "og:video");
     if (video != null) return WebVideoInfo(image: _handleUrl(uri, video));
     return null;
   }
 
-  static String _getMetaContent(
+  static String? _getMetaContent(
       Document document, String property, String propertyValue) {
-    final meta = document.head.getElementsByTagName("meta");
-    final ele = meta.firstWhere((e) => e.attributes[property] == propertyValue,
-        orElse: () => null);
+    final meta = document.head!.getElementsByTagName("meta");
+    final ele =
+        meta.firstWhereOrNull((e) => e.attributes[property] == propertyValue);
     if (ele != null) return ele.attributes["content"]?.trim();
     return null;
   }
@@ -318,15 +314,15 @@ class WebAnalyzer {
     if (isTwitter) return "";
     final title = _getMetaContent(document, "property", "og:title");
     if (title != null) return title;
-    final list = document.head.getElementsByTagName("title");
+    final list = document.head!.getElementsByTagName("title");
     if (list.isNotEmpty) {
       final tagTitle = list.first.text;
-      if (tagTitle != null) return tagTitle.trim();
+      return tagTitle.trim();
     }
     return "";
   }
 
-  static String _analyzeDescription(Document document, String html) {
+  static String? _analyzeDescription(Document document, String html) {
     final desc = _getMetaContent(document, "property", "og:description");
     if (desc != null &&
         !desc.contains('JavaScript is disabled in your browser')) return desc;
@@ -346,36 +342,36 @@ class WebAnalyzer {
       return body;
     }
 
-    if (description.contains('JavaScript is disabled in your browser'))
+    if (description!.contains('JavaScript is disabled in your browser'))
       return '';
     return description;
   }
 
-  static String _analyzeIcon(Document document, Uri uri) {
-    final meta = document.head.getElementsByTagName("link");
-    String icon = "";
+  static String? _analyzeIcon(Document document, Uri uri) {
+    final meta = document.head!.getElementsByTagName("link");
+    String? icon = "";
     // get icon first
-    var metaIcon = meta.firstWhere((e) {
+    var metaIcon = meta.firstWhereOrNull((e) {
       final rel = (e.attributes["rel"] ?? "").toLowerCase();
       if (rel == "icon") {
         icon = e.attributes["href"];
-        if (icon != null && !icon.toLowerCase().contains(".svg")) {
+        if (icon != null && !icon!.toLowerCase().contains(".svg")) {
           return true;
         }
       }
       return false;
-    }, orElse: () => null);
+    });
 
-    metaIcon ??= meta.firstWhere((e) {
+    metaIcon ??= meta.firstWhereOrNull((e) {
       final rel = (e.attributes["rel"] ?? "").toLowerCase();
       if (rel == "shortcut icon") {
         icon = e.attributes["href"];
-        if (icon != null && !icon.toLowerCase().contains(".svg")) {
+        if (icon != null && !icon!.toLowerCase().contains(".svg")) {
           return true;
         }
       }
       return false;
-    }, orElse: () => null);
+    });
 
     if (metaIcon != null) {
       icon = metaIcon.attributes["href"];
@@ -386,7 +382,7 @@ class WebAnalyzer {
     return _handleUrl(uri, icon);
   }
 
-  static String _analyzeImage(Document document, Uri uri) {
+  static String? _analyzeImage(Document document, Uri uri) {
     final image = _getMetaContent(document, "property", "og:image");
     return uri.host.contains("twitter.com")
         ? "https://github.com/sur950/any_link_preview/blob/master/lib/assets/twitter.png?raw=true"
@@ -395,8 +391,8 @@ class WebAnalyzer {
             : _handleUrl(uri, image);
   }
 
-  static String _handleUrl(Uri uri, String source) {
-    if (isNotEmpty(source) && !source.startsWith("http")) {
+  static String? _handleUrl(Uri uri, String? source) {
+    if (isNotEmpty(source) && !source!.startsWith("http")) {
       if (source.startsWith("//")) {
         source = "${uri.scheme}:$source";
       } else {
