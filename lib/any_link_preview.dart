@@ -191,7 +191,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
       height: _height,
       child: (widget.displayDirection == UIDirection.UIDirectionHorizontal)
           ? LinkViewHorizontal(
-              key: widget.key,
+              key: widget.key ?? Key(widget.link.toString()),
               url: widget.link,
               title: title!,
               description: desc!,
@@ -207,7 +207,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
               radius: widget.borderRadius ?? 12,
             )
           : LinkViewVertical(
-              key: widget.key,
+              key: widget.key ?? Key(widget.link.toString()),
               url: widget.link,
               title: title!,
               description: desc!,

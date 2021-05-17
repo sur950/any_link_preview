@@ -174,18 +174,27 @@ class WebAnalyzer {
   static Future<Response?> _requestUrl(String url,
       {int count = 0, String? cookie}) async {
     Response? res;
-    final uri = Uri.parse(url);
-    final ioClient = HttpClient()..badCertificateCallback = _certificateCheck;
-    final client = IOClient(ioClient);
-    final request = Request('GET', uri)
-      ..followRedirects = false
+    final Uri uri = Uri.parse(url);
+    final HttpClient ioClient = HttpClient()
+      ..badCertificateCallback = _certificateCheck
+      ..connectionTimeout = Duration(seconds: 2);
+    final IOClient client = IOClient(ioClient);
+    final BaseRequest request = Request('GET', uri)
+      ..followRedirects = true
+      ..maxRedirects = 3
+      ..persistentConnection = true
+      ..headers["accept-encoding"] = "gzip, deflate, br"
       ..headers["User-Agent"] =
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
+          "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Mobile Safari/537.36"
       ..headers["cache-control"] = "no-cache"
-      ..headers["accept"] = "*/*";
+      ..headers["accept"] =
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
     // print(request.headers);
-    final stream = await client.send(request);
-
+    final IOStreamedResponse stream =
+        await client.send(request).catchError((err) {
+      print("Error in getting the link => ${request.url}");
+      print("Error => $err");
+    });
     if (stream.statusCode == HttpStatus.movedTemporarily ||
         stream.statusCode == HttpStatus.movedPermanently) {
       if (stream.isRedirect && count < 6) {

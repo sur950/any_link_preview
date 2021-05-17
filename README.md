@@ -110,17 +110,20 @@ A flutter package which will help you to show preview of the web url's with beau
 
 ```
 
-## Active Apps which use the plugin ✨
+## Special Thanks ✨
 
-Thanks to everyone whoever suggested their thoughts to improve this package. And special thanks goes to these apps who used package & given continous feedback to improve:
+Thanks to everyone whoever supported, used, contributed to the package & helping in improving it. Special thanks goes to the following <h4>contributors<h4>:
 
-<table>
+<!-- <table>
   <tr>
     <td align="center"><a href="https://www.chant.fan/"><img src="https://github.com/sur950/any_link_preview/blob/master/demo_images/chant.png?raw=true" width="100px;" alt="Chant LLC"/><br /><sub><b>Chant</b></sub></a></td>
     <td align="center"><a href="https://vardaan.app/"><img src="https://github.com/sur950/any_link_preview/blob/master/demo_images/vardaan.png?raw=true" width="100px;" alt="Vardaan"/><br /><sub><b>Vardaan</b></sub></a></td>
     <td align="center"><a href="https://myflat.io/"><img src="https://github.com/sur950/any_link_preview/blob/master/demo_images/myFlat.png?raw=true" width="100px;" alt="myFlat"/><br /><sub><b>myFlat</b></sub></a></td>
   </tr>
-</table>
+</table> -->
+<a href = "https://github.com/sur950/any_link_preview/graphs/contributors">
+  <img src = "https://contrib.rocks/image?repo=sur950/any_link_preview"/>
+</a>
 
 **The pin code text field widget example**
 

@@ -21,14 +21,15 @@ class _MyAppState extends State<MyApp> {
   final String _url3 =
       "https://twitter.com/laravelphp/status/1222535498880692225";
   final String _url4 = "https://www.youtube.com/watch?v=W1pNjxmNHNQ";
+  // final String _url5 = "https://www.brainyquote.com/topics/motivational-quotes";
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: Text('Any Link Preview')),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -66,6 +67,8 @@ class _MyAppState extends State<MyApp> {
               ),
               SizedBox(height: 25),
               AnyLinkPreview(link: _url4),
+              // SizedBox(height: 25),
+              // AnyLinkPreview(link: _url5),
             ],
           ),
         ),
