@@ -112,7 +112,7 @@ A flutter package which will help you to show preview of the web url's with beau
 
 ## Special Thanks ✨
 
-Thanks to everyone whoever supported, used, contributed to the package & helping in improving it. Special thanks goes to the following <h4>contributors<h4>:
+Thanks to everyone whoever supported, used, contributed to the package & helping in improving it. Special thanks goes to the following contributors:
 
 <!-- <table>
   <tr>
@@ -124,6 +124,7 @@ Thanks to everyone whoever supported, used, contributed to the package & helping
 <a href = "https://github.com/sur950/any_link_preview/graphs/contributors">
   <img src = "https://contrib.rocks/image?repo=sur950/any_link_preview"/>
 </a>
+<br />
 
 **The pin code text field widget example**
 
