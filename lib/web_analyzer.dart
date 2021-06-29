@@ -183,7 +183,7 @@ class WebAnalyzer {
       ..followRedirects = true
       ..maxRedirects = 3
       ..persistentConnection = true
-      ..headers["accept-encoding"] = "gzip, deflate, br"
+      ..headers["accept-encoding"] = "gzip, deflate, compress, br"
       ..headers["User-Agent"] =
           "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Mobile Safari/537.36"
       ..headers["cache-control"] = "no-cache"
