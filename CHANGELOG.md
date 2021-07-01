@@ -1,3 +1,7 @@
+# 2.0.1-rc
+
+- Minor improvements
+
 # 2.0.0-rc
 
 - Migrated to null safety
