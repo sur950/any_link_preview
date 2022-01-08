@@ -1,3 +1,9 @@
+# 2.0.2
+
+- 🎉 Web support added
+- Now the plugin will work for most of the links (Even for dynamic links)
+- Few minor bugs are closed from Github issues
+
 # 2.0.1-rc
 
 - Minor improvements

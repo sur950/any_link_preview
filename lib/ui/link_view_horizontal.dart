@@ -11,7 +11,6 @@ class LinkViewHorizontal extends StatelessWidget {
   final bool? showMultiMedia;
   final TextOverflow? bodyTextOverflow;
   final int? bodyMaxLines;
-  final bool isIcon;
   final double? radius;
   final Color? bgColor;
 
@@ -27,7 +26,6 @@ class LinkViewHorizontal extends StatelessWidget {
     this.showMultiMedia,
     this.bodyTextOverflow,
     this.bodyMaxLines,
-    this.isIcon = false,
     this.bgColor,
     this.radius,
   }) : super(key: key);
@@ -86,7 +84,7 @@ class LinkViewHorizontal extends StatelessWidget {
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                   image: NetworkImage(imageUri),
-                                  fit: isIcon ? BoxFit.contain : BoxFit.cover,
+                                  fit: BoxFit.cover,
                                 ),
                                 borderRadius: radius == 0
                                     ? BorderRadius.zero

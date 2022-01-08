@@ -1,12 +1,13 @@
 library any_link_preview;
 
 import 'dart:async';
-
-import 'package:any_link_preview/ui/link_view_vertical.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'link_analyzer.dart';
+import 'parser/base.dart';
+import 'ui/link_view_vertical.dart';
 import 'ui/link_view_horizontal.dart';
-import 'web_analyzer.dart';
 
 enum UIDirection { UIDirectionVertical, UIDirectionHorizontal }
 
@@ -107,8 +108,8 @@ class AnyLinkPreview extends StatefulWidget {
 }
 
 class _AnyLinkPreviewState extends State<AnyLinkPreview> {
-  InfoBase? _info;
-  String? _errorImage, _errorTitle, _errorBody, _url;
+  BaseMetaInfo? _info;
+  String? _errorImage, _errorTitle, _errorBody;
   bool _loading = false;
 
   @override
@@ -118,11 +119,10 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
     _errorTitle = widget.errorTitle ?? "Something went wrong!";
     _errorBody = widget.errorBody ??
         "Oops! Unable to parse the url. We have sent feedback to our developers & we will try to fix this in our next release. Thanks!";
-    _url = widget.link.trim();
     // if (_url.contains("twitter.com")) {
     //   _url = "https://publish.twitter.com/oembed?url=$_url";
     // }
-    _info = WebAnalyzer.getInfoFromCache(_url);
+    _info = LinkAnalyzer.getInfoFromCache(widget.link.trim());
     if (_info == null) {
       _loading = true;
       _getInfo();
@@ -131,16 +131,11 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
   }
 
   Future<void> _getInfo() async {
-    if (_url!.startsWith("http") || _url!.startsWith("https")) {
-      _info = await WebAnalyzer.getInfo(_url,
-          cache: widget.cache, multimedia: true);
-      if (this.mounted) {
-        setState(() {
-          _loading = false;
-        });
-      }
-    } else {
-      print("$_url is not starting with either http or https");
+    _info = await LinkAnalyzer.getInfo(widget.link.trim(), cache: widget.cache);
+    if (this.mounted) {
+      setState(() {
+        _loading = false;
+      });
     }
   }
 
@@ -177,7 +172,6 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
     String? title = '',
     String? desc = '',
     String? image = '',
-    bool isIcon = false,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -202,7 +196,6 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
               bodyTextOverflow: widget.bodyTextOverflow,
               bodyMaxLines: widget.bodyMaxLines,
               showMultiMedia: widget.showMultimedia,
-              isIcon: isIcon,
               bgColor: widget.backgroundColor,
               radius: widget.borderRadius ?? 12,
             )
@@ -218,7 +211,6 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
               bodyTextOverflow: widget.bodyTextOverflow,
               bodyMaxLines: widget.bodyMaxLines,
               showMultiMedia: widget.showMultimedia,
-              isIcon: isIcon,
               bgColor: widget.backgroundColor,
               radius: widget.borderRadius ?? 12,
             ),
@@ -227,7 +219,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
 
   @override
   Widget build(BuildContext context) {
-    final WebInfo? info = _info as WebInfo?;
+    final Metadata? info = _info as Metadata?;
     double _height =
         (widget.displayDirection == UIDirection.UIDirectionHorizontal ||
                 !widget.showMultimedia)
@@ -247,32 +239,16 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
             child: Text('Fetching data...'),
           );
 
-    if (_info is WebImageInfo) {
-      String img = (_info as WebImageInfo).image!;
-      return _buildLinkContainer(
-        _height,
-        title: _errorTitle,
-        desc: _errorBody,
-        image: img.trim() == "" ? _errorImage : img,
-      );
-    }
-
     return _info == null
         ? widget.errorWidget ??
             _buildPlaceHolder(widget.backgroundColor!, _height)
         : _buildLinkContainer(
             _height,
             title:
-                WebAnalyzer.isNotEmpty(info!.title) ? info.title : _errorTitle,
-            desc: WebAnalyzer.isNotEmpty(info.description)
-                ? info.description
-                : _errorBody,
-            image: WebAnalyzer.isNotEmpty(info.image)
-                ? info.image
-                : WebAnalyzer.isNotEmpty(info.icon)
-                    ? info.icon
-                    : _errorImage,
-            isIcon: WebAnalyzer.isNotEmpty(info.image) ? false : true,
+                LinkAnalyzer.isNotEmpty(info!.title) ? info.title : _errorTitle,
+            desc: LinkAnalyzer.isNotEmpty(info.desc) ? info.desc : _errorBody,
+            image:
+                LinkAnalyzer.isNotEmpty(info.image) ? info.image : _errorImage,
           );
   }
 }
