@@ -23,7 +23,7 @@ String? getProperty(
   String? property,
   String key = 'content',
 }) {
-  String? _value = document
+  var _value = document
       ?.getElementsByTagName(tag)
       .cast<Element?>()
       .firstWhere((element) => element?.attributes[attribute] == property,

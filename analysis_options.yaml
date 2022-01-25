@@ -1,0 +1,32 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    # workaround for https://github.com/dart-lang/sdk/issues/42910
+    - "example/**"
+
+linter:
+  rules:
+    avoid_print: false
+    unnecessary_overrides: true
+    always_declare_return_types: true
+    avoid_dynamic_calls: false
+    avoid_escaping_inner_quotes: true
+    avoid_setters_without_getters: true
+    avoid_function_literals_in_foreach_calls: false
+    cast_nullable_to_non_nullable: true
+    close_sinks: true
+    no_adjacent_strings_in_list: true
+    no_default_cases: true
+    omit_local_variable_types: true
+    only_throw_errors: true
+    prefer_interpolation_to_compose_strings: true
+    prefer_single_quotes: true
+    sort_child_properties_last: true
+    test_types_in_equals: true
+    unawaited_futures: true
+    unnecessary_parenthesis: true
+    unnecessary_raw_strings: true
+    unnecessary_statements: true
+    unsafe_html: true
+    use_raw_strings: true

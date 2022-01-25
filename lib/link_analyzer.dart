@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:async' as async;
 
+import 'package:cache_manager/cache_manager.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:html/dom.dart';
 import 'package:http/http.dart' as http;
@@ -13,28 +15,29 @@ import 'parser/twitter_parser.dart';
 import 'parser/util.dart';
 
 class LinkAnalyzer {
-  static final Map<String?, Metadata> _map = {};
-
   /// Is it an empty string
   static bool isNotEmpty(String? str) {
     return str != null && str.isNotEmpty && str.trim().length > 0;
   }
 
   /// return [Metadata] from cache if app is not killed
-  static Metadata? getInfoFromCache(String? url) {
-    final Metadata? info = _map[url];
-    if (info != null) {
-      if (!info.timeout.isAfter(DateTime.now())) {
-        _map.remove(url);
+  static Future<Metadata?> getInfoFromCache(String url) async {
+    final infoJson = await ReadCache.getJson(key: url);
+    Metadata? _info;
+    if (infoJson != null) {
+      _info = Metadata.fromJson(infoJson);
+      if (!_info.timeout.isAfter(DateTime.now())) {
+        async.unawaited(DeleteCache.deleteKey(url));
       }
     }
-    return info;
+    return _info;
   }
 
   /// Fetches a [url], validates it, and returns [Metadata].
   static Future<Metadata?> getInfo(String url,
-      {Duration cache = const Duration(hours: 24)}) async {
-    Metadata? info = getInfoFromCache(url);
+      {Duration? cache = const Duration(hours: 24)}) async {
+    Metadata? info;
+    if (cache != null) info = await getInfoFromCache(url);
     if (info != null) return info;
 
     // info = await _getInfo(url, multimedia);
@@ -50,7 +53,7 @@ class LinkAnalyzer {
     final response = await http.get(Uri.parse(url));
     final headerContentType = response.headers['content-type'];
 
-    if (headerContentType != null && headerContentType.startsWith(r'image/')) {
+    if (headerContentType != null && headerContentType.startsWith('image/')) {
       info?.title = '';
       info?.desc = '';
       info?.image = url;
@@ -64,9 +67,9 @@ class LinkAnalyzer {
 
     if (_data == null)
       return info;
-    else {
+    else if (cache != null) {
       _data.timeout = DateTime.now().add(cache);
-      _map[url] = _data;
+      await WriteCache.setJson(key: url, value: _data.toJson());
     }
 
     return _data;

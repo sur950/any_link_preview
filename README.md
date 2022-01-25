@@ -6,6 +6,7 @@
 
 [![Pub](https://img.shields.io/pub/v/any_link_preview.svg)](https://pub.dartlang.org/packages/any_link_preview)
 [![Build Status](https://travis-ci.org/sur950/any_link_preview.svg?branch=master)](https://travis-ci.org/sur950/any_link_preview)
+[![License](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/suresh950?locale.x=en_GB)
 
 A flutter package which will help you to show preview of the web url's with beautiful & completely customizable design. Can be useful for Chat application 🤓🤓
@@ -33,14 +34,23 @@ A flutter package which will help you to show preview of the web url's with beau
 
 - Do you have any suggestions in improving the Package? I really love to collaborate. Do contact me <a href="https://www.linkedin.com/public-profile/in/suresh-konakanchi-b47602117">here</a>.
 - If you have used this package in your application, if dev time is saved, Drop a coffee <a href="https://paypal.me/suresh950?locale.x=en_GB">here</a>.
-- This package is open for your contributions.
+- This package is open for contribution(s).
+- <span style="color:skyblue;">Can be used as a Widget or as a Method(function)</span>
 
 ## <span style="color:orange;">⭐ Don't forgot to Star the repo</span>
+
+## How to Contribute?
+
+1. Fork it
+2. Create your fix/feature branch (`git checkout -b my-branch`)
+3. Commit your changes (`git commit -am 'Added some feature/fix'`)
+4. Push to the branch (`git push origin my-branch`)
+5. Create Pull Request
 
 ## Properties 🔖
 
 ```Dart
-  final Key key;
+  final Key? key;
 
   /// Display direction. One among `UIDirectionVertical, UIDirectionHorizontal`
   /// By default it is `UIDirectionVertical`
@@ -53,31 +63,31 @@ A flutter package which will help you to show preview of the web url's with beau
 
   /// Customize background colour
   /// Deaults to `Color.fromRGBO(235, 235, 235, 1)`
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// Widget that need to be shown when
   /// plugin is trying to fetch metadata
   /// If not given anything then default one will be shown
-  final Widget placeholderWidget;
+  final Widget? placeholderWidget;
 
   /// Widget that need to be shown if something goes wrong
   /// Defaults to plain container with given background colour
   /// If the issue is know then we will show customized UI
   /// Other options of error params are used
-  final Widget errorWidget;
+  final Widget? errorWidget;
 
   /// Title that need to be shown if something goes wrong
   /// Deaults to `Something went wrong!`
-  final String errorTitle;
+  final String? errorTitle;
 
   /// Body that need to be shown if something goes wrong
   /// Deaults to `Oops! Unable to parse the url. We have sent feedback to our developers & we will try to fix this in our next release. Thanks!`
-  final String errorBody;
+  final String? errorBody;
 
   /// Image that will be shown if something goes wrong
   /// & when multimedia enabled & no meta data is available
   /// Deaults to `A semi-soccer ball image that looks like crying`
-  final String errorImage;
+  final String? errorImage;
 
   /// Give the overflow type for body text (Description)
   /// Deaults to `TextOverflow.ellipsis`
@@ -87,29 +97,37 @@ A flutter package which will help you to show preview of the web url's with beau
   /// Deaults to `3`
   final int bodyMaxLines;
 
-  /// Cache result time, default cache `30 days`
-  /// Works only for IOS & not for android
+  /// Cache result time, default cache `1 day`
+  /// Pass null to disable
   final Duration cache;
 
   /// Customize body `TextStyle`
-  final TextStyle titleStyle;
+  final TextStyle? titleStyle;
 
   /// Customize body `TextStyle`
-  final TextStyle bodyStyle;
+  final TextStyle? bodyStyle;
 
   /// Show or Hide image if available defaults to `true`
   final bool showMultimedia;
 
   /// BorderRadius for the card. Deafults to `12`
-  final double borderRadius;
+  final double? borderRadius;
 
   /// To remove the card elevation set it to `true`
   /// Default value is `false`
   final bool removeElevation;
 
-  /// Box shadow for the card. Deafults to
-  /// `[BoxShadow(blurRadius: 3, color: Colors.grey)]`
-  final List<BoxShadow> boxShadow;
+  /// Box shadow for the card. Deafults to `[BoxShadow(blurRadius: 3, color: Colors.grey)]`
+  final List<BoxShadow>? boxShadow;
+
+  /// Proxy URL to pass that resolve CORS issues on web.
+  /// For example, `https://cors-anywhere.herokuapp.com/` .
+  final String? proxyUrl;
+
+  /// Function that needs to be called when user taps on the card.
+  /// If not given then given URL will be launched.
+  /// To disable, Pass empty function.
+  final void Function()? onTap;
 
 ```
 
@@ -156,7 +174,20 @@ AnyLinkPreview(
     borderRadius: 12,
     removeElevation: false,
     boxShadow: [BoxShadow(blurRadius: 3, color: Colors.grey)];
+    onTap: (){}, // This disables tap event
 )
+```
+
+**The AnyLinkPreview method/function example**
+
+```Dart
+// We will use this to build our own custom UI
+Metadata? _metadata = await AnyLinkPreview.getMetadata(
+  link: "https://google.com/",
+  cache: Duration(days: 7),
+  proxyUrl: "https://cors-anywhere.herokuapp.com/", // Need for web
+);
+print(_metadata?.title);
 ```
 
 **displayDirection can be among these 2 types**
@@ -191,14 +222,31 @@ class _MyAppState extends State<MyApp> {
   final String _url3 =
       "https://twitter.com/laravelphp/status/1222535498880692225";
   final String _url4 = "https://www.youtube.com/watch?v=W1pNjxmNHNQ";
+  final String _url5 = "https://www.brainyquote.com/topics/motivational-quotes";
+
+  @override
+  void initState() {
+    super.initState();
+    _getMetadata(_url5);
+  }
+
+  void _getMetadata(String url) async {
+    Metadata? _metadata = await AnyLinkPreview.getMetadata(
+      link: url,
+      cache: Duration(days: 7),
+      proxyUrl: "https://cors-anywhere.herokuapp.com/", // Needed for web app
+    );
+    debugPrint(_metadata?.title);
+    debugPrint(_metadata?.desc);
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: Text('Any Link Preview')),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -232,9 +280,7 @@ class _MyAppState extends State<MyApp> {
                 displayDirection: UIDirection.UIDirectionHorizontal,
                 link: _url3,
                 errorBody: 'Show my custom error body',
-                removeElevation:true,
-                borderRadius:0,
-                errorTitle: 'Show my custom error title',
+                errorTitle: 'Next one is youtube link, error title',
               ),
               SizedBox(height: 25),
               AnyLinkPreview(link: _url4),

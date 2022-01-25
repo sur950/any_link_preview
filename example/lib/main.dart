@@ -21,7 +21,23 @@ class _MyAppState extends State<MyApp> {
   final String _url3 =
       "https://twitter.com/laravelphp/status/1222535498880692225";
   final String _url4 = "https://www.youtube.com/watch?v=W1pNjxmNHNQ";
-  // final String _url5 = "https://www.brainyquote.com/topics/motivational-quotes";
+  final String _url5 = "https://www.brainyquote.com/topics/motivational-quotes";
+
+  @override
+  void initState() {
+    super.initState();
+    _getMetadata(_url5);
+  }
+
+  void _getMetadata(String url) async {
+    Metadata? _metadata = await AnyLinkPreview.getMetadata(
+      link: url,
+      cache: Duration(days: 7),
+      proxyUrl: "https://cors-anywhere.herokuapp.com/", // Needed for web app
+    );
+    debugPrint(_metadata?.title);
+    debugPrint(_metadata?.desc);
+  }
 
   @override
   Widget build(BuildContext context) {

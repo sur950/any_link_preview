@@ -6,7 +6,7 @@ class LinkViewHorizontal extends StatelessWidget {
   final String title;
   final String description;
   final String imageUri;
-  final Function(String) onTap;
+  final Function() onTap;
   final TextStyle? titleTextStyle;
   final TextStyle? bodyTextStyle;
   final bool? showMultiMedia;
@@ -32,7 +32,7 @@ class LinkViewHorizontal extends StatelessWidget {
   }) : super(key: key);
 
   double computeTitleFontSize(double width) {
-    double size = width * 0.13;
+    var size = width * 0.13;
     if (size > 15) {
       size = 15;
     }
@@ -44,7 +44,7 @@ class LinkViewHorizontal extends StatelessWidget {
   }
 
   int computeBodyLines(layoutHeight) {
-    int lines = 1;
+    var lines = 1;
     if (layoutHeight > 40) {
       lines += (layoutHeight - 40.0) ~/ 15.0 as int;
     }
@@ -71,7 +71,7 @@ class LinkViewHorizontal extends StatelessWidget {
               fontWeight: FontWeight.w400,
             );
 
-        ImageProvider? _img = imageUri != "" ? NetworkImage(imageUri) : null;
+        ImageProvider? _img = imageUri != '' ? NetworkImage(imageUri) : null;
         if (imageUri.startsWith('data:image')) {
           _img = MemoryImage(
             base64Decode(imageUri.substring(imageUri.indexOf('base64') + 7)),
@@ -79,7 +79,7 @@ class LinkViewHorizontal extends StatelessWidget {
         }
 
         return InkWell(
-          onTap: () => onTap(url),
+          onTap: () => onTap(),
           child: Row(
             children: <Widget>[
               showMultiMedia!

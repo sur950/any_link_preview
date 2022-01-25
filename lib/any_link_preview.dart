@@ -9,6 +9,9 @@ import 'parser/base.dart';
 import 'ui/link_view_vertical.dart';
 import 'ui/link_view_horizontal.dart';
 
+/// Enabling ```Metadata``` model to be public
+export 'parser/base.dart';
+
 enum UIDirection { UIDirectionVertical, UIDirectionHorizontal }
 
 class AnyLinkPreview extends StatefulWidget {
@@ -59,8 +62,8 @@ class AnyLinkPreview extends StatefulWidget {
   /// Deaults to `3`
   final int bodyMaxLines;
 
-  /// Cache result time, default cache `30 days`
-  /// Works only for IOS & not for android
+  /// Cache result time, default cache `1 day`
+  /// Pass null to disable
   final Duration cache;
 
   /// Customize body `TextStyle`
@@ -82,10 +85,19 @@ class AnyLinkPreview extends StatefulWidget {
   /// Box shadow for the card. Deafults to `[BoxShadow(blurRadius: 3, color: Colors.grey)]`
   final List<BoxShadow>? boxShadow;
 
+  /// Proxy URL to pass that resolve CORS issues on web.
+  /// For example, `https://cors-anywhere.herokuapp.com/` .
+  final String? proxyUrl;
+
+  /// Function that needs to be called when user taps on the card.
+  /// If not given then given URL will be launched.
+  /// To disable, Pass empty function.
+  final void Function()? onTap;
+
   AnyLinkPreview({
     this.key,
     required this.link,
-    this.cache = const Duration(days: 30),
+    this.cache = const Duration(days: 1),
     this.titleStyle,
     this.bodyStyle,
     this.displayDirection = UIDirection.UIDirectionVertical,
@@ -101,10 +113,26 @@ class AnyLinkPreview extends StatefulWidget {
     this.borderRadius,
     this.boxShadow,
     this.removeElevation = false,
+    this.proxyUrl,
+    this.onTap,
   }) : super(key: key);
 
   @override
   _AnyLinkPreviewState createState() => _AnyLinkPreviewState();
+
+  /// Method to fetch metadata directly
+  static Future<Metadata?> getMetadata({
+    required String link,
+    String? proxyUrl = '', // Pass for web
+    Duration? cache = const Duration(days: 1),
+  }) async {
+    var _linkToFetch = ((proxyUrl ?? '') + link).trim();
+    if (_linkToFetch.contains('twitter.com')) {
+      _linkToFetch = 'https://publish.twitter.com/oembed?url=$_linkToFetch';
+    }
+    var _info = await LinkAnalyzer.getInfo(link, cache: cache);
+    return _info;
+  }
 }
 
 class _AnyLinkPreviewState extends State<AnyLinkPreview> {
@@ -115,23 +143,22 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
   @override
   void initState() {
     _errorImage = widget.errorImage ??
-        "https://github.com/sur950/any_link_preview/blob/master/lib/assets/giphy.gif?raw=true";
-    _errorTitle = widget.errorTitle ?? "Something went wrong!";
+        'https://github.com/sur950/any_link_preview/blob/master/lib/assets/giphy.gif?raw=true';
+    _errorTitle = widget.errorTitle ?? 'Something went wrong!';
     _errorBody = widget.errorBody ??
-        "Oops! Unable to parse the url. We have sent feedback to our developers & we will try to fix this in our next release. Thanks!";
-    // if (_url.contains("twitter.com")) {
-    //   _url = "https://publish.twitter.com/oembed?url=$_url";
-    // }
-    _info = LinkAnalyzer.getInfoFromCache(widget.link.trim());
-    if (_info == null) {
-      _loading = true;
-      _getInfo();
+        'Oops! Unable to parse the url. We have sent feedback to our developers & we will try to fix this in our next release. Thanks!';
+
+    var _linkToFetch = ((widget.proxyUrl ?? '') + widget.link).trim();
+    if (_linkToFetch.contains('twitter.com')) {
+      _linkToFetch = 'https://publish.twitter.com/oembed?url=$_linkToFetch';
     }
+    _loading = true;
+    _getInfo(_linkToFetch);
     super.initState();
   }
 
-  Future<void> _getInfo() async {
-    _info = await LinkAnalyzer.getInfo(widget.link.trim(), cache: widget.cache);
+  Future<void> _getInfo(String link) async {
+    _info = await LinkAnalyzer.getInfo(link, cache: widget.cache);
     if (this.mounted) {
       setState(() {
         _loading = false;
@@ -146,7 +173,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
       try {
         await launch(url);
       } catch (err) {
-        throw 'Could not launch $url. Error: $err';
+        throw Exception('Could not launch $url. Error: $err');
       }
     }
   }
@@ -190,7 +217,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
               title: title!,
               description: desc!,
               imageUri: image!,
-              onTap: _launchURL,
+              onTap: widget.onTap ?? () => _launchURL(widget.link),
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,
               bodyTextOverflow: widget.bodyTextOverflow,
@@ -205,7 +232,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
               title: title!,
               description: desc!,
               imageUri: image!,
-              onTap: _launchURL,
+              onTap: widget.onTap ?? () => _launchURL(widget.link),
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,
               bodyTextOverflow: widget.bodyTextOverflow,
@@ -219,8 +246,8 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
 
   @override
   Widget build(BuildContext context) {
-    final Metadata? info = _info as Metadata?;
-    double _height =
+    final info = _info as Metadata?;
+    var _height =
         (widget.displayDirection == UIDirection.UIDirectionHorizontal ||
                 !widget.showMultimedia)
             ? ((MediaQuery.of(context).size.height) * 0.15)
@@ -247,8 +274,9 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
             title:
                 LinkAnalyzer.isNotEmpty(info!.title) ? info.title : _errorTitle,
             desc: LinkAnalyzer.isNotEmpty(info.desc) ? info.desc : _errorBody,
-            image:
-                LinkAnalyzer.isNotEmpty(info.image) ? info.image : _errorImage,
+            image: LinkAnalyzer.isNotEmpty(info.image)
+                ? ((widget.proxyUrl ?? '') + (info.image ?? ''))
+                : _errorImage,
           );
   }
 }

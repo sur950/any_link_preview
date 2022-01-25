@@ -1,3 +1,9 @@
+# 2.0.4
+
+- Proxy URL added for CORS issue on the web. One can pass empty if they don't get any CORS issue while running on web platform.
+- Now one can disable the `onTap` action on the card by passing empty function `onTap: (){}`
+- If you want to build your own UI & need just the meta data (with or without cache), then you can call the method `AnyLinkPreview.getMetadata(link: "https://google.com/")` which returns data of type `Metadata`
+
 # 2.0.3
 
 - Multiline JSON support added
