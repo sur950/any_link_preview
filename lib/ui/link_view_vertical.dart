@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class LinkViewVertical extends StatelessWidget {
@@ -65,6 +66,13 @@ class LinkViewVertical extends StatelessWidget {
             fontWeight: FontWeight.w400,
           );
 
+      ImageProvider? _img = imageUri != "" ? NetworkImage(imageUri) : null;
+      if (imageUri.startsWith('data:image')) {
+        _img = MemoryImage(
+          base64Decode(imageUri.substring(imageUri.indexOf('base64') + 7)),
+        );
+      }
+
       return InkWell(
           onTap: () => onTap(url),
           child: Column(
@@ -72,7 +80,7 @@ class LinkViewVertical extends StatelessWidget {
               showMultiMedia!
                   ? Expanded(
                       flex: 2,
-                      child: imageUri == ""
+                      child: _img == null
                           ? Container(color: bgColor ?? Colors.grey)
                           : Container(
                               padding: EdgeInsets.only(bottom: 15),
@@ -84,7 +92,7 @@ class LinkViewVertical extends StatelessWidget {
                                         topRight: Radius.circular(12),
                                       ),
                                 image: DecorationImage(
-                                  image: NetworkImage(imageUri),
+                                  image: _img,
                                   fit: BoxFit.fitWidth,
                                 ),
                               ),

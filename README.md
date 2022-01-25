@@ -12,7 +12,8 @@ A flutter package which will help you to show preview of the web url's with beau
 
 ## Features 💚
 
-- Uses web parser to fetch meta data
+- Uses 4 different types of parser's to fetch meta data
+- HTML Parser, JSON LD Parser, Open Graph Parser, Twitter Cards Parser and more coming up in the future.
 - Highly customizable
 - Placeholder which can be used while the state is in loading.
 - Error widget which can be used when unidentified error are detected
@@ -30,9 +31,11 @@ A flutter package which will help you to show preview of the web url's with beau
 
 ## Notes
 
-- Native developers who can help me in implementing native methods for fetching meta data are most welcome, which might give us promising results for all sort of public url's.
-- Do you have any suggestions in improving the Package/Plugin? I really love to do this kind of stuff. Do contact me <a href="https://www.linkedin.com/public-profile/in/suresh-konakanchi-b47602117">here</a>.
-- If you have used this package in your application, drop a smile & your app link to me, I will be adding those to the same page.
+- Do you have any suggestions in improving the Package? I really love to collaborate. Do contact me <a href="https://www.linkedin.com/public-profile/in/suresh-konakanchi-b47602117">here</a>.
+- If you have used this package in your application, if dev time is saved, Drop a coffee <a href="https://paypal.me/suresh950?locale.x=en_GB">here</a>.
+- This package is open for your contributions.
+
+## <span style="color:orange;">⭐ Don't forgot to Star the repo</span>
 
 ## Properties 🔖
 

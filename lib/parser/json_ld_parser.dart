@@ -18,7 +18,10 @@ class JsonLdParser with BaseMetaInfo {
         ?.querySelector("script[type='application/ld+json']")
         ?.innerHtml;
     if (data == null) return null;
-    var d = jsonDecode(data);
+    /* For multiline json file */
+    // Replacing all new line characters with empty space
+    // before performing json decode on data
+    var d = jsonDecode(data.replaceAll('\n', ' '));
     return d;
   }
 

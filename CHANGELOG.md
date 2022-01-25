@@ -1,3 +1,8 @@
+# 2.0.3
+
+- Multiline JSON support added
+- Base64 image support is added
+
 # 2.0.2
 
 - 🎉 Web support added
