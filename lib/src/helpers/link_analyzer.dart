@@ -1,18 +1,18 @@
-import 'dart:convert';
 import 'dart:async' as async;
+import 'dart:convert';
 
-import 'package:cache_manager/cache_manager.dart';
-import 'package:string_validator/string_validator.dart';
-import 'package:html/dom.dart';
+import 'package:any_link_preview/any_link_preview.dart';
+import 'package:html/dom.dart' show Document;
+import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
-import 'package:html/parser.dart' as parser;
+import 'package:string_validator/string_validator.dart';
 
-import 'parser/base.dart';
-import 'parser/html_parser.dart';
-import 'parser/json_ld_parser.dart';
-import 'parser/og_parser.dart';
-import 'parser/twitter_parser.dart';
-import 'parser/util.dart';
+import '../parser/html_parser.dart';
+import '../parser/json_ld_parser.dart';
+import '../parser/og_parser.dart';
+import '../parser/twitter_parser.dart';
+import '../parser/util.dart';
+import 'cache_manager.dart';
 
 class LinkAnalyzer {
   /// Is it an empty string
@@ -22,14 +22,20 @@ class LinkAnalyzer {
 
   /// return [Metadata] from cache if app is not killed
   static Future<Metadata?> getInfoFromCache(String url) async {
-    final infoJson = await ReadCache.getJson(key: url);
     Metadata? _info;
-    if (infoJson != null) {
-      _info = Metadata.fromJson(infoJson);
-      if (!_info.timeout.isAfter(DateTime.now())) {
-        async.unawaited(DeleteCache.deleteKey(url));
+    print(url);
+    try {
+      final infoJson = await CacheManager.getJson(key: url);
+      if (infoJson != null) {
+        _info = Metadata.fromJson(infoJson);
+        if (!_info.timeout.isAfter(DateTime.now())) {
+          async.unawaited(CacheManager.deleteKey(url));
+        }
       }
+    } catch (e) {
+      print('Error while retrieving cache data => $e');
     }
+
     return _info;
   }
 
@@ -69,7 +75,7 @@ class LinkAnalyzer {
       return info;
     else if (cache != null) {
       _data.timeout = DateTime.now().add(cache);
-      await WriteCache.setJson(key: url, value: _data.toJson());
+      await CacheManager.setJson(key: url, value: _data.toJson());
     }
 
     return _data;
@@ -81,7 +87,7 @@ class LinkAnalyzer {
 
     Document? document;
     try {
-      document = parser.parse(utf8.decode(response.bodyBytes));
+      document = parse(utf8.decode(response.bodyBytes));
     } catch (err) {
       return document;
     }

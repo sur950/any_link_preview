@@ -11,11 +11,11 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  cache_manager: ^1.0.0+4
   flutter:
     sdk: flutter
   html: ^0.15.0
   http: ^0.13.4
+  shared_preferences: ^2.0.12
   string_validator: ^0.3.0
   url_launcher: ^6.0.18
 

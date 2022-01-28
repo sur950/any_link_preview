@@ -36,6 +36,7 @@ A flutter package which will help you to show preview of the web url's with beau
 - If you have used this package in your application, if dev time is saved, Drop a coffee <a href="https://paypal.me/suresh950?locale.x=en_GB">here</a>.
 - This package is open for contribution(s).
 - <span style="color:skyblue;">Can be used as a Widget or as a Method(function)</span>
+- <span style="color:blue;">AnyLinkPreview.isValidLink()</span> method to check if the link is valid or not
 
 ## <span style="color:orange;">⭐ Don't forgot to Star the repo</span>
 
@@ -190,6 +191,19 @@ Metadata? _metadata = await AnyLinkPreview.getMetadata(
 print(_metadata?.title);
 ```
 
+**Method to validate the link example**
+
+```Dart
+// Method to check if the url is valid or not before passing to the previewer
+bool _isUrlValid = AnyLinkPreview.isValidLink(
+  "https://google.com/",
+  protocols: ['http', 'https'],
+  hostWhitelist: ['https://youtube.com/'],
+  hostBlacklist: ['https://facebook.com/'],
+);
+print('_isUrlValid => $_isUrlValid');
+```
+
 **displayDirection can be among these 2 types**
 
 ```Dart
@@ -231,13 +245,28 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _getMetadata(String url) async {
-    Metadata? _metadata = await AnyLinkPreview.getMetadata(
-      link: url,
-      cache: Duration(days: 7),
-      proxyUrl: "https://cors-anywhere.herokuapp.com/", // Needed for web app
+    bool _isValid = _getUrlValid(url);
+    if (_isValid) {
+      Metadata? _metadata = await AnyLinkPreview.getMetadata(
+        link: url,
+        cache: Duration(days: 7),
+        proxyUrl: "https://cors-anywhere.herokuapp.com/", // Needed for web app
+      );
+      debugPrint(_metadata?.title);
+      debugPrint(_metadata?.desc);
+    } else {
+      debugPrint("URL is not valid");
+    }
+  }
+
+  bool _getUrlValid(String url) {
+    bool _isUrlValid = AnyLinkPreview.isValidLink(
+      url,
+      protocols: ['http', 'https'],
+      hostWhitelist: ['https://youtube.com/'],
+      hostBlacklist: ['https://facebook.com/'],
     );
-    debugPrint(_metadata?.title);
-    debugPrint(_metadata?.desc);
+    return _isUrlValid;
   }
 
   @override

@@ -30,13 +30,28 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _getMetadata(String url) async {
-    Metadata? _metadata = await AnyLinkPreview.getMetadata(
-      link: url,
-      cache: Duration(days: 7),
-      proxyUrl: "https://cors-anywhere.herokuapp.com/", // Needed for web app
+    bool _isValid = _getUrlValid(url);
+    if (_isValid) {
+      Metadata? _metadata = await AnyLinkPreview.getMetadata(
+        link: url,
+        cache: Duration(days: 7),
+        proxyUrl: "https://cors-anywhere.herokuapp.com/", // Needed for web app
+      );
+      debugPrint(_metadata?.title);
+      debugPrint(_metadata?.desc);
+    } else {
+      debugPrint("URL is not valid");
+    }
+  }
+
+  bool _getUrlValid(String url) {
+    bool _isUrlValid = AnyLinkPreview.isValidLink(
+      url,
+      protocols: ['http', 'https'],
+      hostWhitelist: ['https://youtube.com/'],
+      hostBlacklist: ['https://facebook.com/'],
     );
-    debugPrint(_metadata?.title);
-    debugPrint(_metadata?.desc);
+    return _isUrlValid;
   }
 
   @override
@@ -83,8 +98,6 @@ class _MyAppState extends State<MyApp> {
               ),
               SizedBox(height: 25),
               AnyLinkPreview(link: _url4),
-              // SizedBox(height: 25),
-              // AnyLinkPreview(link: _url5),
             ],
           ),
         ),
