@@ -23,17 +23,19 @@ class LinkAnalyzer {
   /// return [Metadata] from cache if app is not killed
   static Future<Metadata?> getInfoFromCache(String url) async {
     Metadata? _info;
-    print(url);
+    // print(url);
     try {
       final infoJson = await CacheManager.getJson(key: url);
       if (infoJson != null) {
         _info = Metadata.fromJson(infoJson);
-        if (!_info.timeout.isAfter(DateTime.now())) {
+        var _isEmpty = _info.title == null || _info.title == 'null';
+        if (_isEmpty || !_info.timeout.isAfter(DateTime.now())) {
           async.unawaited(CacheManager.deleteKey(url));
         }
+        if (_isEmpty) _info = null;
       }
     } catch (e) {
-      print('Error while retrieving cache data => $e');
+      // print('Error while retrieving cache data => $e');
     }
 
     return _info;
@@ -55,8 +57,16 @@ class LinkAnalyzer {
     info?.desc = url;
     info?.url = url;
 
+    // Twitter generates meta tags on client side so it's impossible to read
+    // So we use this hack to fetch server side rendered meta tags
+    // This helps for URL's who follow client side meta tag generation technique
+    var _headers = <String, String>{
+      'User-Agent':
+          'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
+    };
+
     // Make our network call
-    final response = await http.get(Uri.parse(url));
+    final response = await http.get(Uri.parse(url), headers: _headers);
     final headerContentType = response.headers['content-type'];
 
     if (headerContentType != null && headerContentType.startsWith('image/')) {

@@ -126,10 +126,7 @@ class AnyLinkPreview extends StatefulWidget {
     if ((proxyUrl ?? '').isNotEmpty) _proxyValid = isValidLink(proxyUrl!);
     if (_linkValid && _proxyValid) {
       var _linkToFetch = ((proxyUrl ?? '') + link).trim();
-      if (_linkToFetch.contains('twitter.com')) {
-        _linkToFetch = 'https://publish.twitter.com/oembed?url=$_linkToFetch';
-      }
-      var _info = await LinkAnalyzer.getInfo(link, cache: cache);
+      var _info = await LinkAnalyzer.getInfo(_linkToFetch, cache: cache);
       return _info;
     } else if (!_linkValid) {
       throw Exception('Invalid link');
@@ -182,9 +179,6 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
     }
     if (_linkValid && _proxyValid) {
       var _linkToFetch = ((widget.proxyUrl ?? '') + widget.link).trim();
-      if (_linkToFetch.contains('twitter.com')) {
-        _linkToFetch = 'https://publish.twitter.com/oembed?url=$_linkToFetch';
-      }
       _loading = true;
       _getInfo(_linkToFetch);
     }
