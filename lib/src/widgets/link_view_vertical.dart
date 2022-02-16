@@ -137,10 +137,8 @@ class LinkViewVertical extends StatelessWidget {
           child: Text(
             description,
             style: _bodyTS,
-            overflow: bodyTextOverflow == null
-                ? TextOverflow.ellipsis
-                : bodyTextOverflow,
-            maxLines: bodyMaxLines == null ? _maxLines : bodyMaxLines,
+            overflow: bodyTextOverflow ?? TextOverflow.ellipsis,
+            maxLines: bodyMaxLines ?? _maxLines,
           ),
         ),
       ),

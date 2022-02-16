@@ -51,11 +51,9 @@ A flutter package which will help you to show preview of the web url's with beau
 ## Properties 🔖
 
 ```Dart
-  final Key? key;
-
-  /// Display direction. One among `UIDirectionVertical, UIDirectionHorizontal`
-  /// By default it is `UIDirectionVertical`
-  final UIDirection displayDirection;
+  /// Display direction. One among `uiDirectionVertical, uiDirectionHorizontal`
+  /// By default it is `uiDirectionVertical`
+  final uiDirection displayDirection;
 
   /// Web address (Url that need to be parsed)
   /// For IOS & Web, only HTTP and HTTPS are support
@@ -136,13 +134,6 @@ A flutter package which will help you to show preview of the web url's with beau
 
 Thanks to everyone whoever supported, used, contributed to the package & helping in improving it. Special thanks goes to the following contributors:
 
-<!-- <table>
-  <tr>
-    <td align="center"><a href="https://www.chant.fan/"><img src="https://github.com/sur950/any_link_preview/blob/master/demo_images/chant.png?raw=true" width="100px;" alt="Chant LLC"/><br /><sub><b>Chant</b></sub></a></td>
-    <td align="center"><a href="https://vardaan.app/"><img src="https://github.com/sur950/any_link_preview/blob/master/demo_images/vardaan.png?raw=true" width="100px;" alt="Vardaan"/><br /><sub><b>Vardaan</b></sub></a></td>
-    <td align="center"><a href="https://myflat.io/"><img src="https://github.com/sur950/any_link_preview/blob/master/demo_images/myFlat.png?raw=true" width="100px;" alt="myFlat"/><br /><sub><b>myFlat</b></sub></a></td>
-  </tr>
-</table> -->
 <a href = "https://github.com/sur950/any_link_preview/graphs/contributors">
   <img src = "https://contrib.rocks/image?repo=sur950/any_link_preview"/>
 </a>
@@ -153,7 +144,7 @@ Thanks to everyone whoever supported, used, contributed to the package & helping
 ```Dart
 AnyLinkPreview(
     link: "https://vardaan.app/",
-    displayDirection: UIDirection.UIDirectionHorizontal,
+    displayDirection: uiDirection.uiDirectionHorizontal,
     showMultimedia: false,
     bodyMaxLines: 5,
     bodyTextOverflow: TextOverflow.ellipsis,
@@ -207,7 +198,7 @@ print('_isUrlValid => $_isUrlValid');
 **displayDirection can be among these 2 types**
 
 ```Dart
-enum UIDirection { UIDirectionHorizontal, UIDirectionVertical }
+enum uiDirection { uiDirectionHorizontal, uiDirectionVertical }
 ```
 
 **This full code is from the example folder. You can run the example to see.**
@@ -281,7 +272,7 @@ class _MyAppState extends State<MyApp> {
             children: [
               AnyLinkPreview(
                 link: _url1,
-                displayDirection: UIDirection.UIDirectionHorizontal,
+                displayDirection: uiDirection.uiDirectionHorizontal,
                 cache: Duration(hours: 1),
                 backgroundColor: Colors.grey[300],
                 errorWidget: Container(
@@ -293,7 +284,7 @@ class _MyAppState extends State<MyApp> {
               SizedBox(height: 25),
               AnyLinkPreview(
                 link: _url2,
-                displayDirection: UIDirection.UIDirectionHorizontal,
+                displayDirection: uiDirection.uiDirectionHorizontal,
                 showMultimedia: false,
                 bodyMaxLines: 5,
                 bodyTextOverflow: TextOverflow.ellipsis,
@@ -306,7 +297,7 @@ class _MyAppState extends State<MyApp> {
               ),
               SizedBox(height: 25),
               AnyLinkPreview(
-                displayDirection: UIDirection.UIDirectionHorizontal,
+                displayDirection: uiDirection.uiDirectionHorizontal,
                 link: _url3,
                 errorBody: 'Show my custom error body',
                 errorTitle: 'Next one is youtube link, error title',

@@ -2,6 +2,7 @@ import 'dart:async' as async;
 import 'dart:convert';
 
 import 'package:any_link_preview/any_link_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart' show Document;
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
@@ -17,7 +18,7 @@ import 'cache_manager.dart';
 class LinkAnalyzer {
   /// Is it an empty string
   static bool isNotEmpty(String? str) {
-    return str != null && str.isNotEmpty && str.trim().length > 0;
+    return str != null && str.trim().isNotEmpty;
   }
 
   /// return [Metadata] from cache if app is not killed
@@ -35,7 +36,7 @@ class LinkAnalyzer {
         if (_isEmpty) _info = null;
       }
     } catch (e) {
-      // print('Error while retrieving cache data => $e');
+      debugPrint('Error while retrieving cache data => $e');
     }
 
     return _info;
@@ -81,9 +82,9 @@ class LinkAnalyzer {
 
     final _data = _extractMetadata(document, url: url);
 
-    if (_data == null)
+    if (_data == null) {
       return info;
-    else if (cache != null) {
+    } else if (cache != null) {
       _data.timeout = DateTime.now().add(cache);
       await CacheManager.setJson(key: url, value: _data.toJson());
     }

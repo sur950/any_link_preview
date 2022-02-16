@@ -1,9 +1,13 @@
+# 2.0.6
+
+- Renamed `UIDirection` to `uiDirection`, `UIDirectionHorizontal` to `uiDirectionHorizontal` and `UIDirectionVertical` to `uiDirectionVertical` as per lint suggestions.
+- Refactored codebase according to the suggestions from official <a href="https://pub.dev/packages/lints">Dart linter </a>package (package:lints)
+
 # 2.0.5
 
 - FIX: <b>Twitter link preview</b>. Twitter uses client-side-rendering (CSR) to generate HTML in the browser
   - Viewing the source directly will not show any of the relevant <meta> tags or actual page HTML content, because it is all dynamically generated on the client's browser in React using JavaScript (i.e. CSR: Client-side rendering). In fact, the HTML source will have a stub containing "We've detected that JavaScript is disabled in your browser. Would you like to proceed to legacy Twitter?". This can be verified by opening up developer tools and peeking at the "Elements" tab during page load/render or downloading the page without JavaScript emulation
   - However, to improve Search Engine Optimization (SEO) for various prominent web-crawlers, Twitter will instead return server-side-rendered (SSR) HTML content (which does contain the `<meta>` tags). This enables crawlers to not have to emulate JavaScript to view the page, and only crawl raw HTML content. Twitter recognizes crawlers based on the supplied User-Agent HTTP Header. Server-side-rendering is generally a more expensive operation than offloading the HTML rendering onto the client, which may be a reason why Twitter opts for client-side-rendering as the default behavior.
-- Removed
 
 # 2.0.4
 

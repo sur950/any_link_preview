@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:string_validator/string_validator.dart';
@@ -7,14 +9,12 @@ import 'link_analyzer.dart';
 import '../widgets/link_view_horizontal.dart';
 import '../widgets/link_view_vertical.dart';
 
-enum UIDirection { UIDirectionVertical, UIDirectionHorizontal }
+enum uiDirection { uiDirectionVertical, uiDirectionHorizontal }
 
 class AnyLinkPreview extends StatefulWidget {
-  final Key? key;
-
-  /// Display direction. One among `UIDirectionVertical, UIDirectionHorizontal`
-  /// By default it is `UIDirectionVertical`
-  final UIDirection displayDirection;
+  /// Display direction. One among `uiDirectionVertical, uiDirectionHorizontal`
+  /// By default it is `uiDirectionVertical`
+  final uiDirection displayDirection;
 
   /// Web address (Url that need to be parsed)
   /// For IOS & Web, only HTTP and HTTPS are support
@@ -90,12 +90,12 @@ class AnyLinkPreview extends StatefulWidget {
   final void Function()? onTap;
 
   AnyLinkPreview({
-    this.key,
+    Key? key,
     required this.link,
     this.cache = const Duration(days: 1),
     this.titleStyle,
     this.bodyStyle,
-    this.displayDirection = UIDirection.UIDirectionVertical,
+    this.displayDirection = uiDirection.uiDirectionVertical,
     this.showMultimedia = true,
     this.backgroundColor = const Color.fromRGBO(235, 235, 235, 1),
     this.bodyMaxLines = 3,
@@ -116,7 +116,7 @@ class AnyLinkPreview extends StatefulWidget {
   _AnyLinkPreviewState createState() => _AnyLinkPreviewState();
 
   /// Method to fetch metadata directly
-  static Future<Metadata?> getMetadata({
+  static FutureOr<Metadata?> getMetadata({
     required String link,
     String? proxyUrl = '', // Pass for web
     Duration? cache = const Duration(days: 1),
@@ -187,7 +187,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
 
   Future<void> _getInfo(String link) async {
     _info = await LinkAnalyzer.getInfo(link, cache: widget.cache);
-    if (this.mounted) {
+    if (mounted) {
       setState(() {
         _loading = false;
       });
@@ -238,7 +238,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
                 [BoxShadow(blurRadius: 3, color: Colors.grey)],
       ),
       height: _height,
-      child: (widget.displayDirection == UIDirection.UIDirectionHorizontal)
+      child: (widget.displayDirection == uiDirection.uiDirectionHorizontal)
           ? LinkViewHorizontal(
               key: widget.key ?? Key(widget.link.toString()),
               url: widget.link,
@@ -276,7 +276,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
   Widget build(BuildContext context) {
     final info = _info as Metadata?;
     var _height =
-        (widget.displayDirection == UIDirection.UIDirectionHorizontal ||
+        (widget.displayDirection == uiDirection.uiDirectionHorizontal ||
                 !widget.showMultimedia)
             ? ((MediaQuery.of(context).size.height) * 0.15)
             : ((MediaQuery.of(context).size.height) * 0.25);
@@ -298,10 +298,11 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
       ),
     );
 
-    if (_loading)
+    if (_loading) {
       return (!_linkValid || !_proxyValid)
           ? _loadingErrorWidget
           : (widget.placeholderWidget ?? _loadingErrorWidget);
+    }
 
     return _info == null
         ? widget.errorWidget ??
