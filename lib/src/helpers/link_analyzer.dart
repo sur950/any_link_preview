@@ -43,8 +43,11 @@ class LinkAnalyzer {
   }
 
   /// Fetches a [url], validates it, and returns [Metadata].
-  static Future<Metadata?> getInfo(String url,
-      {Duration? cache = const Duration(hours: 24)}) async {
+  static Future<Metadata?> getInfo(
+    String url, {
+    Duration? cache = const Duration(hours: 24),
+    Map<String, String>? headers,
+  }) async {
     Metadata? info;
     if (cache != null) info = await getInfoFromCache(url);
     if (info != null) return info;
@@ -65,6 +68,9 @@ class LinkAnalyzer {
       'User-Agent':
           'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
     };
+    if (headers != null) {
+      _headers.addAll(headers);
+    }
 
     // Make our network call
     final response = await http.get(Uri.parse(url), headers: _headers);
