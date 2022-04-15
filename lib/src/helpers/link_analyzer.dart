@@ -71,31 +71,35 @@ class LinkAnalyzer {
     if (headers != null) {
       _headers.addAll(headers);
     }
+    try {
+      // Make our network call
+      final response = await http.get(Uri.parse(url), headers: _headers);
+      final headerContentType = response.headers['content-type'];
 
-    // Make our network call
-    final response = await http.get(Uri.parse(url), headers: _headers);
-    final headerContentType = response.headers['content-type'];
+      if (headerContentType != null && headerContentType.startsWith('image/')) {
+        info?.title = '';
+        info?.desc = '';
+        info?.image = url;
+        return info;
+      }
 
-    if (headerContentType != null && headerContentType.startsWith('image/')) {
-      info?.title = '';
-      info?.desc = '';
-      info?.image = url;
-      return info;
+      final document = responseToDocument(response);
+      if (document == null) return info;
+
+      final _data = _extractMetadata(document, url: url);
+
+      if (_data == null) {
+        return info;
+      } else if (cache != null) {
+        _data.timeout = DateTime.now().add(cache);
+        await CacheManager.setJson(key: url, value: _data.toJson());
+      }
+
+      return _data;
+    } catch (error) {
+      // Any sort of exceptions due to wrong URL's, host lookup failure etc.
+      return null;
     }
-
-    final document = responseToDocument(response);
-    if (document == null) return info;
-
-    final _data = _extractMetadata(document, url: url);
-
-    if (_data == null) {
-      return info;
-    } else if (cache != null) {
-      _data.timeout = DateTime.now().add(cache);
-      await CacheManager.setJson(key: url, value: _data.toJson());
-    }
-
-    return _data;
   }
 
   /// Takes an [http.Response] and returns a [html.Document]

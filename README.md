@@ -123,6 +123,9 @@ A flutter package which will help you to show preview of the web url's with beau
   /// For example, `https://cors-anywhere.herokuapp.com/` .
   final String? proxyUrl;
 
+  /// Headers to be added in the HTTP request to the link
+  final Map<String, String>? headers;
+
   /// Function that needs to be called when user taps on the card.
   /// If not given then given URL will be launched.
   /// To disable, Pass empty function.
@@ -318,7 +321,7 @@ class _MyAppState extends State<MyApp> {
 
 ```
 
-Copyright (c) 2021 Konakanchi Venkata Suresh Babu
+Copyright (c) 2022 Konakanchi Venkata Suresh Babu
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

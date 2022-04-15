@@ -120,7 +120,7 @@ class AnyLinkPreview extends StatefulWidget {
   _AnyLinkPreviewState createState() => _AnyLinkPreviewState();
 
   /// Method to fetch metadata directly
-  static FutureOr<Metadata?> getMetadata({
+  static Future<Metadata?> getMetadata({
     required String link,
     String? proxyUrl = '', // Pass for web
     Duration? cache = const Duration(days: 1),
@@ -131,12 +131,16 @@ class AnyLinkPreview extends StatefulWidget {
     if ((proxyUrl ?? '').isNotEmpty) _proxyValid = isValidLink(proxyUrl!);
     if (_linkValid && _proxyValid) {
       var _linkToFetch = ((proxyUrl ?? '') + link).trim();
-      var _info = await LinkAnalyzer.getInfo(_linkToFetch,
-          cache: cache, headers: headers);
-      return _info;
+      try {
+        var _info = await LinkAnalyzer.getInfo(_linkToFetch,
+            cache: cache, headers: headers);
+        return _info;
+      } catch (error) {
+        return null;
+      }
     } else if (!_linkValid) {
       throw Exception('Invalid link');
-    } else if (!_proxyValid) {
+    } else {
       throw Exception('Proxy URL is invalid. Kindly pass only if required');
     }
   }
@@ -192,11 +196,12 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
   }
 
   Future<void> _getInfo(String link) async {
-    _info = await LinkAnalyzer.getInfo(
-      link,
-      cache: widget.cache,
-      headers: widget.headers,
-    );
+    try {
+      _info = await LinkAnalyzer.getInfo(link,
+          cache: widget.cache, headers: widget.headers);
+    } catch (error) {
+      _info = null;
+    }
     if (mounted) {
       setState(() {
         _loading = false;

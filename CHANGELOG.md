@@ -1,3 +1,8 @@
+# 2.0.7
+
+- Now one can also add custom headers to the preview requests
+- For any sort of errors, it shows the `errorWidget` by default.
+
 # 2.0.6
 
 - Renamed `UIDirection` to `uiDirection`, `UIDirectionHorizontal` to `uiDirectionHorizontal` and `UIDirectionVertical` to `uiDirectionVertical` as per lint suggestions.
