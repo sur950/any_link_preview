@@ -84,6 +84,9 @@ class AnyLinkPreview extends StatefulWidget {
   /// For example, `https://cors-anywhere.herokuapp.com/` .
   final String? proxyUrl;
 
+  /// Headers to be added in the HTTP request to the link
+  final Map<String, String>? headers;
+
   /// Function that needs to be called when user taps on the card.
   /// If not given then given URL will be launched.
   /// To disable, Pass empty function.
@@ -109,6 +112,7 @@ class AnyLinkPreview extends StatefulWidget {
     this.boxShadow,
     this.removeElevation = false,
     this.proxyUrl,
+    this.headers,
     this.onTap,
   }) : super(key: key);
 
@@ -120,13 +124,15 @@ class AnyLinkPreview extends StatefulWidget {
     required String link,
     String? proxyUrl = '', // Pass for web
     Duration? cache = const Duration(days: 1),
+    Map<String, String>? headers,
   }) async {
     var _linkValid = isValidLink(link);
     var _proxyValid = true;
     if ((proxyUrl ?? '').isNotEmpty) _proxyValid = isValidLink(proxyUrl!);
     if (_linkValid && _proxyValid) {
       var _linkToFetch = ((proxyUrl ?? '') + link).trim();
-      var _info = await LinkAnalyzer.getInfo(_linkToFetch, cache: cache);
+      var _info = await LinkAnalyzer.getInfo(_linkToFetch,
+          cache: cache, headers: headers);
       return _info;
     } else if (!_linkValid) {
       throw Exception('Invalid link');
@@ -186,7 +192,11 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
   }
 
   Future<void> _getInfo(String link) async {
-    _info = await LinkAnalyzer.getInfo(link, cache: widget.cache);
+    _info = await LinkAnalyzer.getInfo(
+      link,
+      cache: widget.cache,
+      headers: widget.headers,
+    );
     if (mounted) {
       setState(() {
         _loading = false;
