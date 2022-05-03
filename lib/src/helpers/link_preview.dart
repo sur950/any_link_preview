@@ -93,7 +93,7 @@ class AnyLinkPreview extends StatefulWidget {
   final void Function()? onTap;
 
   /// Parameter to choose how you'd like the app to handle
-  /// the link. Default is
+  /// the link. Default is `LaunchMode.platformDefault`
   final LaunchMode mode;
 
   AnyLinkPreview({
