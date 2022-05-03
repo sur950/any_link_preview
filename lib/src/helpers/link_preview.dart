@@ -92,6 +92,10 @@ class AnyLinkPreview extends StatefulWidget {
   /// To disable, Pass empty function.
   final void Function()? onTap;
 
+  /// Parameter to choose how you'd like the app to handle
+  /// the link. Default is
+  final LaunchMode mode;
+
   AnyLinkPreview({
     Key? key,
     required this.link,
@@ -114,6 +118,7 @@ class AnyLinkPreview extends StatefulWidget {
     this.proxyUrl,
     this.headers,
     this.onTap,
+    this.mode = LaunchMode.platformDefault,
   }) : super(key: key);
 
   @override
@@ -209,12 +214,13 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
     }
   }
 
-  void _launchURL(url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+  void _launchURL(url, launchMode) async {
+    var _uri = Uri.parse(url);
+    if (await canLaunchUrl(_uri)) {
+      await launchUrl(_uri);
     } else {
       try {
-        await launch(url);
+        await launchUrl(_uri);
       } catch (err) {
         throw Exception('Could not launch $url. Error: $err');
       }
@@ -260,7 +266,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
               title: title!,
               description: desc!,
               imageUri: image!,
-              onTap: widget.onTap ?? () => _launchURL(widget.link),
+              onTap: widget.onTap ?? () => _launchURL(widget.link, widget.mode),
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,
               bodyTextOverflow: widget.bodyTextOverflow,
@@ -275,7 +281,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
               title: title!,
               description: desc!,
               imageUri: image!,
-              onTap: widget.onTap ?? () => _launchURL(widget.link),
+              onTap: widget.onTap ?? () => _launchURL(widget.link, widget.mode),
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,
               bodyTextOverflow: widget.bodyTextOverflow,
