@@ -10,6 +10,12 @@ import '../widgets/link_view_horizontal.dart';
 import '../widgets/link_view_vertical.dart';
 
 enum uiDirection { uiDirectionVertical, uiDirectionHorizontal }
+enum Mode {
+  externalApplication,
+  externalNonBrowserApplication,
+  inAppWebView,
+  platformDefault,
+}
 
 class AnyLinkPreview extends StatefulWidget {
   /// Display direction. One among `uiDirectionVertical, uiDirectionHorizontal`
@@ -92,6 +98,10 @@ class AnyLinkPreview extends StatefulWidget {
   /// To disable, Pass empty function.
   final void Function()? onTap;
 
+  /// Parameter to choose how you'd like the app to handle
+  /// the link. Default is `Mode.platformDefault`
+  final Mode mode;
+
   AnyLinkPreview({
     Key? key,
     required this.link,
@@ -114,6 +124,7 @@ class AnyLinkPreview extends StatefulWidget {
     this.proxyUrl,
     this.headers,
     this.onTap,
+    this.mode = Mode.platformDefault,
   }) : super(key: key);
 
   @override
@@ -209,12 +220,32 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
     }
   }
 
-  void _launchURL(url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+  LaunchMode _chooseMode(Mode launchMode) {
+    switch (launchMode) {
+      case Mode.externalApplication:
+        return LaunchMode.externalApplication;
+      case Mode.externalNonBrowserApplication:
+        return LaunchMode.externalNonBrowserApplication;
+      case Mode.inAppWebView:
+        return LaunchMode.inAppWebView;
+      case Mode.platformDefault:
+        return LaunchMode.platformDefault;
+    }
+  }
+
+  void _launchURL(url, Mode mode) async {
+    var _uri = Uri.parse(url);
+    if (await canLaunchUrl(_uri)) {
+      await launchUrl(
+        _uri,
+        mode: _chooseMode(mode),
+      );
     } else {
       try {
-        await launch(url);
+        await launchUrl(
+          _uri,
+          mode: _chooseMode(mode),
+        );
       } catch (err) {
         throw Exception('Could not launch $url. Error: $err');
       }
@@ -260,7 +291,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
               title: title!,
               description: desc!,
               imageUri: image!,
-              onTap: widget.onTap ?? () => _launchURL(widget.link),
+              onTap: widget.onTap ?? () => _launchURL(widget.link, widget.mode),
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,
               bodyTextOverflow: widget.bodyTextOverflow,
@@ -275,7 +306,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
               title: title!,
               description: desc!,
               imageUri: image!,
-              onTap: widget.onTap ?? () => _launchURL(widget.link),
+              onTap: widget.onTap ?? () => _launchURL(widget.link, widget.mode),
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,
               bodyTextOverflow: widget.bodyTextOverflow,
