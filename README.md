@@ -33,10 +33,10 @@ A flutter package which will help you to show preview of the web url's with beau
 ## Notes
 
 - Do you have any suggestions in improving the Package? I really love to collaborate. Do contact me <a href="https://www.linkedin.com/public-profile/in/suresh-konakanchi-b47602117">here</a>.
-- If you have used this package in your application, if dev time is saved, Drop a coffee <a href="https://paypal.me/suresh950?locale.x=en_GB">here</a>.
+- If you have used this package in your application & saved your dev time then feel free to buy me a coffee by clicking <a href="https://paypal.me/suresh950?locale.x=en_GB">here</a>.
 - This package is open for contribution(s).
 - <span style="color:skyblue;">Can be used as a Widget or as a Method(function)</span>
-- <span style="color:blue;">AnyLinkPreview.isValidLink()</span> method to check if the link is valid or not
+- Call <span style="color:blue;">AnyLinkPreview.isValidLink()</span> method to check if the link is valid or not (Strongly suggested to call it before using it in Widget).
 
 ## <span style="color:orange;">⭐ Don't forgot to Star the repo</span>
 
@@ -53,7 +53,11 @@ A flutter package which will help you to show preview of the web url's with beau
 ```Dart
   /// Display direction. One among `uiDirectionVertical, uiDirectionHorizontal`
   /// By default it is `uiDirectionVertical`
-  final uiDirection displayDirection;
+  final UIDirection displayDirection;
+
+  /// Parameter to choose how you'd like the app to handle the link
+  /// Default is `LaunchMode.platformDefault`
+  final LaunchMode urlLaunchMode;
 
   /// Web address (Url that need to be parsed)
   /// For IOS & Web, only HTTP and HTTPS are support
@@ -135,7 +139,7 @@ A flutter package which will help you to show preview of the web url's with beau
 
 ## Special Thanks ✨
 
-Thanks to everyone whoever supported, used, contributed to the package & helping in improving it. Special thanks goes to the following contributors:
+Thanks to all the contributors
 
 <a href = "https://github.com/sur950/any_link_preview/graphs/contributors">
   <img src = "https://contrib.rocks/image?repo=sur950/any_link_preview"/>
@@ -147,7 +151,7 @@ Thanks to everyone whoever supported, used, contributed to the package & helping
 ```Dart
 AnyLinkPreview(
     link: "https://vardaan.app/",
-    displayDirection: uiDirection.uiDirectionHorizontal,
+    displayDirection: UIDirection.uiDirectionHorizontal,
     showMultimedia: false,
     bodyMaxLines: 5,
     bodyTextOverflow: TextOverflow.ellipsis,
@@ -201,7 +205,7 @@ print('_isUrlValid => $_isUrlValid');
 **displayDirection can be among these 2 types**
 
 ```Dart
-enum uiDirection { uiDirectionHorizontal, uiDirectionVertical }
+enum UIDirection { uiDirectionVertical, uiDirectionHorizontal }
 ```
 
 **This full code is from the example folder. You can run the example to see.**
@@ -275,7 +279,7 @@ class _MyAppState extends State<MyApp> {
             children: [
               AnyLinkPreview(
                 link: _url1,
-                displayDirection: uiDirection.uiDirectionHorizontal,
+                displayDirection: UIDirection.uiDirectionHorizontal,
                 cache: Duration(hours: 1),
                 backgroundColor: Colors.grey[300],
                 errorWidget: Container(
@@ -287,7 +291,7 @@ class _MyAppState extends State<MyApp> {
               SizedBox(height: 25),
               AnyLinkPreview(
                 link: _url2,
-                displayDirection: uiDirection.uiDirectionHorizontal,
+                displayDirection: UIDirection.uiDirectionHorizontal,
                 showMultimedia: false,
                 bodyMaxLines: 5,
                 bodyTextOverflow: TextOverflow.ellipsis,
@@ -300,7 +304,7 @@ class _MyAppState extends State<MyApp> {
               ),
               SizedBox(height: 25),
               AnyLinkPreview(
-                displayDirection: uiDirection.uiDirectionHorizontal,
+                displayDirection: UIDirection.uiDirectionHorizontal,
                 link: _url3,
                 errorBody: 'Show my custom error body',
                 errorTitle: 'Next one is youtube link, error title',

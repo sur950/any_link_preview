@@ -53,22 +53,22 @@ class LinkViewVertical extends StatelessWidget {
       var layoutWidth = constraints.biggest.width;
       var layoutHeight = constraints.biggest.height;
 
-      var _titleTS = titleTextStyle ??
+      var titleTS_ = titleTextStyle ??
           TextStyle(
             fontSize: computeTitleFontSize(layoutHeight),
             color: Colors.black,
             fontWeight: FontWeight.bold,
           );
-      var _bodyTS = bodyTextStyle ??
+      var bodyTS_ = bodyTextStyle ??
           TextStyle(
             fontSize: computeTitleFontSize(layoutHeight) - 1,
             color: Colors.grey,
             fontWeight: FontWeight.w400,
           );
 
-      ImageProvider? _img = imageUri != '' ? NetworkImage(imageUri) : null;
+      ImageProvider? img_ = imageUri != '' ? NetworkImage(imageUri) : null;
       if (imageUri.startsWith('data:image')) {
-        _img = MemoryImage(
+        img_ = MemoryImage(
           base64Decode(imageUri.substring(imageUri.indexOf('base64') + 7)),
         );
       }
@@ -80,7 +80,7 @@ class LinkViewVertical extends StatelessWidget {
               showMultiMedia!
                   ? Expanded(
                       flex: 2,
-                      child: _img == null
+                      child: img_ == null
                           ? Container(color: bgColor ?? Colors.grey)
                           : Container(
                               padding: EdgeInsets.only(bottom: 15),
@@ -92,7 +92,7 @@ class LinkViewVertical extends StatelessWidget {
                                         topRight: Radius.circular(12),
                                       ),
                                 image: DecorationImage(
-                                  image: _img,
+                                  image: img_,
                                   fit: BoxFit.fitWidth,
                                 ),
                               ),
@@ -100,14 +100,14 @@ class LinkViewVertical extends StatelessWidget {
                     )
                   : SizedBox(height: 5),
               _buildTitleContainer(
-                  _titleTS, computeTitleLines(layoutHeight, layoutWidth)),
-              _buildBodyContainer(_bodyTS, computeBodyLines(layoutHeight)),
+                  titleTS_, computeTitleLines(layoutHeight, layoutWidth)),
+              _buildBodyContainer(bodyTS_, computeBodyLines(layoutHeight)),
             ],
           ));
     });
   }
 
-  Widget _buildTitleContainer(TextStyle _titleTS, _maxLines) {
+  Widget _buildTitleContainer(TextStyle titleTS_, int? maxLines_) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 5, 5, 1),
       child: Container(
@@ -117,9 +117,9 @@ class LinkViewVertical extends StatelessWidget {
           children: <Widget>[
             Text(
               title,
-              style: _titleTS,
+              style: titleTS_,
               overflow: TextOverflow.ellipsis,
-              maxLines: _maxLines,
+              maxLines: maxLines_,
             ),
           ],
         ),
@@ -127,7 +127,7 @@ class LinkViewVertical extends StatelessWidget {
     );
   }
 
-  Widget _buildBodyContainer(TextStyle _bodyTS, _maxLines) {
+  Widget _buildBodyContainer(TextStyle bodyTS_, int? maxLines_) {
     return Expanded(
       flex: 1,
       child: Padding(
@@ -136,9 +136,9 @@ class LinkViewVertical extends StatelessWidget {
           alignment: Alignment(-1.0, -1.0),
           child: Text(
             description,
-            style: _bodyTS,
+            style: bodyTS_,
             overflow: bodyTextOverflow ?? TextOverflow.ellipsis,
-            maxLines: bodyMaxLines ?? _maxLines,
+            maxLines: bodyMaxLines ?? maxLines_,
           ),
         ),
       ),

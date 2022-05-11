@@ -1,3 +1,10 @@
+# 2.0.8
+
+- Deprecated methods / functions are removed
+- Renamed `uiDirection` to `UIDirection` as per flutter `lints` package suggestions.
+- `key` issue in Validation of link is resolved now. Know more about it <a href="https://github.com/sur950/any_link_preview/issues/29">here</a>
+- Migration to Flutter Embedding & URL Launch customizations were added. Thanks to the conributor <a href="https://github.com/OmarYehiaDev">OmarYehiaDev</a>
+
 # 2.0.7
 
 - Now one can also add custom headers to the preview requests

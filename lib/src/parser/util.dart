@@ -23,13 +23,13 @@ String? getProperty(
   String? property,
   String key = 'content',
 }) {
-  var _value = document
+  var value_ = document
       ?.getElementsByTagName(tag)
       .cast<Element?>()
       .firstWhere((element) => element?.attributes[attribute] == property,
           orElse: () => null)
       ?.attributes
       .get(key);
-  // print(_value);
-  return _value;
+  // print(value_);
+  return value_;
 }

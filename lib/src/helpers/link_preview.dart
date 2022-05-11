@@ -9,18 +9,16 @@ import 'link_analyzer.dart';
 import '../widgets/link_view_horizontal.dart';
 import '../widgets/link_view_vertical.dart';
 
-enum uiDirection { uiDirectionVertical, uiDirectionHorizontal }
-enum Mode {
-  externalApplication,
-  externalNonBrowserApplication,
-  inAppWebView,
-  platformDefault,
-}
+enum UIDirection { uiDirectionVertical, uiDirectionHorizontal }
 
 class AnyLinkPreview extends StatefulWidget {
   /// Display direction. One among `uiDirectionVertical, uiDirectionHorizontal`
   /// By default it is `uiDirectionVertical`
-  final uiDirection displayDirection;
+  final UIDirection displayDirection;
+
+  /// Parameter to choose how you'd like the app to handle the link
+  /// Default is `LaunchMode.platformDefault`
+  final LaunchMode urlLaunchMode;
 
   /// Web address (Url that need to be parsed)
   /// For IOS & Web, only HTTP and HTTPS are support
@@ -98,17 +96,13 @@ class AnyLinkPreview extends StatefulWidget {
   /// To disable, Pass empty function.
   final void Function()? onTap;
 
-  /// Parameter to choose how you'd like the app to handle
-  /// the link. Default is `Mode.platformDefault`
-  final Mode mode;
-
   AnyLinkPreview({
     Key? key,
     required this.link,
     this.cache = const Duration(days: 1),
     this.titleStyle,
     this.bodyStyle,
-    this.displayDirection = uiDirection.uiDirectionVertical,
+    this.displayDirection = UIDirection.uiDirectionVertical,
     this.showMultimedia = true,
     this.backgroundColor = const Color.fromRGBO(235, 235, 235, 1),
     this.bodyMaxLines = 3,
@@ -124,11 +118,11 @@ class AnyLinkPreview extends StatefulWidget {
     this.proxyUrl,
     this.headers,
     this.onTap,
-    this.mode = Mode.platformDefault,
+    this.urlLaunchMode = LaunchMode.platformDefault,
   }) : super(key: key);
 
   @override
-  _AnyLinkPreviewState createState() => _AnyLinkPreviewState();
+  AnyLinkPreviewState createState() => AnyLinkPreviewState();
 
   /// Method to fetch metadata directly
   static Future<Metadata?> getMetadata({
@@ -137,19 +131,19 @@ class AnyLinkPreview extends StatefulWidget {
     Duration? cache = const Duration(days: 1),
     Map<String, String>? headers,
   }) async {
-    var _linkValid = isValidLink(link);
-    var _proxyValid = true;
-    if ((proxyUrl ?? '').isNotEmpty) _proxyValid = isValidLink(proxyUrl!);
-    if (_linkValid && _proxyValid) {
-      var _linkToFetch = ((proxyUrl ?? '') + link).trim();
+    var linkValid = isValidLink(link);
+    var proxyValid = true;
+    if ((proxyUrl ?? '').isNotEmpty) proxyValid = isValidLink(proxyUrl!);
+    if (linkValid && proxyValid) {
+      var linkToFetch = ((proxyUrl ?? '') + link).trim();
       try {
-        var _info = await LinkAnalyzer.getInfo(_linkToFetch,
+        var info = await LinkAnalyzer.getInfo(linkToFetch,
             cache: cache, headers: headers);
-        return _info;
+        return info;
       } catch (error) {
         return null;
       }
-    } else if (!_linkValid) {
+    } else if (!linkValid) {
       throw Exception('Invalid link');
     } else {
       throw Exception('Proxy URL is invalid. Kindly pass only if required');
@@ -167,20 +161,28 @@ class AnyLinkPreview extends StatefulWidget {
     bool allowUnderscore = false,
   }) {
     if (link.isEmpty) return false;
-    Map<String, Object>? _options = {
+    Map<String, Object>? options = {
       'require_tld': requireTld,
-      'requireProtocol': requireProtocol,
-      'allowUnderscore': allowUnderscore,
+      'require_protocol': requireProtocol,
+      'allow_underscores': allowUnderscore,
+      // 'require_port': false,
+      // 'require_valid_protocol': true,
+      // 'allow_trailing_dot': false,
+      // 'allow_protocol_relative_urls': false,
+      // 'allow_fragments': true,
+      // 'allow_query_components': true,
+      // 'disallow_auth': false,
+      // 'validate_length': true
     };
-    if (protocols.isNotEmpty) _options['protocols'] = protocols;
-    if (hostWhitelist.isNotEmpty) _options['hostWhitelist'] = hostWhitelist;
-    if (hostBlacklist.isNotEmpty) _options['hostBlacklist'] = hostBlacklist;
-    var _isValid = isURL(link, _options);
-    return _isValid;
+    if (protocols.isNotEmpty) options['protocols'] = protocols;
+    if (hostWhitelist.isNotEmpty) options['host_whitelist'] = hostWhitelist;
+    if (hostBlacklist.isNotEmpty) options['host_blacklist'] = hostBlacklist;
+    var isValid = isURL(link, options);
+    return isValid;
   }
 }
 
-class _AnyLinkPreviewState extends State<AnyLinkPreview> {
+class AnyLinkPreviewState extends State<AnyLinkPreview> {
   BaseMetaInfo? _info;
   String? _errorImage, _errorTitle, _errorBody;
   bool _loading = false;
@@ -199,9 +201,9 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
       _proxyValid = AnyLinkPreview.isValidLink(widget.proxyUrl!);
     }
     if (_linkValid && _proxyValid) {
-      var _linkToFetch = ((widget.proxyUrl ?? '') + widget.link).trim();
+      var linkToFetch = ((widget.proxyUrl ?? '') + widget.link).trim();
       _loading = true;
-      _getInfo(_linkToFetch);
+      _getInfo(linkToFetch);
     }
     super.initState();
   }
@@ -220,32 +222,13 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
     }
   }
 
-  LaunchMode _chooseMode(Mode launchMode) {
-    switch (launchMode) {
-      case Mode.externalApplication:
-        return LaunchMode.externalApplication;
-      case Mode.externalNonBrowserApplication:
-        return LaunchMode.externalNonBrowserApplication;
-      case Mode.inAppWebView:
-        return LaunchMode.inAppWebView;
-      case Mode.platformDefault:
-        return LaunchMode.platformDefault;
-    }
-  }
-
-  void _launchURL(url, Mode mode) async {
-    var _uri = Uri.parse(url);
-    if (await canLaunchUrl(_uri)) {
-      await launchUrl(
-        _uri,
-        mode: _chooseMode(mode),
-      );
+  void _launchURL(url) async {
+    var uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: widget.urlLaunchMode);
     } else {
       try {
-        await launchUrl(
-          _uri,
-          mode: _chooseMode(mode),
-        );
+        await launchUrl(uri, mode: widget.urlLaunchMode);
       } catch (err) {
         throw Exception('Could not launch $url. Error: $err');
       }
@@ -269,7 +252,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
   }
 
   Widget _buildLinkContainer(
-    double _height, {
+    double height, {
     String? title = '',
     String? desc = '',
     String? image = '',
@@ -283,15 +266,15 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
             : widget.boxShadow ??
                 [BoxShadow(blurRadius: 3, color: Colors.grey)],
       ),
-      height: _height,
-      child: (widget.displayDirection == uiDirection.uiDirectionHorizontal)
+      height: height,
+      child: (widget.displayDirection == UIDirection.uiDirectionHorizontal)
           ? LinkViewHorizontal(
               key: widget.key ?? Key(widget.link.toString()),
               url: widget.link,
               title: title!,
               description: desc!,
               imageUri: image!,
-              onTap: widget.onTap ?? () => _launchURL(widget.link, widget.mode),
+              onTap: widget.onTap ?? () => _launchURL(widget.link),
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,
               bodyTextOverflow: widget.bodyTextOverflow,
@@ -306,7 +289,7 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
               title: title!,
               description: desc!,
               imageUri: image!,
-              onTap: widget.onTap ?? () => _launchURL(widget.link, widget.mode),
+              onTap: widget.onTap ?? () => _launchURL(widget.link),
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,
               bodyTextOverflow: widget.bodyTextOverflow,
@@ -321,14 +304,14 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
   @override
   Widget build(BuildContext context) {
     final info = _info as Metadata?;
-    var _height =
-        (widget.displayDirection == uiDirection.uiDirectionHorizontal ||
+    var height =
+        (widget.displayDirection == UIDirection.uiDirectionHorizontal ||
                 !widget.showMultimedia)
             ? ((MediaQuery.of(context).size.height) * 0.15)
             : ((MediaQuery.of(context).size.height) * 0.25);
 
-    Widget _loadingErrorWidget = Container(
-      height: _height,
+    Widget loadingErrorWidget = Container(
+      height: height,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(widget.borderRadius ?? 12),
@@ -346,15 +329,15 @@ class _AnyLinkPreviewState extends State<AnyLinkPreview> {
 
     if (_loading) {
       return (!_linkValid || !_proxyValid)
-          ? _loadingErrorWidget
-          : (widget.placeholderWidget ?? _loadingErrorWidget);
+          ? loadingErrorWidget
+          : (widget.placeholderWidget ?? loadingErrorWidget);
     }
 
     return _info == null
         ? widget.errorWidget ??
-            _buildPlaceHolder(widget.backgroundColor!, _height)
+            _buildPlaceHolder(widget.backgroundColor!, height)
         : _buildLinkContainer(
-            _height,
+            height,
             title:
                 LinkAnalyzer.isNotEmpty(info!.title) ? info.title : _errorTitle,
             desc: LinkAnalyzer.isNotEmpty(info.desc) ? info.desc : _errorBody,

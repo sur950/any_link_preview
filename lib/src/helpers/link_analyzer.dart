@@ -23,23 +23,23 @@ class LinkAnalyzer {
 
   /// return [Metadata] from cache if app is not killed
   static Future<Metadata?> getInfoFromCache(String url) async {
-    Metadata? _info;
+    Metadata? info_;
     // print(url);
     try {
       final infoJson = await CacheManager.getJson(key: url);
       if (infoJson != null) {
-        _info = Metadata.fromJson(infoJson);
-        var _isEmpty = _info.title == null || _info.title == 'null';
-        if (_isEmpty || !_info.timeout.isAfter(DateTime.now())) {
+        info_ = Metadata.fromJson(infoJson);
+        var isEmpty_ = info_.title == null || info_.title == 'null';
+        if (isEmpty_ || !info_.timeout.isAfter(DateTime.now())) {
           async.unawaited(CacheManager.deleteKey(url));
         }
-        if (_isEmpty) _info = null;
+        if (isEmpty_) info_ = null;
       }
     } catch (e) {
       debugPrint('Error while retrieving cache data => $e');
     }
 
-    return _info;
+    return info_;
   }
 
   /// Fetches a [url], validates it, and returns [Metadata].
@@ -64,16 +64,16 @@ class LinkAnalyzer {
     // Twitter generates meta tags on client side so it's impossible to read
     // So we use this hack to fetch server side rendered meta tags
     // This helps for URL's who follow client side meta tag generation technique
-    var _headers = <String, String>{
+    var headers_ = <String, String>{
       'User-Agent':
           'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
     };
     if (headers != null) {
-      _headers.addAll(headers);
+      headers_.addAll(headers);
     }
     try {
       // Make our network call
-      final response = await http.get(Uri.parse(url), headers: _headers);
+      final response = await http.get(Uri.parse(url), headers: headers_);
       final headerContentType = response.headers['content-type'];
 
       if (headerContentType != null && headerContentType.startsWith('image/')) {
@@ -86,16 +86,16 @@ class LinkAnalyzer {
       final document = responseToDocument(response);
       if (document == null) return info;
 
-      final _data = _extractMetadata(document, url: url);
+      final data_ = _extractMetadata(document, url: url);
 
-      if (_data == null) {
+      if (data_ == null) {
         return info;
       } else if (cache != null) {
-        _data.timeout = DateTime.now().add(cache);
-        await CacheManager.setJson(key: url, value: _data.toJson());
+        data_.timeout = DateTime.now().add(cache);
+        await CacheManager.setJson(key: url, value: data_.toJson());
       }
 
-      return _data;
+      return data_;
     } catch (error) {
       // Any sort of exceptions due to wrong URL's, host lookup failure etc.
       return null;
@@ -152,10 +152,10 @@ class LinkAnalyzer {
     }
     // If the parsers did not extract a URL from the metadata, use the given
     // url, if available. This is used to attempt to resolve relative images.
-    final _url = output.url ?? url;
+    final url_ = output.url ?? url;
     final image = output.image;
-    if (_url != null && image != null) {
-      output.image = Uri.parse(_url).resolve(image).toString();
+    if (url_ != null && image != null) {
+      output.image = Uri.parse(url_).resolve(image).toString();
     }
 
     return output;
