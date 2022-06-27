@@ -22,6 +22,7 @@ class _MyAppState extends State<MyApp> {
       "https://twitter.com/laravelphp/status/1222535498880692225";
   final String _url4 = "https://www.youtube.com/watch?v=W1pNjxmNHNQ";
   final String _url5 = "https://www.brainyquote.com/topics/motivational-quotes";
+  final String _url6 = "https://flutter.dev/";
 
   @override
   void initState() {
@@ -66,7 +67,7 @@ class _MyAppState extends State<MyApp> {
             children: [
               AnyLinkPreview(
                 link: _url1,
-                displayDirection: UIDirection.UIDirectionHorizontal,
+                displayDirection: UIDirection.uiDirectionHorizontal,
                 cache: Duration(hours: 1),
                 backgroundColor: Colors.grey[300],
                 errorWidget: Container(
@@ -78,7 +79,7 @@ class _MyAppState extends State<MyApp> {
               SizedBox(height: 25),
               AnyLinkPreview(
                 link: _url2,
-                displayDirection: UIDirection.UIDirectionHorizontal,
+                displayDirection: UIDirection.uiDirectionHorizontal,
                 showMultimedia: false,
                 bodyMaxLines: 5,
                 bodyTextOverflow: TextOverflow.ellipsis,
@@ -91,13 +92,65 @@ class _MyAppState extends State<MyApp> {
               ),
               SizedBox(height: 25),
               AnyLinkPreview(
-                displayDirection: UIDirection.UIDirectionHorizontal,
+                displayDirection: UIDirection.uiDirectionHorizontal,
                 link: _url3,
                 errorBody: 'Show my custom error body',
                 errorTitle: 'Next one is youtube link, error title',
               ),
               SizedBox(height: 25),
               AnyLinkPreview(link: _url4),
+              SizedBox(height: 25),
+              // Custom preview builder
+              AnyLinkPreview.builder(
+                link: _url6,
+                itemBuilder: (context, metadata, imageProvider) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (imageProvider != null)
+                      Container(
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.width * 0.5,
+                        ),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    Container(
+                      width: double.infinity,
+                      color: Theme.of(context).primaryColor.withOpacity(0.6),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (metadata.title != null)
+                            Text(
+                              metadata.title!,
+                              maxLines: 1,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w500),
+                            ),
+                          const SizedBox(height: 5),
+                          if (metadata.desc != null)
+                            Text(
+                              metadata.desc!,
+                              maxLines: 1,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          Text(
+                            metadata.url ?? _url6,
+                            maxLines: 1,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

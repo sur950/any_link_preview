@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class AnyLinkPreview extends StatefulWidget {
   final String link;
 
   /// Customize background colour
-  /// Deaults to `Color.fromRGBO(235, 235, 235, 1)`
+  /// Defaults to `Color.fromRGBO(235, 235, 235, 1)`
   final Color? backgroundColor;
 
   /// Widget that need to be shown when
@@ -41,16 +42,16 @@ class AnyLinkPreview extends StatefulWidget {
   final Widget? errorWidget;
 
   /// Title that need to be shown if something goes wrong
-  /// Deaults to `Something went wrong!`
+  /// Defaults to `Something went wrong!`
   final String? errorTitle;
 
   /// Body that need to be shown if something goes wrong
-  /// Deaults to `Oops! Unable to parse the url. We have sent feedback to our developers & we will try to fix this in our next release. Thanks!`
+  /// Defaults to `Oops! Unable to parse the url. We have sent feedback to our developers & we will try to fix this in our next release. Thanks!`
   final String? errorBody;
 
   /// Image that will be shown if something goes wrong
   /// & when multimedia enabled & no meta data is available
-  /// Deaults to `A semi-soccer ball image that looks like crying`
+  /// Defaults to `A semi-soccer ball image that looks like crying`
   final String? errorImage;
 
   /// Give the overflow type for body text (Description)
@@ -58,7 +59,7 @@ class AnyLinkPreview extends StatefulWidget {
   final TextOverflow bodyTextOverflow;
 
   /// Give the limit to body text (Description)
-  /// Deaults to `3`
+  /// Defaults to `3`
   final int bodyMaxLines;
 
   /// Cache result time, default cache `1 day`
@@ -96,6 +97,10 @@ class AnyLinkPreview extends StatefulWidget {
   /// To disable, Pass empty function.
   final void Function()? onTap;
 
+  /// Function only in [AnyLinkPreview.builder]
+  /// allows to build a custom [Widget] from the [Metadata] and [ImageProvider] fetched
+  final Widget Function(BuildContext, Metadata, ImageProvider?)? itemBuilder;
+
   AnyLinkPreview({
     Key? key,
     required this.link,
@@ -119,7 +124,34 @@ class AnyLinkPreview extends StatefulWidget {
     this.headers,
     this.onTap,
     this.urlLaunchMode = LaunchMode.platformDefault,
-  }) : super(key: key);
+  })  : itemBuilder = null,
+        super(key: key);
+
+  AnyLinkPreview.builder({
+    Key? key,
+    required this.link,
+    required this.itemBuilder,
+    this.cache = const Duration(days: 1),
+    this.placeholderWidget,
+    this.errorWidget,
+    this.proxyUrl,
+    this.headers,
+  })  : titleStyle = null,
+        bodyStyle = null,
+        displayDirection = UIDirection.uiDirectionVertical,
+        showMultimedia = true,
+        backgroundColor = null,
+        bodyMaxLines = 3,
+        bodyTextOverflow = TextOverflow.ellipsis,
+        borderRadius = null,
+        errorBody = null,
+        errorImage = null,
+        errorTitle = null,
+        boxShadow = null,
+        removeElevation = false,
+        onTap = null,
+        urlLaunchMode = LaunchMode.platformDefault,
+        super(key: key);
 
   @override
   AnyLinkPreviewState createState() => AnyLinkPreviewState();
@@ -184,7 +216,7 @@ class AnyLinkPreview extends StatefulWidget {
 
 class AnyLinkPreviewState extends State<AnyLinkPreview> {
   BaseMetaInfo? _info;
-  String? _errorImage, _errorTitle, _errorBody;
+  late String _errorImage, _errorTitle, _errorBody;
   bool _loading = false;
   bool _linkValid = false, _proxyValid = true;
 
@@ -235,7 +267,7 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
     }
   }
 
-  Widget _buildPlaceHolder(Color color, double defaultHeight) {
+  Widget _buildPlaceHolder(double defaultHeight) {
     return Container(
       height: defaultHeight,
       child: LayoutBuilder(builder: (context, constraints) {
@@ -243,7 +275,7 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
         var layoutHeight = constraints.biggest.height;
 
         return Container(
-          color: color,
+          color: widget.backgroundColor,
           width: layoutWidth,
           height: layoutHeight,
         );
@@ -251,12 +283,20 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
     );
   }
 
-  Widget _buildLinkContainer(
-    double height, {
-    String? title = '',
-    String? desc = '',
-    String? image = '',
-  }) {
+  Widget _buildLinkContainer(double height, Metadata info) {
+    final image = LinkAnalyzer.isNotEmpty(info.image)
+        ? ((widget.proxyUrl ?? '') + (info.image ?? ''))
+        : null;
+
+    if (widget.itemBuilder != null) {
+      return widget.itemBuilder!(context, info, _buildImageProvider(image));
+    }
+
+    final title =
+        LinkAnalyzer.isNotEmpty(info.title) ? info.title! : _errorTitle;
+    final desc = LinkAnalyzer.isNotEmpty(info.desc) ? info.desc! : _errorBody;
+    final imageProvider = _buildImageProvider(image ?? _errorImage);
+
     return Container(
       decoration: BoxDecoration(
         color: widget.backgroundColor,
@@ -271,9 +311,9 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
           ? LinkViewHorizontal(
               key: widget.key ?? Key(widget.link.toString()),
               url: widget.link,
-              title: title!,
-              description: desc!,
-              imageUri: image!,
+              title: title,
+              description: desc,
+              imageProvider: imageProvider,
               onTap: widget.onTap ?? () => _launchURL(widget.link),
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,
@@ -286,9 +326,9 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
           : LinkViewVertical(
               key: widget.key ?? Key(widget.link.toString()),
               url: widget.link,
-              title: title!,
-              description: desc!,
-              imageUri: image!,
+              title: title,
+              description: desc,
+              imageProvider: imageProvider,
               onTap: widget.onTap ?? () => _launchURL(widget.link),
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,
@@ -299,6 +339,16 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
               radius: widget.borderRadius ?? 12,
             ),
     );
+  }
+
+  ImageProvider? _buildImageProvider(String? image) {
+    ImageProvider? imageProvider = image != null ? NetworkImage(image) : null;
+    if (image != null && image.startsWith('data:image')) {
+      imageProvider = MemoryImage(
+        base64Decode(image.substring(image.indexOf('base64') + 7)),
+      );
+    }
+    return imageProvider;
   }
 
   @override
@@ -333,17 +383,8 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
           : (widget.placeholderWidget ?? loadingErrorWidget);
     }
 
-    return _info == null
-        ? widget.errorWidget ??
-            _buildPlaceHolder(widget.backgroundColor!, height)
-        : _buildLinkContainer(
-            height,
-            title:
-                LinkAnalyzer.isNotEmpty(info!.title) ? info.title : _errorTitle,
-            desc: LinkAnalyzer.isNotEmpty(info.desc) ? info.desc : _errorBody,
-            image: LinkAnalyzer.isNotEmpty(info.image)
-                ? ((widget.proxyUrl ?? '') + (info.image ?? ''))
-                : _errorImage,
-          );
+    return info == null
+        ? widget.errorWidget ?? _buildPlaceHolder(height)
+        : _buildLinkContainer(height, info);
   }
 }
