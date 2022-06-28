@@ -1,3 +1,9 @@
+# 2.0.9
+
+- Packages upgraded to support latest version of flutter SDK.
+- Now one can provide the height of the Preview Card as per their requirement.
+- Builder function is added. Thanks to the conributor <a href="https://github.com/LeGoffMael">Maël</a>
+
 # 2.0.8
 
 - Deprecated methods / functions are removed

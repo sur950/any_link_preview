@@ -135,6 +135,15 @@ A flutter package which will help you to show preview of the web url's with beau
   /// To disable, Pass empty function.
   final void Function()? onTap;
 
+  /// Height of the preview card. Defaults to
+  /// `(MediaQuery.of(context).size.height) * 0.15` in case of horizontal and
+  /// `(MediaQuery.of(context).size.height) * 0.25` in case of vertical
+  final double? previewHeight;
+
+  /// Function only in [AnyLinkPreview.builder]
+  /// allows to build a custom [Widget] from the [Metadata] and [ImageProvider] fetched
+  final Widget Function(BuildContext, Metadata, ImageProvider?)? itemBuilder;
+
 ```
 
 ## Special Thanks ✨
