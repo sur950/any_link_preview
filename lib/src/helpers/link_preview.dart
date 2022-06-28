@@ -63,7 +63,7 @@ class AnyLinkPreview extends StatefulWidget {
   final int bodyMaxLines;
 
   /// Cache result time, default cache `1 day`
-  /// Pass null to disable
+  /// Pass `null` to disable or to fetch latest
   final Duration cache;
 
   /// Customize body `TextStyle`
@@ -97,6 +97,11 @@ class AnyLinkPreview extends StatefulWidget {
   /// To disable, Pass empty function.
   final void Function()? onTap;
 
+  /// Height of the preview card. Defaults to
+  /// `(MediaQuery.of(context).size.height) * 0.15` in case of horizontal and
+  /// `(MediaQuery.of(context).size.height) * 0.25` in case of vertical
+  final double? previewHeight;
+
   /// Function only in [AnyLinkPreview.builder]
   /// allows to build a custom [Widget] from the [Metadata] and [ImageProvider] fetched
   final Widget Function(BuildContext, Metadata, ImageProvider?)? itemBuilder;
@@ -123,6 +128,7 @@ class AnyLinkPreview extends StatefulWidget {
     this.proxyUrl,
     this.headers,
     this.onTap,
+    this.previewHeight,
     this.urlLaunchMode = LaunchMode.platformDefault,
   })  : itemBuilder = null,
         super(key: key);
@@ -150,6 +156,7 @@ class AnyLinkPreview extends StatefulWidget {
         boxShadow = null,
         removeElevation = false,
         onTap = null,
+        previewHeight = null,
         urlLaunchMode = LaunchMode.platformDefault,
         super(key: key);
 
@@ -354,11 +361,11 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
   @override
   Widget build(BuildContext context) {
     final info = _info as Metadata?;
-    var height =
-        (widget.displayDirection == UIDirection.uiDirectionHorizontal ||
+    var height = widget.previewHeight ??
+        ((widget.displayDirection == UIDirection.uiDirectionHorizontal ||
                 !widget.showMultimedia)
             ? ((MediaQuery.of(context).size.height) * 0.15)
-            : ((MediaQuery.of(context).size.height) * 0.25);
+            : ((MediaQuery.of(context).size.height) * 0.25));
 
     Widget loadingErrorWidget = Container(
       height: height,

@@ -12,6 +12,7 @@ import '../parser/html_parser.dart';
 import '../parser/json_ld_parser.dart';
 import '../parser/og_parser.dart';
 import '../parser/twitter_parser.dart';
+import '../parser/other_parser.dart';
 import '../parser/util.dart';
 import 'cache_manager.dart';
 
@@ -21,7 +22,7 @@ class LinkAnalyzer {
     return str != null && str.trim().isNotEmpty;
   }
 
-  /// return [Metadata] from cache if app is not killed
+  /// return [Metadata] from cache if available
   static Future<Metadata?> getInfoFromCache(String url) async {
     Metadata? info_;
     // print(url);
@@ -42,6 +43,16 @@ class LinkAnalyzer {
     return info_;
   }
 
+  /// deletes [Metadata] from cache if available
+  static void _deleteFromCache(String url) {
+    // print(url);
+    try {
+      async.unawaited(CacheManager.deleteKey(url));
+    } catch (e) {
+      debugPrint('Error retrieving cache data => $e');
+    }
+  }
+
   /// Fetches a [url], validates it, and returns [Metadata].
   static Future<Metadata?> getInfo(
     String url, {
@@ -49,7 +60,11 @@ class LinkAnalyzer {
     Map<String, String>? headers,
   }) async {
     Metadata? info;
-    if (cache != null) info = await getInfoFromCache(url);
+    if ((cache?.inSeconds ?? 0) > 0) {
+      info = await getInfoFromCache(url);
+    } else {
+      _deleteFromCache(url);
+    }
     if (info != null) return info;
 
     // info = await _getInfo(url, multimedia);
@@ -67,6 +82,7 @@ class LinkAnalyzer {
     var headers_ = <String, String>{
       'User-Agent':
           'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
+      // 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)'
     };
     if (headers != null) {
       headers_.addAll(headers);
@@ -140,13 +156,14 @@ class LinkAnalyzer {
       _twitterCard(document),
       _jsonLdSchema(document),
       _htmlMeta(document),
+      _otherParser(document),
     ];
 
     for (final p in parsers) {
       output.title ??= p.title;
       output.desc ??= p.desc;
       output.image ??= p.image;
-      output.url ??= p.url;
+      output.url ??= p.url ?? url;
 
       if (output.hasAllMetadata) break;
     }
@@ -175,5 +192,9 @@ class LinkAnalyzer {
 
   static Metadata _twitterCard(Document? document) {
     return TwitterParser(document).parse();
+  }
+
+  static Metadata _otherParser(Document? document) {
+    return OtherParser(document).parse();
   }
 }

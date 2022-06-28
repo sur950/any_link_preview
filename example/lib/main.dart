@@ -21,13 +21,14 @@ class _MyAppState extends State<MyApp> {
   final String _url3 =
       "https://twitter.com/laravelphp/status/1222535498880692225";
   final String _url4 = "https://www.youtube.com/watch?v=W1pNjxmNHNQ";
-  final String _url5 = "https://www.brainyquote.com/topics/motivational-quotes";
-  final String _url6 = "https://flutter.dev/";
+  final String _url5 = "https://flutter.dev/";
+  final String _url6 =
+      "https://www.amazon.com/gp/product/B00JZEW4XS?ie=UTF8&th=1&linkCode=li1&tag=pratiksharu-20&linkId=1d34bc8b2b8b01132376486955c5d313&language=en_US&ref_=as_li_ss_il";
 
   @override
   void initState() {
     super.initState();
-    _getMetadata(_url5);
+    _getMetadata(_url6);
   }
 
   void _getMetadata(String url) async {
@@ -38,7 +39,7 @@ class _MyAppState extends State<MyApp> {
         cache: Duration(days: 7),
         proxyUrl: "https://cors-anywhere.herokuapp.com/", // Needed for web app
       );
-      debugPrint(_metadata?.title);
+      debugPrint("URL6 => ${_metadata?.title}");
       debugPrint(_metadata?.desc);
     } else {
       debugPrint("URL is not valid");
@@ -102,7 +103,7 @@ class _MyAppState extends State<MyApp> {
               SizedBox(height: 25),
               // Custom preview builder
               AnyLinkPreview.builder(
-                link: _url6,
+                link: _url5,
                 itemBuilder: (context, metadata, imageProvider) => Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -141,7 +142,7 @@ class _MyAppState extends State<MyApp> {
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           Text(
-                            metadata.url ?? _url6,
+                            metadata.url ?? _url5,
                             maxLines: 1,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
