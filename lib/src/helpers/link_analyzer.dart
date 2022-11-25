@@ -53,11 +53,29 @@ class LinkAnalyzer {
     }
   }
 
+  // Twitter generates meta tags on client side so it's impossible to read
+  // So we use this hack to fetch server side rendered meta tags
+  // This helps for URL's who follow client side meta tag generation technique
+  static Future<Metadata?> getInfoClientSide(
+    String url, {
+    Duration? cache = const Duration(hours: 24),
+    Map<String, String> headers = const {},
+  }) =>
+      getInfo(
+        url,
+        cache: cache,
+        headers: headers,
+        // 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)',
+        userAgent:
+            'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+      );
+
   /// Fetches a [url], validates it, and returns [Metadata].
   static Future<Metadata?> getInfo(
     String url, {
     Duration? cache = const Duration(hours: 24),
-    Map<String, String>? headers,
+    Map<String, String> headers = const {},
+    String? userAgent,
   }) async {
     Metadata? info;
     if ((cache?.inSeconds ?? 0) > 0) {
@@ -76,20 +94,15 @@ class LinkAnalyzer {
     info?.desc = url;
     info?.url = url;
 
-    // Twitter generates meta tags on client side so it's impossible to read
-    // So we use this hack to fetch server side rendered meta tags
-    // This helps for URL's who follow client side meta tag generation technique
-    var headers_ = <String, String>{
-      'User-Agent':
-          'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
-      // 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)'
-    };
-    if (headers != null) {
-      headers_.addAll(headers);
-    }
     try {
       // Make our network call
-      final response = await http.get(Uri.parse(url), headers: headers_);
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          ...headers,
+          ...userAgent != null ? {'User-Agent': userAgent} : {}
+        },
+      );
       final headerContentType = response.headers['content-type'];
 
       if (headerContentType != null && headerContentType.startsWith('image/')) {
@@ -113,6 +126,7 @@ class LinkAnalyzer {
 
       return data_;
     } catch (error) {
+      debugPrint('AnyLinkPreview - Error in $url response ($error)');
       // Any sort of exceptions due to wrong URL's, host lookup failure etc.
       return null;
     }
@@ -160,6 +174,8 @@ class LinkAnalyzer {
     ];
 
     for (final p in parsers) {
+      if (p == null) break;
+
       output.title ??= p.title;
       output.desc ??= p.desc;
       output.image ??= p.image;
@@ -178,23 +194,43 @@ class LinkAnalyzer {
     return output;
   }
 
-  static Metadata _openGraph(Document? document) {
-    return OpenGraphParser(document).parse();
+  static Metadata? _openGraph(Document? document) {
+    try {
+      return OpenGraphParser(document).parse();
+    } catch (e) {
+      return null;
+    }
   }
 
-  static Metadata _htmlMeta(Document? document) {
-    return HtmlMetaParser(document).parse();
+  static Metadata? _htmlMeta(Document? document) {
+    try {
+      return HtmlMetaParser(document).parse();
+    } catch (e) {
+      return null;
+    }
   }
 
-  static Metadata _jsonLdSchema(Document? document) {
-    return JsonLdParser(document).parse();
+  static Metadata? _jsonLdSchema(Document? document) {
+    try {
+      return JsonLdParser(document).parse();
+    } catch (e) {
+      return null;
+    }
   }
 
-  static Metadata _twitterCard(Document? document) {
-    return TwitterParser(document).parse();
+  static Metadata? _twitterCard(Document? document) {
+    try {
+      return TwitterParser(document).parse();
+    } catch (e) {
+      return null;
+    }
   }
 
-  static Metadata _otherParser(Document? document) {
-    return OtherParser(document).parse();
+  static Metadata? _otherParser(Document? document) {
+    try {
+      return OtherParser(document).parse();
+    } catch (e) {
+      return null;
+    }
   }
 }
