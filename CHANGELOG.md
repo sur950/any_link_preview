@@ -1,8 +1,13 @@
+# 3.0.0
+
+- User Agent causing the redirection URLs, Server side rendered meta-tag URLs fail from getting results. Now, we are taking User Agent from server if available, As a fallback we are using client side static User Agent.
+- If the link starts with `www.` we are removing the same before fetching the results. However, we suggest to check for link validity with the helper method provided before fetching results from the library.
+
 # 2.0.9
 
 - Packages upgraded to support latest version of flutter SDK.
 - Now one can provide the height of the Preview Card as per their requirement.
-- Builder function is added. Thanks to the conributor <a href="https://github.com/LeGoffMael">Maël</a>
+- Builder function is added. Thanks to the contributor <a href="https://github.com/LeGoffMael">Maël</a>
 
 # 2.0.8
 
