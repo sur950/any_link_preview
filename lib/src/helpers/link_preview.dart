@@ -174,6 +174,8 @@ class AnyLinkPreview extends StatefulWidget {
     var proxyValid = true;
     if ((proxyUrl ?? '').isNotEmpty) proxyValid = isValidLink(proxyUrl!);
     if (linkValid && proxyValid) {
+      // removing www. from the link if available
+      if (link.startsWith('www.')) link = link.replaceFirst('www.', '');
       var linkToFetch = ((proxyUrl ?? '') + link).trim();
       try {
         var info = await LinkAnalyzer.getInfo(linkToFetch,
@@ -226,21 +228,27 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
   late String _errorImage, _errorTitle, _errorBody;
   bool _loading = false;
   bool _linkValid = false, _proxyValid = true;
+  String originalLink = '';
 
   @override
   void initState() {
+    originalLink = widget.link;
     _errorImage = widget.errorImage ??
         'https://github.com/sur950/any_link_preview/blob/master/lib/assets/giphy.gif?raw=true';
     _errorTitle = widget.errorTitle ?? 'Something went wrong!';
     _errorBody = widget.errorBody ??
         'Oops! Unable to parse the url. We have sent feedback to our developers & we will try to fix this in our next release. Thanks!';
 
-    _linkValid = AnyLinkPreview.isValidLink(widget.link);
+    _linkValid = AnyLinkPreview.isValidLink(originalLink);
     if ((widget.proxyUrl ?? '').isNotEmpty) {
       _proxyValid = AnyLinkPreview.isValidLink(widget.proxyUrl!);
     }
     if (_linkValid && _proxyValid) {
-      var linkToFetch = ((widget.proxyUrl ?? '') + widget.link).trim();
+      // removing www. from the link if available
+      if (originalLink.startsWith('www.')) {
+        originalLink = originalLink.replaceFirst('www.', '');
+      }
+      var linkToFetch = ((widget.proxyUrl ?? '') + originalLink).trim();
       _loading = true;
       _getInfo(linkToFetch);
     }
@@ -316,12 +324,12 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
       height: height,
       child: (widget.displayDirection == UIDirection.uiDirectionHorizontal)
           ? LinkViewHorizontal(
-              key: widget.key ?? Key(widget.link.toString()),
-              url: widget.link,
+              key: widget.key ?? Key(originalLink.toString()),
+              url: originalLink,
               title: title,
               description: desc,
               imageProvider: imageProvider,
-              onTap: widget.onTap ?? () => _launchURL(widget.link),
+              onTap: widget.onTap ?? () => _launchURL(originalLink),
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,
               bodyTextOverflow: widget.bodyTextOverflow,
@@ -331,12 +339,12 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
               radius: widget.borderRadius ?? 12,
             )
           : LinkViewVertical(
-              key: widget.key ?? Key(widget.link.toString()),
-              url: widget.link,
+              key: widget.key ?? Key(originalLink.toString()),
+              url: originalLink,
               title: title,
               description: desc,
               imageProvider: imageProvider,
-              onTap: widget.onTap ?? () => _launchURL(widget.link),
+              onTap: widget.onTap ?? () => _launchURL(originalLink),
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,
               bodyTextOverflow: widget.bodyTextOverflow,

@@ -181,7 +181,7 @@ AnyLinkPreview(
     backgroundColor: Colors.grey[300],
     borderRadius: 12,
     removeElevation: false,
-    boxShadow: [BoxShadow(blurRadius: 3, color: Colors.grey)];
+    boxShadow: [BoxShadow(blurRadius: 3, color: Colors.grey)],
     onTap: (){}, // This disables tap event
 )
 ```
