@@ -175,17 +175,41 @@ class AnyLinkPreview extends StatefulWidget {
     if ((proxyUrl ?? '').isNotEmpty) proxyValid = isValidLink(proxyUrl!);
     if (linkValid && proxyValid) {
       var linkToFetch = ((proxyUrl ?? '') + link).trim();
-      try {
-        var info = await LinkAnalyzer.getInfo(linkToFetch,
-            cache: cache, headers: headers);
-        return info;
-      } catch (error) {
-        return null;
-      }
+      return _getMetadata(
+        linkToFetch,
+        cache: cache,
+        headers: headers ?? {},
+      );
     } else if (!linkValid) {
       throw Exception('Invalid link');
     } else {
       throw Exception('Proxy URL is invalid. Kindly pass only if required');
+    }
+  }
+
+  @protected
+  static Future<Metadata?> _getMetadata(
+    String link, {
+    Duration? cache = const Duration(days: 1),
+    Map<String, String>? headers,
+  }) async {
+    try {
+      var info = await LinkAnalyzer.getInfo(
+        link,
+        cache: cache,
+        headers: headers ?? {},
+      );
+      if (info == null || info.hasData == false) {
+        // if info is null or data is empty try to read url metadata from client side
+        info = await LinkAnalyzer.getInfoClientSide(
+          link,
+          cache: cache,
+          headers: headers ?? {},
+        );
+      }
+      return info;
+    } catch (error) {
+      return null;
     }
   }
 
@@ -248,12 +272,11 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
   }
 
   Future<void> _getInfo(String link) async {
-    try {
-      _info = await LinkAnalyzer.getInfo(link,
-          cache: widget.cache, headers: widget.headers);
-    } catch (error) {
-      _info = null;
-    }
+    _info = await AnyLinkPreview._getMetadata(
+      link,
+      cache: widget.cache,
+      headers: widget.headers,
+    );
     if (mounted) {
       setState(() {
         _loading = false;
