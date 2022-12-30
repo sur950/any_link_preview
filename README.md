@@ -18,7 +18,7 @@ A flutter package which will help you to show preview of the web url's with beau
 - Highly customizable
 - Placeholder which can be used while the state is in loading.
 - Error widget which can be used when unidentified error are detected
-- For identified erros, one can customize by passing custom title, description & image.
+- For identified errors, one can customize by passing custom title, description & image.
 - Opt-in/Opt-out for media (images, icons etc) to be displayed in UI or not
 - multiple directions are supported (Horizontal, Vertical)
 - Cache the meta data of an url for faster load
@@ -38,7 +38,7 @@ A flutter package which will help you to show preview of the web url's with beau
 - <span style="color:skyblue;">Can be used as a Widget or as a Method(function)</span>
 - Call <span style="color:blue;">AnyLinkPreview.isValidLink()</span> method to check if the link is valid or not (Strongly suggested to call it before using it in Widget).
 
-## <span style="color:orange;">⭐ Don't forgot to Star the repo</span>
+## <span style="color:orange;">⭐ Don't forget to Star the Repo</span>
 
 ## How to Contribute?
 

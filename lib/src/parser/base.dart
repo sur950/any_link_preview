@@ -14,6 +14,12 @@ mixin BaseMetaInfo {
   String? image;
   String? url;
 
+  /// Returns `true` if any parameter other than [url] is filled
+  bool get hasData =>
+      ((title?.isNotEmpty ?? false) && title != 'null') ||
+      ((desc?.isNotEmpty ?? false) && desc != 'null') ||
+      ((image?.isNotEmpty ?? false) && image != 'null');
+
   Metadata parse() {
     final m = Metadata();
     m.title = title;
