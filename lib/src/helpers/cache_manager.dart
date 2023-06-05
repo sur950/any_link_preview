@@ -1,12 +1,20 @@
 import 'dart:convert';
-
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CacheManager {
   static Future getJson({required String key}) async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-    dynamic cache = sharedPreferences.getString(key);
-    var jsonMapCache = jsonDecode(cache) as Map<dynamic, dynamic>;
+    dynamic cache;
+    try {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      cache = sharedPreferences.getString(key);
+    } catch (e) {
+      debugPrint('Cache URL had a change => $e');
+    }
+    dynamic jsonMapCache;
+    if (cache != null) {
+      jsonMapCache = jsonDecode(cache) as Map<dynamic, dynamic>;
+    }
     return jsonMapCache;
   }
 

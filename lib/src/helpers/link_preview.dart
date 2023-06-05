@@ -380,12 +380,18 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
   }
 
   ImageProvider? _buildImageProvider(String? image) {
-    ImageProvider? imageProvider = image != null ? NetworkImage(image) : null;
-    if (image != null && image.startsWith('data:image')) {
-      imageProvider = MemoryImage(
-        base64Decode(image.substring(image.indexOf('base64') + 7)),
-      );
+    ImageProvider? imageProvider;
+    try {
+      if (image != null) imageProvider = NetworkImage(image);
+      if (image != null && image.startsWith('data:image')) {
+        imageProvider = MemoryImage(
+          base64Decode(image.substring(image.indexOf('base64') + 7)),
+        );
+      }
+    } catch (error) {
+      debugPrint('Image parsing failed -> $error');
     }
+
     return imageProvider;
   }
 

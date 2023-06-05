@@ -1,3 +1,8 @@
+# 3.0.1
+
+- Packages updated to support latest version.
+- http links support added
+
 # 3.0.0
 
 - User Agent causing the redirection URLs, Server side rendered meta-tag URLs fail from getting results. Now, we are taking User Agent from server if available, As a fallback we are using client side static User Agent.
