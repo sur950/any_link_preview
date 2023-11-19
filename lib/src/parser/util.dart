@@ -4,7 +4,7 @@ extension GetMethod on Map {
   String? get(dynamic key) {
     var value = this[key];
     if (value is List) return value.first;
-    return value.toString();
+    return value == null ? null : value.toString();
   }
 
   dynamic getDynamic(dynamic key) {
