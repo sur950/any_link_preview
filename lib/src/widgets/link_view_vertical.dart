@@ -15,7 +15,7 @@ class LinkViewVertical extends StatelessWidget {
   final Color? bgColor;
 
   LinkViewVertical({
-    Key? key,
+    super.key,
     required this.url,
     required this.title,
     required this.description,
@@ -28,7 +28,7 @@ class LinkViewVertical extends StatelessWidget {
     this.bodyMaxLines,
     this.bgColor,
     this.radius,
-  }) : super(key: key);
+  });
 
   double computeTitleFontSize(double height) {
     var size = height * 0.13;

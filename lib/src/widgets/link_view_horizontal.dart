@@ -15,7 +15,7 @@ class LinkViewHorizontal extends StatelessWidget {
   final Color? bgColor;
 
   LinkViewHorizontal({
-    Key? key,
+    super.key,
     required this.url,
     required this.title,
     required this.description,
@@ -28,7 +28,7 @@ class LinkViewHorizontal extends StatelessWidget {
     this.bodyMaxLines,
     this.bgColor,
     this.radius,
-  }) : super(key: key);
+  });
 
   double computeTitleFontSize(double width) {
     var size = width * 0.13;

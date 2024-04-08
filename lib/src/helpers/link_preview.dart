@@ -107,7 +107,7 @@ class AnyLinkPreview extends StatefulWidget {
   final Widget Function(BuildContext, Metadata, ImageProvider?)? itemBuilder;
 
   AnyLinkPreview({
-    Key? key,
+    super.key,
     required this.link,
     this.cache = const Duration(days: 1),
     this.titleStyle,
@@ -130,11 +130,10 @@ class AnyLinkPreview extends StatefulWidget {
     this.onTap,
     this.previewHeight,
     this.urlLaunchMode = LaunchMode.platformDefault,
-  })  : itemBuilder = null,
-        super(key: key);
+  }) : itemBuilder = null;
 
   AnyLinkPreview.builder({
-    Key? key,
+    super.key,
     required this.link,
     required this.itemBuilder,
     this.cache = const Duration(days: 1),
@@ -157,8 +156,7 @@ class AnyLinkPreview extends StatefulWidget {
         removeElevation = false,
         onTap = null,
         previewHeight = null,
-        urlLaunchMode = LaunchMode.platformDefault,
-        super(key: key);
+        urlLaunchMode = LaunchMode.platformDefault;
 
   @override
   AnyLinkPreviewState createState() => AnyLinkPreviewState();

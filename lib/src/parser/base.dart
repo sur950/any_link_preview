@@ -1,5 +1,4 @@
 /// The base class for implementing a parser
-
 mixin MetadataKeys {
   static const kTitle = 'title';
   static const kDescription = 'description';
