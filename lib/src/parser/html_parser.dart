@@ -24,6 +24,13 @@ class HtmlMetaParser with BaseMetaInfo {
   String? get image =>
       _document?.body?.querySelector('img')?.attributes.get('src');
 
+  /// Get the [Metadata.siteName] from the <meta name="site_name" content=""> tag
+  @override
+  String? get siteName => _document?.head
+      ?.querySelector("meta[name='site_name']")
+      ?.attributes
+      .get('content');
+
   @override
   String toString() => parse().toString();
 }

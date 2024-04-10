@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
   final String _url4 = "https://www.youtube.com/watch?v=W1pNjxmNHNQ";
   final String _url5 = "https://flutter.dev/";
   final String _url6 =
-      "https://www.amazon.com/gp/product/B00JZEW4XS?ie=UTF8&th=1&linkCode=li1&tag=pratiksharu-20&linkId=1d34bc8b2b8b01132376486955c5d313&language=en_US&ref_=as_li_ss_il";
+      "https://zozo.jp/shop/futierlandandsasa/goods-sale/46114752/?did=75805438&rid=1093";
 
   @override
   void initState() {
@@ -37,10 +37,10 @@ class _MyAppState extends State<MyApp> {
       Metadata? _metadata = await AnyLinkPreview.getMetadata(
         link: url,
         cache: Duration(days: 7),
-        proxyUrl: "https://cors-anywhere.herokuapp.com/", // Needed for web app
+        // proxyUrl: "https://corsproxy.org/", // Needed for web app
       );
-      debugPrint("URL6 => ${_metadata?.title}");
-      debugPrint(_metadata?.desc);
+      // debugPrint("URL6 => ${_metadata?.title}");
+      // debugPrint("$_metadata");
     } else {
       debugPrint("URL is not valid");
     }
@@ -104,7 +104,7 @@ class _MyAppState extends State<MyApp> {
               // Custom preview builder
               AnyLinkPreview.builder(
                 link: _url5,
-                itemBuilder: (context, metadata, imageProvider) => Column(
+                itemBuilder: (context, metadata, imageProvider, _) => Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (imageProvider != null)

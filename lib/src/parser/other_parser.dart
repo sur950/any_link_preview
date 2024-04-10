@@ -23,6 +23,11 @@ class OtherParser with BaseMetaInfo {
   String? get image =>
       getProperty(_document, attribute: 'name', property: 'image');
 
+  /// Get [Metadata.siteName] from 'description'
+  @override
+  String? get siteName =>
+      getProperty(_document, attribute: 'name', property: 'site_name');
+
   /// Get [Metadata.url] from 'url'
   @override
   String? get url => getProperty(_document, attribute: 'name', property: 'url');

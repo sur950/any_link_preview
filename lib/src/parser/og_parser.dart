@@ -20,6 +20,10 @@ class OpenGraphParser with BaseMetaInfo {
   @override
   String? get image => getProperty(_document, property: 'og:image');
 
+  /// Get [Metadata.siteName] from 'og:site_name'
+  @override
+  String? get siteName => getProperty(_document, property: 'og:site_name');
+
   /// Get [Metadata.url] from 'og:url'
   @override
   String? get url => getProperty(_document, property: 'og:url');

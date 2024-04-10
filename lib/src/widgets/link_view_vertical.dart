@@ -1,10 +1,11 @@
+import 'package:any_link_preview/src/utilities/image_provider.dart';
 import 'package:flutter/material.dart';
 
 class LinkViewVertical extends StatelessWidget {
   final String url;
   final String title;
   final String description;
-  final ImageProvider? imageProvider;
+  final ImageProviderValue imageProvider;
   final Function() onTap;
   final TextStyle? titleTextStyle;
   final TextStyle? bodyTextStyle;
@@ -72,7 +73,8 @@ class LinkViewVertical extends StatelessWidget {
               showMultiMedia!
                   ? Expanded(
                       flex: 2,
-                      child: imageProvider == null
+                      child: imageProvider.image == null &&
+                              imageProvider.svgImage == null
                           ? Container(color: bgColor ?? Colors.grey)
                           : Container(
                               padding: EdgeInsets.only(bottom: 15),
@@ -83,11 +85,14 @@ class LinkViewVertical extends StatelessWidget {
                                         topLeft: Radius.circular(12),
                                         topRight: Radius.circular(12),
                                       ),
-                                image: DecorationImage(
-                                  image: imageProvider!,
-                                  fit: BoxFit.fitWidth,
-                                ),
+                                image: imageProvider.image != null
+                                    ? DecorationImage(
+                                        image: imageProvider.image!,
+                                        fit: BoxFit.fitWidth,
+                                      )
+                                    : null,
                               ),
+                              child: imageProvider.svgImage,
                             ),
                     )
                   : SizedBox(height: 5),

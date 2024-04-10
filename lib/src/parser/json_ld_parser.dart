@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:html/dom.dart';
+import 'og_parser.dart';
 import 'util.dart';
 import 'base.dart';
 
@@ -61,6 +62,10 @@ class JsonLdParser with BaseMetaInfo {
     }
     return null;
   }
+
+  /// JSON LD do not have a siteName property so get from [og:site_name], if available.
+  @override
+  String? get siteName => OpenGraphParser(document).siteName;
 
   String? _imgResultToStr(dynamic result) {
     if (result is List && result.isNotEmpty) result = result.first;

@@ -1,7 +1,7 @@
-# Any_link_preview
+# AnyLinkPreview
 
 <p align="center">
-  <img width="460"  src="https://github.com/sur950/any_link_preview/blob/master/demo_images/main.jpg?raw=true">
+  <img width="460" src="https://github.com/sur950/any_link_preview/blob/master/demo_images/main.jpg?raw=true">
 </p>
 
 [![Pub](https://img.shields.io/pub/v/any_link_preview.svg)](https://pub.dartlang.org/packages/any_link_preview)
@@ -9,44 +9,43 @@
 [![License](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/suresh950?locale.x=en_GB)
 
-A flutter package which will help you to show preview of the web url's with beautiful & completely customizable design. Can be useful for Chat application 🤓🤓
+A Flutter package for beautifully displaying web URL previews with full customization options, perfect for enhancing chat applications. 🤓🤓
 
 ## Features 💚
 
-- Uses 4 different types of parser's to fetch meta data
-- HTML Parser, JSON LD Parser, Open Graph Parser, Twitter Cards Parser and more coming up in the future.
-- Highly customizable
-- Placeholder which can be used while the state is in loading.
-- Error widget which can be used when unidentified error are detected
-- For identified errors, one can customize by passing custom title, description & image.
-- Opt-in/Opt-out for media (images, icons etc) to be displayed in UI or not
-- multiple directions are supported (Horizontal, Vertical)
-- Cache the meta data of an url for faster load
-- Checkout the example app for usage
+- Utilizes four distinct parsers (HTML, JSON LD, Open Graph, and Twitter Cards) to fetch metadata, with more enhancements planned.
+- Offers extensive customization to seamlessly integrate with your app's design.
+- Includes a placeholder widget for loading states and an error widget for handling errors, both fully customizable.
+- Supports opting in or out of displaying media (images, icons, etc.) in the preview.
+- Supports multiple display orientations (Horizontal and Vertical).
+- Caches URL metadata for faster subsequent loads.
+- Includes an example app to demonstrate usage.
 
 ## Getting Started ⚡️
 
-#### Demo
+### Demo
 
-<img src="https://github.com/sur950/any_link_preview/blob/master/demo_images/demo.jpg?raw=true" width="240" height="480">
+<p align="center">
+  <img src="https://github.com/sur950/any_link_preview/blob/master/demo_images/demo.jpg?raw=true" width="240" height="480">
+</p>
 
 ## Notes
 
-- Do you have any suggestions in improving the Package? I really love to collaborate. Do contact me <a href="https://www.linkedin.com/public-profile/in/suresh-konakanchi-b47602117">here</a>.
-- If you have used this package in your application & saved your dev time then feel free to buy me a coffee by clicking <a href="https://paypal.me/suresh950?locale.x=en_GB">here</a>.
-- This package is open for contribution(s).
-- <span style="color:skyblue;">Can be used as a Widget or as a Method(function)</span>
-- Call <span style="color:blue;">AnyLinkPreview.isValidLink()</span> method to check if the link is valid or not (Strongly suggested to call it before using it in Widget).
+- Open for suggestions and collaborations. [Contact me here](https://www.linkedin.com/in/suresh-konakanchi-b47602117).
+- If you find this package useful and it saves you development time, consider [buying me a coffee](https://paypal.me/suresh950?locale.x=en_GB).
+- Contributions are welcome!
+- Can be utilized both as a Widget and as a Method (function).
+- Use `AnyLinkPreview.isValidLink()` to validate URLs before usage.
 
-## <span style="color:orange;">⭐ Don't forget to Star the Repo</span>
+### ⭐ Don't forget to star the repo
 
 ## How to Contribute?
 
-1. Fork it
-2. Create your fix/feature branch (`git checkout -b my-branch`)
-3. Commit your changes (`git commit -am 'Added some feature/fix'`)
-4. Push to the branch (`git push origin my-branch`)
-5. Create Pull Request
+1. Fork the repository.
+2. Create your feature or fix branch (`git checkout -b my-new-feature`).
+3. Commit your changes (`git commit -am 'Add some feature'`).
+4. Push to the branch (`git push origin my-new-feature`).
+5. Submit a Pull Request.
 
 ## Properties 🔖
 
@@ -124,7 +123,7 @@ A flutter package which will help you to show preview of the web url's with beau
   final List<BoxShadow>? boxShadow;
 
   /// Proxy URL to pass that resolve CORS issues on web.
-  /// For example, `https://cors-anywhere.herokuapp.com/` .
+  /// For example, `https://corsproxy.org/` .
   final String? proxyUrl;
 
   /// Headers to be added in the HTTP request to the link
@@ -146,16 +145,7 @@ A flutter package which will help you to show preview of the web url's with beau
 
 ```
 
-## Special Thanks ✨
-
-Thanks to all the contributors
-
-<a href = "https://github.com/sur950/any_link_preview/graphs/contributors">
-  <img src = "https://contrib.rocks/image?repo=sur950/any_link_preview"/>
-</a>
-<br />
-
-**The AnyLinkPreview widget example**
+**Example of AnyLinkPreview widget:**
 
 ```Dart
 AnyLinkPreview(
@@ -186,19 +176,19 @@ AnyLinkPreview(
 )
 ```
 
-**The AnyLinkPreview method/function example**
+**Example of using AnyLinkPreview as a method/function:**
 
 ```Dart
 // We will use this to build our own custom UI
 Metadata? _metadata = await AnyLinkPreview.getMetadata(
   link: "https://google.com/",
   cache: Duration(days: 7),
-  proxyUrl: "https://cors-anywhere.herokuapp.com/", // Need for web
+  proxyUrl: "https://corsproxy.org/", // Need for web
 );
 print(_metadata?.title);
 ```
 
-**Method to validate the link example**
+**Example os using AnyLinkPreview's validation method/function:**
 
 ```Dart
 // Method to check if the url is valid or not before passing to the previewer
@@ -211,7 +201,7 @@ bool _isUrlValid = AnyLinkPreview.isValidLink(
 print('_isUrlValid => $_isUrlValid');
 ```
 
-**displayDirection can be among these 2 types**
+**Display Direction can be among these 2 types:**
 
 ```Dart
 enum UIDirection { uiDirectionVertical, uiDirectionHorizontal }
@@ -257,7 +247,7 @@ class _MyAppState extends State<MyApp> {
       Metadata? _metadata = await AnyLinkPreview.getMetadata(
         link: url,
         cache: Duration(days: 7),
-        proxyUrl: "https://cors-anywhere.herokuapp.com/", // Needed for web app
+        proxyUrl: "https://corsproxy.org/", // Needed for web app
       );
       debugPrint(_metadata?.title);
       debugPrint(_metadata?.desc);
@@ -330,11 +320,19 @@ class _MyAppState extends State<MyApp> {
 
 ```
 
+## Special Thanks ✨
+
+Thanks to all the contributors
+
+<a href="https://github.com/sur950/any_link_preview/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=sur950/any_link_preview"/>
+</a>
+<br />
+
 ### License
 
 ```
-
-Copyright (c) 2022 Konakanchi Venkata Suresh Babu
+Copyright (c) 2021-2024 Konakanchi Venkata Suresh Babu
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

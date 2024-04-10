@@ -1,3 +1,16 @@
+# 3.0.2
+
+**New Features:**
+
+- **SVG Icon Support:** AnyLinkPreview now seamlessly handles SVG images returned in metadata, enhancing support for various image formats.
+- **New Metadata Property - `siteName`:** We've introduced a `siteName` property to our metadata fetch method, allowing for richer data extraction and display.
+
+**Improvements:**
+
+- **Enhanced `itemBuilder` Callback:** The `itemBuilder` property has been expanded to return an `SvgPicture` widget when metadata includes an SVG image. This ensures correct rendering of SVGs alongside standard image formats.
+- **Comprehensive Error Handling:** When both title and description are missing from the metadata, AnyLinkPreview will now resort to displaying the `errorWidget` (if provided) or a default error view. This update ensures a smoother user experience by providing informative feedback in cases of incomplete metadata.
+- **Extended Redirect Support:** To improve handling of server-driven redirects, AnyLinkPreview now supports up to 7 redirects, accommodating common status codes `301, 302, 303, 307, 308`. This enhancement ensures more reliable URL preview generation across a wider range of web links.
+
 # 3.0.1
 
 - Packages updated to support latest version.

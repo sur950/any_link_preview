@@ -14,11 +14,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_svg: ^2.0.10+1
   html: ^0.15.4
   http: ^1.2.1
   shared_preferences: ^2.2.2
   string_validator: ^1.0.2
   url_launcher: ^6.2.5
+  xml: ^6.5.0
 
 dev_dependencies:
   flutter_test:

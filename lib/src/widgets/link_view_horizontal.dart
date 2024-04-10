@@ -1,10 +1,11 @@
+import 'package:any_link_preview/src/utilities/image_provider.dart';
 import 'package:flutter/material.dart';
 
 class LinkViewHorizontal extends StatelessWidget {
   final String url;
   final String title;
   final String description;
-  final ImageProvider? imageProvider;
+  final ImageProviderValue imageProvider;
   final Function() onTap;
   final TextStyle? titleTextStyle;
   final TextStyle? bodyTextStyle;
@@ -77,15 +78,18 @@ class LinkViewHorizontal extends StatelessWidget {
               showMultiMedia!
                   ? Expanded(
                       flex: 2,
-                      child: imageProvider == null
+                      child: imageProvider.image == null &&
+                              imageProvider.svgImage == null
                           ? Container(color: bgColor ?? Colors.grey)
                           : Container(
                               margin: EdgeInsets.only(right: 5),
                               decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: imageProvider!,
-                                  fit: BoxFit.cover,
-                                ),
+                                image: imageProvider.image != null
+                                    ? DecorationImage(
+                                        image: imageProvider.image!,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : null,
                                 borderRadius: radius == 0
                                     ? BorderRadius.zero
                                     : BorderRadius.only(
@@ -93,6 +97,7 @@ class LinkViewHorizontal extends StatelessWidget {
                                         bottomLeft: Radius.circular(radius!),
                                       ),
                               ),
+                              child: imageProvider.svgImage,
                             ),
                     )
                   : SizedBox(width: 5),

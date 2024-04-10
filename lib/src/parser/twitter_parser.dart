@@ -28,6 +28,10 @@ class TwitterParser with BaseMetaInfo {
       getProperty(_document, attribute: 'name', property: 'twitter:image') ??
       getProperty(_document, property: 'twitter:image');
 
+  /// Twitter Cards do not have a siteName property so get from [og:site_name], if available.
+  @override
+  String? get siteName => OpenGraphParser(_document).siteName;
+
   /// Twitter Cards do not have a url property so get the url from [og:url], if available.
   @override
   String? get url => OpenGraphParser(_document).url;

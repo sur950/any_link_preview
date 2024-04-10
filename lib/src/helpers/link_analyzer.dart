@@ -4,6 +4,7 @@ import 'dart:async' as async;
 import 'dart:convert';
 
 import 'package:any_link_preview/any_link_preview.dart';
+import 'package:any_link_preview/src/utilities/http_redirect_check.dart';
 import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart' show Document;
 import 'package:html/parser.dart';
@@ -19,9 +20,18 @@ import '../parser/util.dart';
 import 'cache_manager.dart';
 
 class LinkAnalyzer {
-  /// Is it an empty string
+  /// Method to check if string is valid
   static bool isNotEmpty(String? str) {
-    return str != null && str.trim().isNotEmpty;
+    return str != null &&
+        str.trim().isNotEmpty &&
+        str.trim().toLowerCase() != 'null';
+  }
+
+  /// Method to check if string is empty/non-valid
+  static bool isEmpty(String? str) {
+    return str == null ||
+        str.trim().isEmpty ||
+        str.trim().toLowerCase() == 'null';
   }
 
   /// return [Metadata] from cache if available
@@ -68,8 +78,9 @@ class LinkAnalyzer {
         cache: cache,
         headers: headers,
         // 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)',
+        // 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
         userAgent:
-            'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
       );
 
   /// Fetches a [url], validates it, and returns [Metadata].
@@ -94,22 +105,22 @@ class LinkAnalyzer {
     /// URL as the [description]
     info?.title = getDomain(url);
     info?.desc = url;
+    info?.siteName = getDomain(url);
     info?.url = url;
 
     try {
       // Make our network call
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          ...headers,
-          ...userAgent != null ? {'User-Agent': userAgent} : {}
-        },
+      final response = await fetchWithRedirects(
+        url,
+        headers: headers,
+        userAgent: userAgent,
       );
       final headerContentType = response.headers['content-type'];
 
       if (headerContentType != null && headerContentType.startsWith('image/')) {
         info?.title = '';
         info?.desc = '';
+        info?.siteName = '';
         info?.image = url;
         return info;
       }
@@ -181,6 +192,7 @@ class LinkAnalyzer {
       output.title ??= p.title;
       output.desc ??= p.desc;
       output.image ??= p.image;
+      output.siteName ??= p.siteName;
       output.url ??= p.url ?? url;
 
       if (output.hasAllMetadata) break;

@@ -1,12 +1,14 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:any_link_preview/any_link_preview.dart';
+import 'package:any_link_preview/src/parser/util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'link_analyzer.dart';
+import '../utilities/image_provider.dart';
 import '../widgets/link_view_horizontal.dart';
 import '../widgets/link_view_vertical.dart';
 
@@ -103,8 +105,9 @@ class AnyLinkPreview extends StatefulWidget {
   final double? previewHeight;
 
   /// Function only in [AnyLinkPreview.builder]
-  /// allows to build a custom [Widget] from the [Metadata] and [ImageProvider] fetched
-  final Widget Function(BuildContext, Metadata, ImageProvider?)? itemBuilder;
+  /// allows to build a custom [Widget] from the [Metadata] and either [ImageProvider] or [SvgPicture] fetched
+  final Widget Function(BuildContext, Metadata, ImageProvider?, SvgPicture?)?
+      itemBuilder;
 
   AnyLinkPreview({
     super.key,
@@ -325,13 +328,26 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
         : null;
 
     if (widget.itemBuilder != null) {
-      return widget.itemBuilder!(context, info, _buildImageProvider(image));
+      var imageData = buildImageProvider(image, _errorImage);
+      return widget.itemBuilder!(
+        context,
+        info,
+        imageData.image,
+        imageData.svgImage,
+      );
+    }
+
+    var isTitleEmpty =
+        LinkAnalyzer.isEmpty(info.title) || info.title == getDomain(info.url!);
+    var isDescEmpty = LinkAnalyzer.isEmpty(info.desc) || info.desc == info.url;
+    if (isTitleEmpty && isDescEmpty && widget.errorWidget != null) {
+      return widget.errorWidget!;
     }
 
     final title =
         LinkAnalyzer.isNotEmpty(info.title) ? info.title! : _errorTitle;
     final desc = LinkAnalyzer.isNotEmpty(info.desc) ? info.desc! : _errorBody;
-    final imageProvider = _buildImageProvider(image ?? _errorImage);
+    final imageProvider = buildImageProvider(image, _errorImage);
 
     return Container(
       decoration: BoxDecoration(
@@ -375,22 +391,6 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
               radius: widget.borderRadius ?? 12,
             ),
     );
-  }
-
-  ImageProvider? _buildImageProvider(String? image) {
-    ImageProvider? imageProvider;
-    try {
-      if (image != null) imageProvider = NetworkImage(image);
-      if (image != null && image.startsWith('data:image')) {
-        imageProvider = MemoryImage(
-          base64Decode(image.substring(image.indexOf('base64') + 7)),
-        );
-      }
-    } catch (error) {
-      debugPrint('Image parsing failed -> $error');
-    }
-
-    return imageProvider;
   }
 
   @override
