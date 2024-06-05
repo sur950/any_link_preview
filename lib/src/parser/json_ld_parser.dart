@@ -1,12 +1,14 @@
 import 'dart:convert';
+
 import 'package:html/dom.dart';
+
+import 'base.dart';
 import 'og_parser.dart';
 import 'util.dart';
-import 'base.dart';
 
 /// Parses [Metadata] from `json-ld` data in `<script>`
 class JsonLdParser with BaseMetaInfo {
-  /// The [document] to be parse
+  /// The [Document] to parse.
   Document? document;
   dynamic _jsonData;
 
@@ -22,11 +24,10 @@ class JsonLdParser with BaseMetaInfo {
     /* For multiline json file */
     // Replacing all new line characters with empty space
     // before performing json decode on data
-    var d = jsonDecode(data.replaceAll('\n', ' '));
-    return d;
+    return jsonDecode(data.replaceAll('\n', ' '));
   }
 
-  /// Get the [Metadata.title] from the [<title>] tag
+  /// Get the [Metadata.title] from the <title> tag
   @override
   String? get title {
     final data = _jsonData;
@@ -38,7 +39,8 @@ class JsonLdParser with BaseMetaInfo {
     return null;
   }
 
-  /// Get the [Metadata.desc] from the <meta name="description" content=""> tag
+  /// Get the [Metadata.desc] from the content of the
+  /// <meta name="description"> tag
   @override
   String? get desc {
     final data = _jsonData;
@@ -58,12 +60,14 @@ class JsonLdParser with BaseMetaInfo {
       return _imgResultToStr(data.first['logo'] ?? data.first['image']);
     } else if (data is Map) {
       return _imgResultToStr(
-          data.getDynamic('logo') ?? data.getDynamic('image'));
+        data.getDynamic('logo') ?? data.getDynamic('image'),
+      );
     }
     return null;
   }
 
-  /// JSON LD do not have a siteName property so get from [og:site_name], if available.
+  /// JSON LD does not have a siteName property, so we get it from
+  /// [og:site_name] if available.
   @override
   String? get siteName => OpenGraphParser(document).siteName;
 
