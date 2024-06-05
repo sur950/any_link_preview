@@ -22,8 +22,7 @@ bool isValidSvg(String svgString) {
     }
 
     // Recursively check for at least one graphical element
-    bool hasGraphicContent = _containsGraphicContent(svgElement);
-    return hasGraphicContent;
+    return _containsGraphicContent(svgElement);
   } catch (e) {
     // XML parsing error or other exception
     return false;
@@ -47,7 +46,7 @@ bool _containsGraphicContent(XmlNode node) {
     }
 
     // Recursively check child elements
-    for (XmlNode child in node.children) {
+    for (final XmlNode child in node.children) {
       if (_containsGraphicContent(child)) {
         return true;
       }
