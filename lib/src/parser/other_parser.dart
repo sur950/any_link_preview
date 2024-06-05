@@ -1,11 +1,13 @@
 import 'package:html/dom.dart';
-import 'util.dart';
+
 import 'base.dart';
+import 'util.dart';
 
 /// Parses [Metadata] from [<meta attribute: 'name' property='*'>] tags
 class OtherParser with BaseMetaInfo {
-  /// The [document] to be parse
+  /// The [Document] to be parse
   final Document? _document;
+
   OtherParser(this._document);
 
   /// Get [Metadata.title] from 'title'
