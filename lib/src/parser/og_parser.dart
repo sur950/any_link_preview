@@ -1,11 +1,13 @@
 import 'package:html/dom.dart';
-import 'util.dart';
+
 import 'base.dart';
+import 'util.dart';
 
 /// Parses [Metadata] from [<meta property='og:*'>] tags
 class OpenGraphParser with BaseMetaInfo {
-  /// The [document] to be parse
+  /// The [Document] to parse.
   final Document? _document;
+
   OpenGraphParser(this._document);
 
   /// Get [Metadata.title] from 'og:title'
