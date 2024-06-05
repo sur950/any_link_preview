@@ -7,10 +7,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'svg_validator.dart';
 
 class ImageProviderValue {
-  ImageProvider? image;
-  SvgPicture? svgImage;
+  final ImageProvider? image;
+  final SvgPicture? svgImage;
 
-  ImageProviderValue(this.image, this.svgImage);
+  const ImageProviderValue(this.image, this.svgImage);
 }
 
 ImageProviderValue buildImageProvider(String? image, String? errorImage) {
@@ -22,22 +22,22 @@ ImageProviderValue buildImageProvider(String? image, String? errorImage) {
         String svgContent;
         if (image.contains('base64,')) {
           // Extract and decode the base64-encoded SVG
-          var base64String = image.substring(image.indexOf('base64,') + 7);
+          final base64String = image.substring(image.indexOf('base64,') + 7);
           svgContent = utf8.decode(base64.decode(base64String));
         } else {
           // Direct SVG content
           svgContent = kIsWeb
               ? Uri.decodeComponent(
-                  image.substring('data:image/svg+xml,'.length))
+                  image.substring('data:image/svg+xml,'.length),
+                )
               : Uri.decodeFull(image.substring('data:image/svg+xml,'.length));
         }
 
-        var isValidSVG = isValidSvg(svgContent);
+        final isValidSVG = isValidSvg(svgContent);
 
         if (isValidSVG) {
           svgImageProvider = SvgPicture.string(
             svgContent,
-            fit: BoxFit.contain,
             placeholderBuilder: (context) => Container(color: Colors.grey),
           );
         } else if (!isValidSVG && errorImage != null) {
