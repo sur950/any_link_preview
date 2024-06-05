@@ -14,8 +14,8 @@ import 'package:string_validator/string_validator.dart';
 import '../parser/html_parser.dart';
 import '../parser/json_ld_parser.dart';
 import '../parser/og_parser.dart';
-import '../parser/twitter_parser.dart';
 import '../parser/other_parser.dart';
+import '../parser/twitter_parser.dart';
 import '../parser/util.dart';
 import 'cache_manager.dart';
 
@@ -55,9 +55,8 @@ class LinkAnalyzer {
     return info_;
   }
 
-  /// deletes [Metadata] from cache if available
+  /// Deletes [Metadata] from cache if available
   static void _deleteFromCache(String url) {
-    // print(url);
     try {
       async.unawaited(CacheManager.deleteKey(url));
     } catch (e) {
@@ -145,7 +144,7 @@ class LinkAnalyzer {
     }
   }
 
-  /// Takes an [http.Response] and returns a [html.Document]
+  /// Takes an [http.Response] and returns a [Document].
   static Document? responseToDocument(http.Response response) {
     if (response.statusCode != 200) return null;
 
@@ -159,22 +158,23 @@ class LinkAnalyzer {
     return document;
   }
 
-  /// Returns instance of [Metadata] with data extracted from the [html.Document]
-  /// Provide a given url as a fallback when there are no Document url extracted
-  /// by the parsers.
+  /// Returns instance of [Metadata] with data extracted from the
+  /// [Document]. Provide a [url] as a fallback when there are no
+  /// Document URLs extracted by the parsers.
   ///
-  /// Future: Can pass in a strategy i.e: to retrieve only OpenGraph, or OpenGraph and Json+LD only
+  /// Future: Can pass in a strategy, e.g.: to retrieve only OpenGraph, or
+  /// OpenGraph and Json+LD only
   static Metadata? _extractMetadata(Document document, {String? url}) {
     return _parse(document, url: url);
   }
 
-  /// This is the default strategy for building our [Metadata]
+  /// This is the default strategy for building our [Metadata].
   ///
-  /// It tries [OpenGraphParser], then [TwitterParser],
-  /// then [JsonLdParser], and falls back to [HTMLMetaParser] tags for missing data.
-  /// You may optionally provide a URL to the function,
-  /// used to resolve relative images or to compensate for the
-  /// lack of URI identifiers from the metadata parsers.
+  /// It tries [OpenGraphParser], then [TwitterParser], then [JsonLdParser],
+  /// and then falls back to [HtmlMetaParser] tags for missing data. You may
+  /// optionally provide a URL to the function, used to resolve relative images
+  /// or to compensate for the lack of URI identifiers from the metadata
+  /// parsers.
   static Metadata _parse(Document? document, {String? url}) {
     final output = Metadata();
 
