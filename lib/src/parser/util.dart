@@ -2,7 +2,7 @@ import 'package:html/dom.dart';
 
 extension GetMethod on Map {
   String? get(dynamic key) {
-    var value = this[key];
+    final value = this[key];
     if (value is List) return value.first;
     return value?.toString();
   }
@@ -13,7 +13,7 @@ extension GetMethod on Map {
 }
 
 String? getDomain(String url) {
-  return Uri.parse(url).host.toString().split('.')[0];
+  return Uri.parse(url).host.split('.')[0];
 }
 
 String? getProperty(
@@ -23,13 +23,15 @@ String? getProperty(
   String? property,
   String key = 'content',
 }) {
-  var value_ = document
+  final value_ = document
       ?.getElementsByTagName(tag)
       .cast<Element?>()
-      .firstWhere((element) => element?.attributes[attribute] == property,
-          orElse: () => null)
+      .firstWhere(
+        (element) => element?.attributes[attribute] == property,
+        orElse: () => null,
+      )
       ?.attributes
       .get(key);
-  // print(value_);
+
   return value_;
 }

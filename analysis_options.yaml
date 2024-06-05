@@ -1,4 +1,4 @@
-include: package:lints/recommended.yaml
+include: package:flutter_lints/flutter.yaml
 
 analyzer:
   exclude:
@@ -30,3 +30,15 @@ linter:
     unnecessary_statements: true
     unsafe_html: true
     use_raw_strings: true
+    sized_box_for_whitespace: true
+    prefer_const_constructors: true
+    comment_references: true
+    avoid_multiple_declarations_per_line: true
+    noop_primitive_operations: true
+    cascade_invocations: true
+    avoid_redundant_argument_values: true
+    lines_longer_than_80_chars: true
+    prefer_int_literals: true
+    prefer_const_constructors_in_immutables: true
+    avoid_void_async: true
+    require_trailing_commas: true

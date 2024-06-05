@@ -14,30 +14,31 @@ import 'package:string_validator/string_validator.dart';
 import '../parser/html_parser.dart';
 import '../parser/json_ld_parser.dart';
 import '../parser/og_parser.dart';
-import '../parser/twitter_parser.dart';
 import '../parser/other_parser.dart';
+import '../parser/twitter_parser.dart';
 import '../parser/util.dart';
 import 'cache_manager.dart';
 
 class LinkAnalyzer {
-  /// Method to check if string is valid
+  /// Checks whether a string is not empty, doesn't contain a `'null'` string,
+  /// and not blank
   static bool isNotEmpty(String? str) {
     return str != null &&
         str.trim().isNotEmpty &&
         str.trim().toLowerCase() != 'null';
   }
 
-  /// Method to check if string is empty/non-valid
+  /// Checks whether a string is empty, contains a `'null'` string, or is blank.
   static bool isEmpty(String? str) {
     return str == null ||
         str.trim().isEmpty ||
         str.trim().toLowerCase() == 'null';
   }
 
-  /// return [Metadata] from cache if available
+  /// Returns [Metadata] from cache if available.
   static Future<Metadata?> getInfoFromCache(String url) async {
     Metadata? info_;
-    // print(url);
+
     try {
       final infoJson = await CacheManager.getJson(key: url);
       if (infoJson != null) {
@@ -55,9 +56,8 @@ class LinkAnalyzer {
     return info_;
   }
 
-  /// deletes [Metadata] from cache if available
+  /// Deletes [Metadata] from cache if present.
   static void _deleteFromCache(String url) {
-    // print(url);
     try {
       async.unawaited(CacheManager.deleteKey(url));
     } catch (e) {
@@ -65,9 +65,12 @@ class LinkAnalyzer {
     }
   }
 
-  // Twitter generates meta tags on client side so it's impossible to read
-  // So we use this hack to fetch server side rendered meta tags
-  // This helps for URL's who follow client side meta tag generation technique
+  /// Twitter generates meta tags client-side so it's impossible to read their
+  /// values from a server request. We use this hack to fetch server-side
+  /// rendered meta tags.
+  ///
+  /// This method is useful for URLs that use client-side meta tag generation
+  /// technique.
   static Future<Metadata?> getInfoClientSide(
     String url, {
     Duration? cache = const Duration(hours: 24),
@@ -83,7 +86,7 @@ class LinkAnalyzer {
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
       );
 
-  /// Fetches a [url], validates it, and returns [Metadata].
+  /// Fetches a [url], validates it, then returns [Metadata].
   static Future<Metadata?> getInfo(
     String url, {
     Duration? cache = const Duration(hours: 24),
@@ -98,11 +101,10 @@ class LinkAnalyzer {
     }
     if (info != null) return info;
 
-    // info = await _getInfo(url, multimedia);
     if (!isURL(url)) return null;
 
-    /// Default values; Domain name as the [title],
-    /// URL as the [description]
+    // Default values; Domain name as the [title],
+    // URL as the [description]
     info?.title = getDomain(url);
     info?.desc = url;
     info?.siteName = getDomain(url);
@@ -145,7 +147,7 @@ class LinkAnalyzer {
     }
   }
 
-  /// Takes an [http.Response] and returns a [html.Document]
+  /// Takes an [http.Response] and returns a [Document].
   static Document? responseToDocument(http.Response response) {
     if (response.statusCode != 200) return null;
 
@@ -159,22 +161,23 @@ class LinkAnalyzer {
     return document;
   }
 
-  /// Returns instance of [Metadata] with data extracted from the [html.Document]
-  /// Provide a given url as a fallback when there are no Document url extracted
-  /// by the parsers.
+  /// Returns instance of [Metadata] with data extracted from the
+  /// [Document]. Provide a [url] as a fallback when there are no
+  /// Document URLs extracted by the parsers.
   ///
-  /// Future: Can pass in a strategy i.e: to retrieve only OpenGraph, or OpenGraph and Json+LD only
+  /// Future: Can pass in a strategy, e.g.: to retrieve only OpenGraph, or
+  /// OpenGraph and Json+LD only.
   static Metadata? _extractMetadata(Document document, {String? url}) {
     return _parse(document, url: url);
   }
 
-  /// This is the default strategy for building our [Metadata]
+  /// This is the default strategy for building our [Metadata].
   ///
-  /// It tries [OpenGraphParser], then [TwitterParser],
-  /// then [JsonLdParser], and falls back to [HTMLMetaParser] tags for missing data.
-  /// You may optionally provide a URL to the function,
-  /// used to resolve relative images or to compensate for the
-  /// lack of URI identifiers from the metadata parsers.
+  /// It tries [OpenGraphParser], then [TwitterParser], then [JsonLdParser],
+  /// and then falls back to [HtmlMetaParser] tags for missing data. You may
+  /// optionally provide a URL to the function, used to resolve relative images
+  /// or to compensate for the lack of URI identifiers from the metadata
+  /// parsers.
   static Metadata _parse(Document? document, {String? url}) {
     final output = Metadata();
 
