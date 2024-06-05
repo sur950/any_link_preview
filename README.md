@@ -52,7 +52,7 @@ A Flutter package for beautifully displaying web URL previews with full customiz
 ```dart
 
   /// Display direction. Either [UIDirection.uiDirectionVertical] or
-  /// [UIDirection.uiDirectionHorizontal]. Default to vertical direction.
+  /// [UIDirection.uiDirectionHorizontal]. Defaults to vertical direction.
   final UIDirection displayDirection;
 
   /// Represents the mechanism used to open URLs via [launchUrl]. Defaults to
@@ -70,8 +70,8 @@ A Flutter package for beautifully displaying web URL previews with full customiz
   /// If not present, the default loading widget will be shown.
   final Widget? placeholderWidget;
 
-  /// Error widget that will be shown in case of an error. Default to a plain
-  /// [Container] with given [backgroundColor]. If the issue is known, i.e.
+  /// Error widget that will be shown in case of an error. Defaults to a plain
+  /// [Container] with a given [backgroundColor]. If the issue is known, i.e.
   /// either a title or a description of the error is present, [errorTitle] and
   /// [errorBody] are used instead, with fallback to their default values.
   final Widget? errorWidget;
@@ -182,7 +182,7 @@ A Flutter package for beautifully displaying web URL previews with full customiz
 // We will use this to build our own custom UI
 Metadata? _metadata = await AnyLinkPreview.getMetadata(
   link: "https://google.com/",
-  cache: Duration(days: 7),
+  cache: const Duration(days: 7),
   proxyUrl: "https://corsproxy.org/", // Need for web
 );
 print(_metadata?.title);

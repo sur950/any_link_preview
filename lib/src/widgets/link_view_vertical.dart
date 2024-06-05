@@ -136,7 +136,7 @@ class LinkViewVertical extends StatelessWidget {
     );
   }
 
-  Widget _buildBodyContainer(TextStyle bodyStile, int? maxLines_) {
+  Widget _buildBodyContainer(TextStyle bodyStyle, int? maxLines_) {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10, 0, 5, 5),
@@ -144,7 +144,7 @@ class LinkViewVertical extends StatelessWidget {
           alignment: Alignment.topLeft,
           child: Text(
             description,
-            style: bodyStile,
+            style: bodyStyle,
             overflow: bodyTextOverflow ?? TextOverflow.ellipsis,
             maxLines: bodyMaxLines ?? maxLines_,
           ),
