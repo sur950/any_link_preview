@@ -4,7 +4,7 @@ import 'base.dart';
 import 'og_parser.dart';
 import 'util.dart';
 
-/// Parses [Metadata] from [<meta property='twitter:*'>] tags
+/// Parses [Metadata] from `<meta property='twitter:*'>` tags.
 class TwitterParser with BaseMetaInfo {
   /// The [Document] to parse.
   final Document? _document;

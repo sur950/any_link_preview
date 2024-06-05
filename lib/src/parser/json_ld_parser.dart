@@ -6,7 +6,7 @@ import 'base.dart';
 import 'og_parser.dart';
 import 'util.dart';
 
-/// Parses [Metadata] from `json-ld` data in `<script>`
+/// Parses [Metadata] from `json-ld` data in `<script>` tags.
 class JsonLdParser with BaseMetaInfo {
   /// The [Document] to parse.
   Document? document;
@@ -21,13 +21,13 @@ class JsonLdParser with BaseMetaInfo {
         ?.querySelector("script[type='application/ld+json']")
         ?.innerHtml;
     if (data == null) return null;
-    /* For multiline json file */
+    // For multiline json file
     // Replacing all new line characters with empty space
     // before performing json decode on data
     return jsonDecode(data.replaceAll('\n', ' '));
   }
 
-  /// Get the [Metadata.title] from the <title> tag
+  /// Get the [Metadata.title] from the <title> tag.
   @override
   String? get title {
     final data = _jsonData;
@@ -40,7 +40,7 @@ class JsonLdParser with BaseMetaInfo {
   }
 
   /// Get the [Metadata.desc] from the content of the
-  /// <meta name="description"> tag
+  /// <meta name="description"> tag.
   @override
   String? get desc {
     final data = _jsonData;
@@ -52,7 +52,7 @@ class JsonLdParser with BaseMetaInfo {
     return null;
   }
 
-  /// Get the [Metadata.image] from the first <img> tag in the body
+  /// Get the [Metadata.image] from the first <img> tag in the body.
   @override
   String? get image {
     final data = _jsonData;

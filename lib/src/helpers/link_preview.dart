@@ -65,10 +65,10 @@ class AnyLinkPreview extends StatefulWidget {
   /// and always make a request for latest metadata.
   final Duration cache;
 
-  /// Customize body `TextStyle`.
+  /// Customize body [TextStyle].
   final TextStyle? titleStyle;
 
-  /// Customize body `TextStyle`.
+  /// Customize body [TextStyle].
   final TextStyle? bodyStyle;
 
   /// Whether to show metadata image if it's present. Defaults to `true`.
@@ -201,8 +201,8 @@ class AnyLinkPreview extends StatefulWidget {
         headers: headers ?? {},
       );
       if (info == null || info.hasData == false) {
-        // if info is null or data is empty try to read url metadata from client
-        // side
+        // if info is null or data is empty ,try to read URL metadata
+        // client-side
         info = await LinkAnalyzer.getInfoClientSide(
           link,
           cache: cache,

@@ -101,10 +101,10 @@ A Flutter package for beautifully displaying web URL previews with full customiz
   /// and always make a request for latest metadata.
   final Duration cache;
 
-  /// Customize body `TextStyle`.
+  /// Customize body [TextStyle].
   final TextStyle? titleStyle;
 
-  /// Customize body `TextStyle`.
+  /// Customize body [TextStyle].
   final TextStyle? bodyStyle;
 
   /// Whether to show metadata image if it's present. Defaults to `true`.

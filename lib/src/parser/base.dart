@@ -1,4 +1,4 @@
-/// The base class for implementing a parser
+/// The base class for implementing a parser.
 mixin MetadataKeys {
   static const kTitle = 'title';
   static const kDescription = 'description';
@@ -15,7 +15,7 @@ mixin BaseMetaInfo {
   String? url;
   String? siteName;
 
-  /// Returns `true` if any parameter other than [url] is filled
+  /// Returns `true` if any parameter other than [url] is filled.
   bool get hasData =>
       ((title?.isNotEmpty ?? false) && title != 'null') ||
       ((desc?.isNotEmpty ?? false) && desc != 'null') ||
@@ -35,7 +35,7 @@ abstract class InfoBase {
   late DateTime timeout;
 }
 
-/// Container class for Metadata
+/// Container class for Metadata.
 class Metadata extends InfoBase with BaseMetaInfo, MetadataKeys {
   bool get hasAllMetadata {
     return title != null && desc != null && image != null && url != null;

@@ -3,14 +3,14 @@ import 'package:html/dom.dart';
 import 'base.dart';
 import 'util.dart';
 
-/// Parses [Metadata] from [<meta>, <title>, <img>] tags
+/// Parses [Metadata] from `<meta>`, `<title>`, and `<img>` tags.
 class HtmlMetaParser with BaseMetaInfo {
   /// The [Document] to parse.
   final Document? _document;
 
   HtmlMetaParser(this._document);
 
-  /// Get the [Metadata.title] from the <title> tag
+  /// Get the [Metadata.title] from the <title> tag.
   @override
   String? get title => _document?.head?.querySelector('title')?.text;
 
