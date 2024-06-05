@@ -49,106 +49,106 @@ A Flutter package for beautifully displaying web URL previews with full customiz
 
 ## Properties 🔖
 
-```Dart
-  /// Display direction. One among `uiDirectionVertical, uiDirectionHorizontal`
-  /// By default it is `uiDirectionVertical`
+```dart
+
+  /// Display direction. Either [UIDirection.uiDirectionVertical] or
+  /// [UIDirection.uiDirectionHorizontal]. Default to vertical direction.
   final UIDirection displayDirection;
 
-  /// Parameter to choose how you'd like the app to handle the link
-  /// Default is `LaunchMode.platformDefault`
+  /// Represents the mechanism used to open URLs via [launchUrl]. Defaults to
+  /// [LaunchMode.platformDefault]
   final LaunchMode urlLaunchMode;
 
-  /// Web address (Url that need to be parsed)
-  /// For IOS & Web, only HTTP and HTTPS are support
-  /// For Android, all url's are supported
+  /// URL represented in string. For IOS & Web, only HTTP and HTTPS are
+  /// supported. For Android, all URLs are supported.
   final String link;
 
-  /// Customize background colour
-  /// Deaults to `Color.fromRGBO(235, 235, 235, 1)`
+  /// Customize background color. Defaults to `Color.fromRGBO(235, 235, 235, 1)`
   final Color? backgroundColor;
 
-  /// Widget that need to be shown when
-  /// plugin is trying to fetch metadata
-  /// If not given anything then default one will be shown
+  /// Placeholder widget that is shown while the metadata request is pending.
+  /// If not present, the default loading widget will be shown.
   final Widget? placeholderWidget;
 
-  /// Widget that need to be shown if something goes wrong
-  /// Defaults to plain container with given background colour
-  /// If the issue is know then we will show customized UI
-  /// Other options of error params are used
+  /// Error widget that will be shown in case of an error. Default to a plain
+  /// [Container] with given [backgroundColor]. If the issue is known, i.e.
+  /// either a title or a description of the error is present, [errorTitle] and
+  /// [errorBody] are used instead, with fallback to their default values.
   final Widget? errorWidget;
 
-  /// Title that need to be shown if something goes wrong
-  /// Deaults to `Something went wrong!`
+  /// Error title message that will be shown in case of an error. Defaults to
+  /// "Something went wrong!".
   final String? errorTitle;
 
-  /// Body that need to be shown if something goes wrong
-  /// Deaults to `Oops! Unable to parse the url. We have sent feedback to our developers & we will try to fix this in our next release. Thanks!`
+  /// Error body message that will be shown in case of an error. Defaults to
+  /// "Oops! Unable to parse the url. We have sent feedback to our developers &
+  /// we will try to fix this in our next release. Thanks!"
   final String? errorBody;
 
-  /// Image that will be shown if something goes wrong
-  /// & when multimedia enabled & no meta data is available
-  /// Deaults to `A semi-soccer ball image that looks like crying`
+  /// Image that will be shown in case of an error when [showMultimedia] is set
+  /// to `true` and no metadata could be parsed. Defaults to
+  /// "A semi-soccer ball image that looks like crying".
   final String? errorImage;
 
-  /// Give the overflow type for body text (Description)
-  /// Deaults to `TextOverflow.ellipsis`
+  /// Sets the overflow type for body text (description) of the link.
+  /// Deaults to [TextOverflow.ellipsis].
   final TextOverflow bodyTextOverflow;
 
-  /// Give the limit to body text (Description)
-  /// Deaults to `3`
+  /// Sets the limit to body text (description) of the link. Defaults to `3`.
   final int bodyMaxLines;
 
-  /// Cache result time, default cache `1 day`
-  /// Pass null to disable
+  /// TTL of metadata cache. Defaults to 1 day. Pass `null` to disable caching
+  /// and always make a request for latest metadata.
   final Duration cache;
 
-  /// Customize body `TextStyle`
+  /// Customize body `TextStyle`.
   final TextStyle? titleStyle;
 
-  /// Customize body `TextStyle`
+  /// Customize body `TextStyle`.
   final TextStyle? bodyStyle;
 
-  /// Show or Hide image if available defaults to `true`
+  /// Whether to show metadata image if it's present. Defaults to `true`.
   final bool showMultimedia;
 
-  /// BorderRadius for the card. Deafults to `12`
+  /// [BorderRadius] for the card. Deafults to `12`.
   final double? borderRadius;
 
-  /// To remove the card elevation set it to `true`
-  /// Default value is `false`
+  /// If set to true, removes card widget's elevation. Defaults to `false`.
   final bool removeElevation;
 
-  /// Box shadow for the card. Deafults to `[BoxShadow(blurRadius: 3, color: Colors.grey)]`
+  /// Box shadow for the card. Deafults to
+  /// `[BoxShadow(blurRadius: 3, color: Colors.grey)]`.
   final List<BoxShadow>? boxShadow;
 
-  /// Proxy URL to pass that resolve CORS issues on web.
-  /// For example, `https://corsproxy.org/` .
+  /// Proxy URL that is used to resolve CORS issues on web.
+  /// For example, `https://cors-anywhere.herokuapp.com/` .
   final String? proxyUrl;
 
   /// Headers to be added in the HTTP request to the link
   final Map<String, String>? headers;
 
-  /// Function that needs to be called when user taps on the card.
-  /// If not given then given URL will be launched.
-  /// To disable, Pass empty function.
-  final void Function()? onTap;
+  /// Function that is called on card tap. If not provided, then [launchUrl]
+  /// will be used with the provided link. To disable calling [launchUrl] and
+  /// instead do nothing on tap, pass an empty function: `() {}`.
+  final VoidCallback? onTap;
 
   /// Height of the preview card. Defaults to
-  /// `(MediaQuery.of(context).size.height) * 0.15` in case of horizontal and
-  /// `(MediaQuery.of(context).size.height) * 0.25` in case of vertical
+  /// `(MediaQuery.sizeOf(context).height) * 0.15` for the horizontal preview
+  /// and `(MediaQuery.sizeOf(context).height) * 0.25` for the vertical preview.
   final double? previewHeight;
 
-  /// Function only in [AnyLinkPreview.builder]
-  /// allows to build a custom [Widget] from the [Metadata] and [ImageProvider] fetched
-  final Widget Function(BuildContext, Metadata, ImageProvider?)? itemBuilder;
+  /// Builder function that is used only in [AnyLinkPreview.builder] and
+  /// allows building a custom [Widget] from the [Metadata], with either of
+  /// the optional [ImageProvider] or [SvgPicture] fetched.
+  final Widget Function(BuildContext, Metadata, ImageProvider?, SvgPicture?)?
+      itemBuilder;
 
 ```
 
 **Example of AnyLinkPreview widget:**
 
 ```Dart
-AnyLinkPreview(
+  AnyLinkPreview(
     link: "https://vardaan.app/",
     displayDirection: UIDirection.uiDirectionHorizontal,
     showMultimedia: false,
@@ -172,8 +172,8 @@ AnyLinkPreview(
     borderRadius: 12,
     removeElevation: false,
     boxShadow: [BoxShadow(blurRadius: 3, color: Colors.grey)],
-    onTap: (){}, // This disables tap event
-)
+    onTap: () {}, // This disables tap event
+  )
 ```
 
 **Example of using AnyLinkPreview as a method/function:**
@@ -188,23 +188,27 @@ Metadata? _metadata = await AnyLinkPreview.getMetadata(
 print(_metadata?.title);
 ```
 
-**Example os using AnyLinkPreview's validation method/function:**
+**Example of using AnyLinkPreview's validation method/function:**
 
-```Dart
-// Method to check if the url is valid or not before passing to the previewer
-bool _isUrlValid = AnyLinkPreview.isValidLink(
-  "https://google.com/",
-  protocols: ['http', 'https'],
-  hostWhitelist: ['https://youtube.com/'],
-  hostBlacklist: ['https://facebook.com/'],
-);
-print('_isUrlValid => $_isUrlValid');
+```dart
+
+  // Method to check if the url is valid or not before passing to the previewer
+  final bool _isUrlValid = AnyLinkPreview.isValidLink(
+    "https://google.com/",
+    protocols: ['http', 'https'],
+    hostWhitelist: ['https://youtube.com/'],
+    hostBlacklist: ['https://facebook.com/'],
+  );
+  print('_isUrlValid => $_isUrlValid');
+
 ```
 
 **Display Direction can be among these 2 types:**
 
-```Dart
+```dart
+
 enum UIDirection { uiDirectionVertical, uiDirectionHorizontal }
+
 ```
 
 ## Special Thanks ✨
@@ -219,6 +223,7 @@ Thanks to all the contributors
 ### License
 
 ```
+
 Copyright (c) 2020-2024 Konakanchi Venkata Suresh Babu
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
