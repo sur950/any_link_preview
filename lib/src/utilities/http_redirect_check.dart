@@ -2,18 +2,16 @@
 
 import 'package:http/http.dart' as http;
 
+const _userAgent = 'WhatsApp/2.21.12.21 A';
 Future<http.Response> fetchWithRedirects(
   String url, {
   int maxRedirects = 7,
   Map<String, String> headers = const {},
   String? userAgent,
 }) async {
-  String userAgentFallback =
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3';
-  Map<String, String>? allHeaders = {
-    ...headers,
-    'User-Agent': userAgent ?? userAgentFallback
-  };
+  // String userAgentFallback =
+  //     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3';
+  Map<String, String>? allHeaders = {...headers, 'User-Agent': _userAgent};
   var response = await http.get(Uri.parse(url), headers: allHeaders);
   int redirectCount = 0;
 
