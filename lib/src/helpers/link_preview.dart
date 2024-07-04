@@ -106,8 +106,9 @@ class AnyLinkPreview extends StatefulWidget {
 
   /// Function only in [AnyLinkPreview.builder]
   /// allows to build a custom [Widget] from the [Metadata] and either [ImageProvider] or [SvgPicture] fetched
-  final Widget Function(BuildContext, Metadata, ImageProvider?, SvgPicture?)?
-      itemBuilder;
+  final Widget Function(BuildContext, Metadata, ImageProvider?, SvgPicture?)? itemBuilder;
+
+  final bool? isShowDefaultErrorWidget;
 
   AnyLinkPreview({
     super.key,
@@ -133,6 +134,7 @@ class AnyLinkPreview extends StatefulWidget {
     this.onTap,
     this.previewHeight,
     this.urlLaunchMode = LaunchMode.platformDefault,
+    this.isShowDefaultErrorWidget = false,
   }) : itemBuilder = null;
 
   AnyLinkPreview.builder({
@@ -159,7 +161,8 @@ class AnyLinkPreview extends StatefulWidget {
         removeElevation = false,
         onTap = null,
         previewHeight = null,
-        urlLaunchMode = LaunchMode.platformDefault;
+        urlLaunchMode = LaunchMode.platformDefault,
+        isShowDefaultErrorWidget = false;
 
   @override
   AnyLinkPreviewState createState() => AnyLinkPreviewState();
@@ -258,8 +261,7 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
   @override
   void initState() {
     originalLink = widget.link;
-    _errorImage = widget.errorImage ??
-        'https://github.com/sur950/any_link_preview/blob/master/lib/assets/giphy.gif?raw=true';
+    _errorImage = widget.errorImage ?? 'https://github.com/sur950/any_link_preview/blob/master/lib/assets/giphy.gif?raw=true';
     _errorTitle = widget.errorTitle ?? 'Something went wrong!';
     _errorBody = widget.errorBody ??
         'Oops! Unable to parse the url. We have sent feedback to our developers & we will try to fix this in our next release. Thanks!';
@@ -268,7 +270,7 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
     if ((widget.proxyUrl ?? '').isNotEmpty) {
       _proxyValid = AnyLinkPreview.isValidLink(widget.proxyUrl!);
     }
-    if (_linkValid && _proxyValid) {
+    if (_linkValid && _proxyValid && (widget.isShowDefaultErrorWidget ?? false) == false) {
       // removing www. from the link if available
       if (originalLink.startsWith('www.')) {
         originalLink = originalLink.replaceFirst('www.', '');
@@ -323,9 +325,10 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
   }
 
   Widget _buildLinkContainer(double height, Metadata info) {
-    final image = LinkAnalyzer.isNotEmpty(info.image)
-        ? ((widget.proxyUrl ?? '') + (info.image ?? ''))
-        : null;
+    if (widget.isShowDefaultErrorWidget ?? false) {
+      return widget.errorWidget!;
+    }
+    final image = LinkAnalyzer.isNotEmpty(info.image) ? ((widget.proxyUrl ?? '') + (info.image ?? '')) : null;
 
     if (widget.itemBuilder != null) {
       var imageData = buildImageProvider(image, _errorImage);
@@ -337,15 +340,13 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
       );
     }
 
-    var isTitleEmpty =
-        LinkAnalyzer.isEmpty(info.title) || info.title == getDomain(info.url!);
+    var isTitleEmpty = LinkAnalyzer.isEmpty(info.title) || info.title == getDomain(info.url!);
     var isDescEmpty = LinkAnalyzer.isEmpty(info.desc) || info.desc == info.url;
     if (isTitleEmpty && isDescEmpty && widget.errorWidget != null) {
       return widget.errorWidget!;
     }
 
-    final title =
-        LinkAnalyzer.isNotEmpty(info.title) ? info.title! : _errorTitle;
+    final title = LinkAnalyzer.isNotEmpty(info.title) ? info.title! : _errorTitle;
     final desc = LinkAnalyzer.isNotEmpty(info.desc) ? info.desc! : _errorBody;
     final imageProvider = buildImageProvider(image, _errorImage);
 
@@ -353,10 +354,7 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
       decoration: BoxDecoration(
         color: widget.backgroundColor,
         borderRadius: BorderRadius.circular(widget.borderRadius ?? 12),
-        boxShadow: widget.removeElevation
-            ? []
-            : widget.boxShadow ??
-                [BoxShadow(blurRadius: 3, color: Colors.grey)],
+        boxShadow: widget.removeElevation ? [] : widget.boxShadow ?? [BoxShadow(blurRadius: 3, color: Colors.grey)],
       ),
       height: height,
       child: (widget.displayDirection == UIDirection.uiDirectionHorizontal)
@@ -397,8 +395,7 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
   Widget build(BuildContext context) {
     final info = _info as Metadata?;
     var height = widget.previewHeight ??
-        ((widget.displayDirection == UIDirection.uiDirectionHorizontal ||
-                !widget.showMultimedia)
+        ((widget.displayDirection == UIDirection.uiDirectionHorizontal || !widget.showMultimedia)
             ? ((MediaQuery.of(context).size.height) * 0.15)
             : ((MediaQuery.of(context).size.height) * 0.25));
 
@@ -420,13 +417,9 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
     );
 
     if (_loading) {
-      return (!_linkValid || !_proxyValid)
-          ? loadingErrorWidget
-          : (widget.placeholderWidget ?? loadingErrorWidget);
+      return (!_linkValid || !_proxyValid) ? loadingErrorWidget : (widget.placeholderWidget ?? loadingErrorWidget);
     }
 
-    return info == null
-        ? widget.errorWidget ?? _buildPlaceHolder(height)
-        : _buildLinkContainer(height, info);
+    return info == null ? widget.errorWidget ?? _buildPlaceHolder(height) : _buildLinkContainer(height, info);
   }
 }
