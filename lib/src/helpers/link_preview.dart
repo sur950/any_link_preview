@@ -347,7 +347,7 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
     }
 
     final title = LinkAnalyzer.isNotEmpty(info.title) ? info.title! : _errorTitle;
-    final desc = LinkAnalyzer.isNotEmpty(info.desc) ? info.desc! : _errorBody;
+    final desc = LinkAnalyzer.isNotEmpty(info.desc) ? info.desc! : '';
     final imageProvider = buildImageProvider(image, _errorImage);
 
     return Container(
