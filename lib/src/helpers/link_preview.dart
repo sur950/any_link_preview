@@ -329,6 +329,10 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
       return widget.errorWidget!;
     }
     final image = LinkAnalyzer.isNotEmpty(info.image) ? ((widget.proxyUrl ?? '') + (info.image ?? '')) : null;
+    //handle does not show the preview if the image is null.
+    if (image == null) {
+      return widget.errorWidget!;
+    }
 
     if (widget.itemBuilder != null) {
       var imageData = buildImageProvider(image, _errorImage);
