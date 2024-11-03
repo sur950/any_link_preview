@@ -38,3 +38,32 @@ Future<http.Response> fetchWithRedirects(
 bool _isRedirect(http.Response response) {
   return [301, 302, 303, 307, 308].contains(response.statusCode);
 }
+
+Future<http.Response> getYoutubeData(String videoId,
+    {Map<String, String>? headers, String? userAgent}) async {
+  String userAgentFallback =
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3';
+  Map<String, String>? allHeaders = {
+    ...?headers,
+    'User-Agent': userAgent ?? userAgentFallback
+  };
+  var response = await http.get(
+      Uri.parse(
+          'https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=$videoId&format=json'),
+      headers: allHeaders);
+  return response;
+}
+
+String? getYouTubeVideoId(String url) {
+  // Regular expression pattern to detect YouTube URLs with or without a proxy prefix
+  final RegExp regExp = RegExp(
+      r'(?:https?:\/\/)?(?:[^\/]+\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|v\/|.+\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})');
+
+  // Apply the regex to the URL
+  final match = regExp.firstMatch(url);
+
+  print(match?.group(1));
+
+  // If a match is found, return the first capture group, which is the video ID
+  return match?.group(1);
+}
