@@ -1,5 +1,3 @@
-// ignore_for_file: omit_local_variable_types
-
 import 'package:http/http.dart' as http;
 
 Future<http.Response> fetchWithRedirects(
@@ -8,18 +6,17 @@ Future<http.Response> fetchWithRedirects(
   Map<String, String> headers = const {},
   String? userAgent,
 }) async {
-  String userAgentFallback =
+  const userAgentFallback =
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3';
-  Map<String, String>? allHeaders = {
+  final allHeaders = <String, String>{
     ...headers,
-    'User-Agent': userAgent ?? userAgentFallback
+    'User-Agent': userAgent ?? userAgentFallback,
   };
   var response = await http.get(Uri.parse(url), headers: allHeaders);
-  int redirectCount = 0;
+  var redirectCount = 0;
 
-  // print(_isRedirect(response));
   while (_isRedirect(response) && redirectCount < maxRedirects) {
-    String? location = response.headers['location'];
+    final location = response.headers['location'];
     if (location == null) {
       throw Exception('HTTP redirect without Location header');
     }

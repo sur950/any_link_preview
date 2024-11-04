@@ -1,4 +1,4 @@
-/// The base class for implementing a parser
+/// The base class for implementing a parser.
 mixin MetadataKeys {
   static const kTitle = 'title';
   static const kDescription = 'description';
@@ -15,20 +15,19 @@ mixin BaseMetaInfo {
   String? url;
   String? siteName;
 
-  /// Returns `true` if any parameter other than [url] is filled
+  /// Returns `true` if any parameter other than [url] is filled.
   bool get hasData =>
       ((title?.isNotEmpty ?? false) && title != 'null') ||
       ((desc?.isNotEmpty ?? false) && desc != 'null') ||
       ((image?.isNotEmpty ?? false) && image != 'null');
 
   Metadata parse() {
-    final m = Metadata();
-    m.title = title;
-    m.desc = desc;
-    m.image = image;
-    m.url = url;
-    m.siteName = siteName;
-    return m;
+    return Metadata()
+      ..title = title
+      ..desc = desc
+      ..image = image
+      ..url = url
+      ..siteName = siteName;
   }
 }
 
@@ -36,7 +35,7 @@ abstract class InfoBase {
   late DateTime timeout;
 }
 
-/// Container class for Metadata
+/// Container class for Metadata.
 class Metadata extends InfoBase with BaseMetaInfo, MetadataKeys {
   bool get hasAllMetadata {
     return title != null && desc != null && image != null && url != null;
@@ -63,14 +62,14 @@ class Metadata extends InfoBase with BaseMetaInfo, MetadataKeys {
   }
 
   static Metadata fromJson(Map<String, dynamic> json) {
-    final m = Metadata();
-    m.title = json[MetadataKeys.kTitle];
-    m.desc = json[MetadataKeys.kDescription];
-    m.image = json[MetadataKeys.kImage];
-    m.siteName = json[MetadataKeys.kSiteName];
-    m.url = json[MetadataKeys.kUrl];
-    m.timeout = DateTime.fromMillisecondsSinceEpoch(
-        json[MetadataKeys.kTimeout]! * 1000);
-    return m;
+    return Metadata()
+      ..title = json[MetadataKeys.kTitle]
+      ..desc = json[MetadataKeys.kDescription]
+      ..image = json[MetadataKeys.kImage]
+      ..siteName = json[MetadataKeys.kSiteName]
+      ..url = json[MetadataKeys.kUrl]
+      ..timeout = DateTime.fromMillisecondsSinceEpoch(
+        json[MetadataKeys.kTimeout]! * 1000,
+      );
   }
 }
