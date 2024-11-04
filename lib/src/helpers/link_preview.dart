@@ -168,6 +168,7 @@ class AnyLinkPreview extends StatefulWidget {
     String? proxyUrl = '', // Pass for web
     Duration? cache = const Duration(days: 1),
     Map<String, String>? headers,
+    String? userAgent
   }) async {
     final linkValid = isValidLink(link);
     var proxyValid = true;
@@ -180,6 +181,7 @@ class AnyLinkPreview extends StatefulWidget {
         linkToFetch,
         cache: cache,
         headers: headers ?? {},
+        userAgent: userAgent
       );
     } else if (!linkValid) {
       throw Exception('Invalid link');
@@ -193,12 +195,14 @@ class AnyLinkPreview extends StatefulWidget {
     String link, {
     Duration? cache = const Duration(days: 1),
     Map<String, String>? headers,
+    String? userAgent
   }) async {
     try {
       var info = await LinkAnalyzer.getInfo(
         link,
         cache: cache,
         headers: headers ?? {},
+        userAgent: userAgent
       );
       if (info == null || info.hasData == false) {
         // if info is null or data is empty ,try to read URL metadata
@@ -207,6 +211,7 @@ class AnyLinkPreview extends StatefulWidget {
           link,
           cache: cache,
           headers: headers ?? {},
+          userAgent: userAgent
         );
       }
       return info;

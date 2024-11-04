@@ -75,15 +75,15 @@ class LinkAnalyzer {
     String url, {
     Duration? cache = const Duration(hours: 24),
     Map<String, String> headers = const {},
+    // 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)',
+    // 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+    String? userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
   }) =>
       getInfo(
         url,
         cache: cache,
         headers: headers,
-        // 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)',
-        // 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-        userAgent:
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+        userAgent: userAgent
       );
 
   /// Fetches a [url], validates it, then returns [Metadata].
