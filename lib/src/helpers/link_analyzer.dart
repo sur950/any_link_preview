@@ -4,6 +4,7 @@ import 'dart:async' as async;
 import 'dart:convert';
 
 import 'package:any_link_preview/any_link_preview.dart';
+import 'package:any_link_preview/src/parser/youtube_parser.dart';
 import 'package:any_link_preview/src/utilities/http_redirect_check.dart';
 import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart' show Document;
@@ -112,11 +113,18 @@ class LinkAnalyzer {
 
     try {
       // Make our network call
-      final response = await fetchWithRedirects(
-        url,
-        headers: headers,
-        userAgent: userAgent,
-      );
+      final videoId = getYouTubeVideoId(url);
+      final response = videoId == null
+          ? await fetchWithRedirects(
+              url,
+              headers: headers,
+              userAgent: userAgent,
+            )
+          : await getYoutubeData(
+              videoId,
+              headers: headers,
+              userAgent: userAgent,
+            );
       final headerContentType = response.headers['content-type'];
 
       if (headerContentType != null && headerContentType.startsWith('image/')) {
@@ -184,6 +192,7 @@ class LinkAnalyzer {
     final parsers = [
       _openGraph(document),
       _twitterCard(document),
+      _youtubeCard(document),
       _jsonLdSchema(document),
       _htmlMeta(document),
       _otherParser(document),
@@ -230,6 +239,14 @@ class LinkAnalyzer {
   static Metadata? _jsonLdSchema(Document? document) {
     try {
       return JsonLdParser(document).parse();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static Metadata? _youtubeCard(Document? document) {
+    try {
+      return YoutubeParser(document).parse();
     } catch (e) {
       return null;
     }
