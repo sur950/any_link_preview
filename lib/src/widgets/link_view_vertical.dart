@@ -14,9 +14,10 @@ class LinkViewVertical extends StatelessWidget {
   final int? bodyMaxLines;
   final double? radius;
   final Color? bgColor;
+  final EdgeInsets? bodyPadding;
+  final EdgeInsets? titlePadding;
 
   const LinkViewVertical({
-    super.key,
     required this.url,
     required this.title,
     required this.description,
@@ -29,6 +30,9 @@ class LinkViewVertical extends StatelessWidget {
     this.bodyMaxLines,
     this.bgColor,
     this.radius,
+    this.bodyPadding,
+    this.titlePadding,
+    super.key,
   });
 
   double computeTitleFontSize(double width) {
@@ -116,9 +120,9 @@ class LinkViewVertical extends StatelessWidget {
     );
   }
 
-  Widget _buildTitleContainer(TextStyle titleStyle, int? maxLines_) {
+  Widget _buildTitleContainer(TextStyle titleStyle, int? maxLines) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 5, 5, 1),
+      padding: titlePadding ?? const EdgeInsets.fromLTRB(10, 5, 5, 1),
       child: Container(
         alignment: Alignment.topLeft,
         child: Column(
@@ -128,7 +132,7 @@ class LinkViewVertical extends StatelessWidget {
               title,
               style: titleStyle,
               overflow: TextOverflow.ellipsis,
-              maxLines: maxLines_,
+              maxLines: maxLines,
             ),
           ],
         ),
@@ -136,17 +140,17 @@ class LinkViewVertical extends StatelessWidget {
     );
   }
 
-  Widget _buildBodyContainer(TextStyle bodyStyle, int? maxLines_) {
+  Widget _buildBodyContainer(TextStyle bodyStyle, int? maxLines) {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 0, 5, 5),
+        padding: bodyPadding ?? const EdgeInsets.fromLTRB(10, 0, 5, 5),
         child: Container(
           alignment: Alignment.topLeft,
           child: Text(
             description,
             style: bodyStyle,
             overflow: bodyTextOverflow ?? TextOverflow.ellipsis,
-            maxLines: bodyMaxLines ?? maxLines_,
+            maxLines: bodyMaxLines ?? maxLines,
           ),
         ),
       ),
