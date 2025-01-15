@@ -101,6 +101,12 @@ class AnyLinkPreview extends StatefulWidget {
   /// and `(MediaQuery.sizeOf(context).height) * 0.25` for the vertical preview.
   final double? previewHeight;
 
+  /// Border color for the card. Deafults to `Colors.grey`.
+  final Color? borderColor;
+
+  /// Border width for the card. Deafults to `1`.
+  final double? borderWidth;
+
   /// Builder function that is used only in [AnyLinkPreview.builder] and
   /// allows building a custom [Widget] from the [Metadata], with either of
   /// the optional [ImageProvider] or [SvgPicture] fetched.
@@ -130,6 +136,8 @@ class AnyLinkPreview extends StatefulWidget {
     this.headers,
     this.onTap,
     this.previewHeight,
+    this.borderColor,
+    this.borderWidth,
     this.urlLaunchMode = LaunchMode.platformDefault,
   }) : itemBuilder = null;
 
@@ -157,6 +165,8 @@ class AnyLinkPreview extends StatefulWidget {
         removeElevation = false,
         onTap = null,
         previewHeight = null,
+        borderColor = null,
+        borderWidth = null,
         urlLaunchMode = LaunchMode.platformDefault;
 
   @override
@@ -373,6 +383,9 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
       decoration: BoxDecoration(
         color: widget.backgroundColor,
         borderRadius: BorderRadius.circular(widget.borderRadius ?? 12),
+        border: Border.all(
+          color: widget.borderColor ?? Colors.grey,
+          width: widget.borderWidth ?? 1,),
         boxShadow: widget.removeElevation
             ? const []
             : widget.boxShadow ??
