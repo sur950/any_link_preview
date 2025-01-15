@@ -137,6 +137,12 @@ A Flutter package for beautifully displaying web URL previews with full customiz
   /// and `(MediaQuery.sizeOf(context).height) * 0.25` for the vertical preview.
   final double? previewHeight;
 
+  /// Border color for the card. Deafults to `Colors.grey`.
+  final Color? borderColor;
+
+  /// Border width for the card. Deafults to `1`.
+  final double? borderWidth;
+
   /// Builder function that is used only in [AnyLinkPreview.builder] and
   /// allows building a custom [Widget] from the [Metadata], with either of
   /// the optional [ImageProvider] or [SvgPicture] fetched.
