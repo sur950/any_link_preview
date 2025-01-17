@@ -101,6 +101,20 @@ class AnyLinkPreview extends StatefulWidget {
   /// and `(MediaQuery.sizeOf(context).height) * 0.25` for the vertical preview.
   final double? previewHeight;
 
+  /// Padding around the body (description) section of the preview card.
+  /// Defaults to `null`, meaning the default [EdgeInsets] with value
+  /// LTRB(10, 5, 5, 1 will be applied
+  /// If specified, the provided [EdgeInsets] value is used to set padding
+  /// around the body text.
+  final EdgeInsets? bodyPadding;
+
+  /// Padding around the title section of the preview card.
+  /// Defaults to `null`, meaning the default [EdgeInsets] with value
+  /// LTRB(10, 5, 5, 1 will be applied
+  /// If specified, the provided [EdgeInsets] value is used to set padding
+  /// around the title text.
+  final EdgeInsets? titlePadding;
+
   /// Builder function that is used only in [AnyLinkPreview.builder] and
   /// allows building a custom [Widget] from the [Metadata], with either of
   /// the optional [ImageProvider] or [SvgPicture] fetched.
@@ -130,6 +144,8 @@ class AnyLinkPreview extends StatefulWidget {
     this.headers,
     this.onTap,
     this.previewHeight,
+    this.bodyPadding,
+    this.titlePadding,
     this.urlLaunchMode = LaunchMode.platformDefault,
   }) : itemBuilder = null;
 
@@ -157,6 +173,8 @@ class AnyLinkPreview extends StatefulWidget {
         removeElevation = false,
         onTap = null,
         previewHeight = null,
+        bodyPadding = null,
+        titlePadding = null,
         urlLaunchMode = LaunchMode.platformDefault;
 
   @override
@@ -393,6 +411,8 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
               bodyMaxLines: widget.bodyMaxLines,
               showMultiMedia: widget.showMultimedia,
               bgColor: widget.backgroundColor,
+              bodyPadding: widget.bodyPadding,
+              titlePadding: widget.titlePadding,
               radius: widget.borderRadius ?? 12,
             )
           : LinkViewVertical(
@@ -408,6 +428,8 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
               bodyMaxLines: widget.bodyMaxLines,
               showMultiMedia: widget.showMultimedia,
               bgColor: widget.backgroundColor,
+              bodyPadding: widget.bodyPadding,
+              titlePadding: widget.titlePadding,
               radius: widget.borderRadius ?? 12,
             ),
     );
