@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:any_link_preview/src/parser/util.dart';
+import 'package:any_link_preview/src/utilities/url_resolver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:string_validator/string_validator.dart';
@@ -206,9 +207,10 @@ class AnyLinkPreview extends StatefulWidget {
   }) async {
     try {
       var proxyValid = true;
-      if ((proxyUrl ?? '').isNotEmpty) proxyValid = isValidLink(proxyUrl!);
+      var proxy_ = proxyUrl ?? '';
+      if (proxy_.isNotEmpty) proxyValid = isValidLink(proxyUrl!);
       var linkToFetch = link.trim();
-      if (proxyValid) linkToFetch = ((proxyUrl ?? '') + link).trim();
+      if (proxyValid) linkToFetch = (proxy_ + link).trim();
       var info = await LinkAnalyzer.getInfo(
         linkToFetch,
         cache: cache,
@@ -226,8 +228,10 @@ class AnyLinkPreview extends StatefulWidget {
         );
       }
 
-      var img = info?.image?.replaceFirst(linkToFetch.trim(), '') ?? '';
-      if (img.isNotEmpty) info?.image = link.trim() + img;
+      var img = info?.image ?? '';
+      if (img.isNotEmpty && proxy_.isNotEmpty) {
+        info?.image = resolveImageUrl(link, proxy_, img);
+      }
 
       return info;
     } catch (error) {
@@ -361,13 +365,13 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
         ? ((widget.proxyUrl ?? '') + (info.image ?? ''))
         : null;
 
+    final imageProviderValue = buildImageProvider(image, _errorImage);
     if (widget.itemBuilder != null) {
-      final imageData = buildImageProvider(image, _errorImage);
       return widget.itemBuilder!(
         context,
         info,
-        imageData.image,
-        imageData.svgImage,
+        imageProviderValue.image,
+        imageProviderValue.svgImage,
       );
     }
 
@@ -382,7 +386,6 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
     final title =
         LinkAnalyzer.isNotEmpty(info.title) ? info.title! : _errorTitle;
     final desc = LinkAnalyzer.isNotEmpty(info.desc) ? info.desc! : _errorBody;
-    final imageProvider = buildImageProvider(image, _errorImage);
 
     return Container(
       decoration: BoxDecoration(
@@ -400,7 +403,7 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
               url: originalLink,
               title: title,
               description: desc,
-              imageProvider: imageProvider,
+              imageProvider: imageProviderValue,
               onTap: widget.onTap ?? () => _launchURL(originalLink),
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,
@@ -415,7 +418,7 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
               url: originalLink,
               title: title,
               description: desc,
-              imageProvider: imageProvider,
+              imageProvider: imageProviderValue,
               onTap: widget.onTap ?? () => _launchURL(originalLink),
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,

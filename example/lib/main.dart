@@ -12,13 +12,14 @@ class MyApp extends StatelessWidget {
   static const String _errorImage =
       'https://i.ytimg.com/vi/z8wrRRR7_qU/maxresdefault.jpg';
   static const String _url1 =
-      'https://www.espn.in/football/soccer-transfers/story/4163866/transfer-talk-lionel-messi-tells-barcelona-hes-more-likely-to-leave-then-stay';
+      'https://www.instagram.com/p/C-cegKxI_Cb/?igsh=MWN2Nnlydnh5Z2RrYQ==';
   static const String _url2 =
       'https://speakerdeck.com/themsaid/the-power-of-laravel-queues';
   static const String _url3 =
-      'https://twitter.com/laravelphp/status/1222535498880692225';
-  static const String _url4 = 'https://www.youtube.com/watch?v=W1pNjxmNHNQ';
-  static const String _url5 = 'https://flutter.dev/';
+      'https://x.com/laravelphp/status/1222535498880692225';
+  static const String _url4 = 'https://www.youtube.com/watch?v=v4H2fTgHGuc';
+  static const String _url5 =
+      'https://www.instagram.com/p/C-cegKxI_Cb/?igsh=MWN2Nnlydnh5Z2RrYQ==';
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,6 @@ class MyApp extends StatelessWidget {
                   child: const Text('Oops!'),
                 ),
                 errorImage: _errorImage,
-                userAgent: 'WhatsApp/2.21.12.21 A',
               ),
               const SizedBox(height: 25),
               const AnyLinkPreview(
@@ -66,6 +66,7 @@ class MyApp extends StatelessWidget {
                 link: _url3,
                 errorTitle: 'Next one is a YouTube link, error title',
                 errorBody: 'Show my custom error body',
+                userAgent: 'WhatsApp/2.21.12.21 A',
               ),
               const SizedBox(height: 25),
               const AnyLinkPreview(link: _url4),
