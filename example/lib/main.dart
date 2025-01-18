@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
                   child: const Text('Oops!'),
                 ),
                 errorImage: _errorImage,
+                userAgent: 'WhatsApp/2.21.12.21 A',
               ),
               const SizedBox(height: 25),
               const AnyLinkPreview(

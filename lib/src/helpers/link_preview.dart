@@ -107,6 +107,10 @@ class AnyLinkPreview extends StatefulWidget {
   final Widget Function(BuildContext, Metadata, ImageProvider?, SvgPicture?)?
       itemBuilder;
 
+  /// User-Agent to be used in the HTTP request to the link
+  /// Default: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+  final String? userAgent;
+
   const AnyLinkPreview({
     super.key,
     required this.link,
@@ -131,6 +135,8 @@ class AnyLinkPreview extends StatefulWidget {
     this.onTap,
     this.previewHeight,
     this.urlLaunchMode = LaunchMode.platformDefault,
+    this.userAgent =
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
   }) : itemBuilder = null;
 
   const AnyLinkPreview.builder({
@@ -157,6 +163,8 @@ class AnyLinkPreview extends StatefulWidget {
         removeElevation = false,
         onTap = null,
         previewHeight = null,
+        userAgent =
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
         urlLaunchMode = LaunchMode.platformDefault;
 
   @override
@@ -168,20 +176,18 @@ class AnyLinkPreview extends StatefulWidget {
     String? proxyUrl = '', // Pass for web
     Duration? cache = const Duration(days: 1),
     Map<String, String>? headers,
-    String? userAgent
+    String? userAgent =
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
   }) async {
     final linkValid = isValidLink(link);
-    var proxyValid = true;
-    if ((proxyUrl ?? '').isNotEmpty) proxyValid = isValidLink(proxyUrl!);
-    if (linkValid && proxyValid) {
+    if (linkValid) {
       // removing www. from the link if available
       if (link.startsWith('www.')) link = link.replaceFirst('www.', '');
-      final linkToFetch = ((proxyUrl ?? '') + link).trim();
       return _getMetadata(
-        linkToFetch,
+        link,
         cache: cache,
         headers: headers ?? {},
-        userAgent: userAgent
+        userAgent: userAgent,
       );
     } else if (!linkValid) {
       throw Exception('Invalid link');
@@ -195,25 +201,34 @@ class AnyLinkPreview extends StatefulWidget {
     String link, {
     Duration? cache = const Duration(days: 1),
     Map<String, String>? headers,
-    String? userAgent
+    String? userAgent,
+    String? proxyUrl,
   }) async {
     try {
+      var proxyValid = true;
+      if ((proxyUrl ?? '').isNotEmpty) proxyValid = isValidLink(proxyUrl!);
+      var linkToFetch = link.trim();
+      if (proxyValid) linkToFetch = ((proxyUrl ?? '') + link).trim();
       var info = await LinkAnalyzer.getInfo(
-        link,
+        linkToFetch,
         cache: cache,
         headers: headers ?? {},
-        userAgent: userAgent
+        userAgent: userAgent,
       );
       if (info == null || info.hasData == false) {
         // if info is null or data is empty ,try to read URL metadata
         // client-side
         info = await LinkAnalyzer.getInfoClientSide(
-          link,
+          linkToFetch,
           cache: cache,
           headers: headers ?? {},
-          userAgent: userAgent
+          userAgent: userAgent,
         );
       }
+
+      var img = info?.image?.replaceFirst(linkToFetch.trim(), '') ?? '';
+      if (img.isNotEmpty) info?.image = link.trim() + img;
+
       return info;
     } catch (error) {
       return null;
@@ -274,16 +289,15 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
         'https://github.com/sur950/any_link_preview/blob/master/lib/assets/giphy.gif?raw=true';
     _errorTitle = widget.errorTitle ?? 'Something went wrong!';
     _errorBody = widget.errorBody ??
-        'Oops! Unable to parse the url. We have sent feedback to our developers '
-            '& we will try to fix this in our next release. Thanks!';
-
+        'Oops! Unable to parse the url. We have sent feedback to our developers'
+            ' & we will try to fix this in our next release. Thanks!';
     _linkValid = AnyLinkPreview.isValidLink(providedLink);
 
     if ((widget.proxyUrl ?? '').isNotEmpty) {
       _proxyValid = AnyLinkPreview.isValidLink(widget.proxyUrl!);
     }
 
-    if (_linkValid && _proxyValid) {
+    if (_linkValid) {
       // removing www. from the link if it's present
       if (providedLink.startsWith('www.')) {
         originalLink = providedLink.replaceFirst('www.', '');
@@ -291,17 +305,18 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
         originalLink = providedLink;
       }
 
-      final linkToFetch = ((widget.proxyUrl ?? '') + originalLink).trim();
       _loading = true;
-      _getInfo(linkToFetch);
+      _getInfo(originalLink, widget.proxyUrl);
     }
   }
 
-  Future<void> _getInfo(String link) async {
+  Future<void> _getInfo(String link, String? proxyUrl) async {
     _info = await AnyLinkPreview._getMetadata(
       link,
       cache: widget.cache,
       headers: widget.headers,
+      userAgent: widget.userAgent,
+      proxyUrl: proxyUrl,
     );
     if (mounted) {
       setState(() {
