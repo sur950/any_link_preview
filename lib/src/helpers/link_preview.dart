@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:any_link_preview/src/parser/util.dart';
+import 'package:any_link_preview/src/utilities/url_resolver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:string_validator/string_validator.dart';
@@ -121,6 +122,10 @@ class AnyLinkPreview extends StatefulWidget {
   final Widget Function(BuildContext, Metadata, ImageProvider?, SvgPicture?)?
       itemBuilder;
 
+  /// User-Agent to be used in the HTTP request to the link
+  /// Default: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+  final String? userAgent;
+
   const AnyLinkPreview({
     super.key,
     required this.link,
@@ -147,6 +152,8 @@ class AnyLinkPreview extends StatefulWidget {
     this.bodyPadding,
     this.titlePadding,
     this.urlLaunchMode = LaunchMode.platformDefault,
+    this.userAgent =
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
   }) : itemBuilder = null;
 
   const AnyLinkPreview.builder({
@@ -175,6 +182,8 @@ class AnyLinkPreview extends StatefulWidget {
         previewHeight = null,
         bodyPadding = null,
         titlePadding = null,
+        userAgent =
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
         urlLaunchMode = LaunchMode.platformDefault;
 
   @override
@@ -187,16 +196,15 @@ class AnyLinkPreview extends StatefulWidget {
     Duration? cache = const Duration(days: 1),
     Map<String, String>? headers,
     String? userAgent,
+    String? userAgent =
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
   }) async {
     final linkValid = isValidLink(link);
-    var proxyValid = true;
-    if ((proxyUrl ?? '').isNotEmpty) proxyValid = isValidLink(proxyUrl!);
-    if (linkValid && proxyValid) {
+    if (linkValid) {
       // removing www. from the link if available
       if (link.startsWith('www.')) link = link.replaceFirst('www.', '');
-      final linkToFetch = ((proxyUrl ?? '') + link).trim();
       return _getMetadata(
-        linkToFetch,
+        link,
         cache: cache,
         headers: headers ?? {},
         userAgent: userAgent,
@@ -214,10 +222,16 @@ class AnyLinkPreview extends StatefulWidget {
     Duration? cache = const Duration(days: 1),
     Map<String, String>? headers,
     String? userAgent,
+    String? proxyUrl,
   }) async {
     try {
+      var proxyValid = true;
+      var proxy_ = proxyUrl ?? '';
+      if (proxy_.isNotEmpty) proxyValid = isValidLink(proxyUrl!);
+      var linkToFetch = link.trim();
+      if (proxyValid) linkToFetch = (proxy_ + link).trim();
       var info = await LinkAnalyzer.getInfo(
-        link,
+        linkToFetch,
         cache: cache,
         headers: headers ?? {},
         userAgent: userAgent,
@@ -226,12 +240,18 @@ class AnyLinkPreview extends StatefulWidget {
         // if info is null or data is empty ,try to read URL metadata
         // client-side
         info = await LinkAnalyzer.getInfoClientSide(
-          link,
+          linkToFetch,
           cache: cache,
           headers: headers ?? {},
           userAgent: userAgent,
         );
       }
+
+      var img = info?.image ?? '';
+      if (img.isNotEmpty && proxy_.isNotEmpty) {
+        info?.image = resolveImageUrl(link, proxy_, img);
+      }
+
       return info;
     } catch (error) {
       return null;
@@ -294,14 +314,14 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
     _errorBody = widget.errorBody ??
         'Oops! Unable to parse the url. We have sent feedback to our developers'
             '& we will try to fix this in our next release. Thanks!';
-
+    
     _linkValid = AnyLinkPreview.isValidLink(providedLink);
 
     if ((widget.proxyUrl ?? '').isNotEmpty) {
       _proxyValid = AnyLinkPreview.isValidLink(widget.proxyUrl!);
     }
 
-    if (_linkValid && _proxyValid) {
+    if (_linkValid) {
       // removing www. from the link if it's present
       if (providedLink.startsWith('www.')) {
         originalLink = providedLink.replaceFirst('www.', '');
@@ -309,17 +329,18 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
         originalLink = providedLink;
       }
 
-      final linkToFetch = ((widget.proxyUrl ?? '') + originalLink).trim();
       _loading = true;
-      _getInfo(linkToFetch);
+      _getInfo(originalLink, widget.proxyUrl);
     }
   }
 
-  Future<void> _getInfo(String link) async {
+  Future<void> _getInfo(String link, String? proxyUrl) async {
     _info = await AnyLinkPreview._getMetadata(
       link,
       cache: widget.cache,
       headers: widget.headers,
+      userAgent: widget.userAgent,
+      proxyUrl: proxyUrl,
     );
     if (mounted) {
       setState(() {
@@ -364,13 +385,13 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
         ? ((widget.proxyUrl ?? '') + (info.image ?? ''))
         : null;
 
+    final imageProviderValue = buildImageProvider(image, _errorImage);
     if (widget.itemBuilder != null) {
-      final imageData = buildImageProvider(image, _errorImage);
       return widget.itemBuilder!(
         context,
         info,
-        imageData.image,
-        imageData.svgImage,
+        imageProviderValue.image,
+        imageProviderValue.svgImage,
       );
     }
 
@@ -385,7 +406,6 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
     final title =
         LinkAnalyzer.isNotEmpty(info.title) ? info.title! : _errorTitle;
     final desc = LinkAnalyzer.isNotEmpty(info.desc) ? info.desc! : _errorBody;
-    final imageProvider = buildImageProvider(image, _errorImage);
 
     return Container(
       decoration: BoxDecoration(
@@ -403,7 +423,7 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
               url: originalLink,
               title: title,
               description: desc,
-              imageProvider: imageProvider,
+              imageProvider: imageProviderValue,
               onTap: widget.onTap ?? () => _launchURL(originalLink),
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,
@@ -420,7 +440,7 @@ class AnyLinkPreviewState extends State<AnyLinkPreview> {
               url: originalLink,
               title: title,
               description: desc,
-              imageProvider: imageProvider,
+              imageProvider: imageProviderValue,
               onTap: widget.onTap ?? () => _launchURL(originalLink),
               titleTextStyle: widget.titleStyle,
               bodyTextStyle: widget.bodyStyle,

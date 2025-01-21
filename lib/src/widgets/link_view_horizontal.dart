@@ -88,7 +88,16 @@ class LinkViewHorizontal extends StatelessWidget {
                   flex: 2,
                   child: imageProvider.image == null &&
                           imageProvider.svgImage == null
-                      ? Container(color: bgColor ?? Colors.grey)
+                      ? Container(
+                          color: bgColor ?? Colors.grey,
+                          child: const Center(
+                            child: Icon(
+                              Icons.broken_image,
+                              size: 30,
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
                       : Container(
                           margin: const EdgeInsets.only(right: 5),
                           decoration: BoxDecoration(
@@ -104,7 +113,7 @@ class LinkViewHorizontal extends StatelessWidget {
                                     left: Radius.circular(radius!),
                                   ),
                           ),
-                          child: imageProvider.svgImage,
+                          child: imageProvider.svgImage ?? Container(),
                         ),
                 )
               else

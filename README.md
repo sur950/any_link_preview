@@ -21,6 +21,8 @@ A Flutter package for beautifully displaying web URL previews with full customiz
 - Caches URL metadata for faster subsequent loads.
 - Includes an example app to demonstrate usage.
 
+>Note: If results are not accurate then make sure to change `userAgent` value and give a try. In most of the cases it's either `userAgent` issue or `proxyURL` issue if it's web.
+
 ## Getting Started ⚡️
 
 ### Demo
@@ -50,7 +52,6 @@ A Flutter package for beautifully displaying web URL previews with full customiz
 ## Properties 🔖
 
 ```dart
-
   /// Display direction. Either [UIDirection.uiDirectionVertical] or
   /// [UIDirection.uiDirectionHorizontal]. Defaults to vertical direction.
   final UIDirection displayDirection;
@@ -142,7 +143,10 @@ A Flutter package for beautifully displaying web URL previews with full customiz
   /// the optional [ImageProvider] or [SvgPicture] fetched.
   final Widget Function(BuildContext, Metadata, ImageProvider?, SvgPicture?)?
       itemBuilder;
-
+  
+  /// User-Agent to be used in the HTTP request to the link
+  /// Default: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+  final String? userAgent;
 ```
 
 **Example of AnyLinkPreview widget:**
@@ -171,6 +175,7 @@ A Flutter package for beautifully displaying web URL previews with full customiz
     backgroundColor: Colors.grey[300],
     borderRadius: 12,
     removeElevation: false,
+    userAgent: 'WhatsApp/2.21.12.21 A',
     boxShadow: [BoxShadow(blurRadius: 3, color: Colors.grey)],
     onTap: () {}, // This disables tap event
   )
@@ -184,6 +189,7 @@ Metadata? _metadata = await AnyLinkPreview.getMetadata(
   link: "https://google.com/",
   cache: const Duration(days: 7),
   proxyUrl: "https://corsproxy.org/", // Need for web
+  userAgent: 'WhatsApp/2.21.12.21 A', // Change when results are wrong
 );
 print(_metadata?.title);
 ```
@@ -224,7 +230,7 @@ Thanks to all the contributors
 
 ```
 
-Copyright (c) 2020-2024 Konakanchi Venkata Suresh Babu
+Copyright (c) 2020-2025 Konakanchi Venkata Suresh Babu
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

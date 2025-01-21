@@ -80,6 +80,8 @@ class LinkAnalyzer {
     // 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
     String? userAgent =
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+    String? userAgent = 'WhatsApp/2.21.12.21 A',
+
   }) =>
       getInfo(
         url,
@@ -200,7 +202,7 @@ class LinkAnalyzer {
     ];
 
     for (final p in parsers) {
-      if (p == null) break;
+      if (p == null) continue;
 
       output.title ??= p.title;
       output.desc ??= p.desc;

@@ -6,9 +6,8 @@ Future<http.Response> fetchWithRedirects(
   Map<String, String> headers = const {},
   String? userAgent,
 }) async {
-  const userAgentFallback =
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3';
-  final allHeaders = <String, String>{
+  const userAgentFallback = 'WhatsApp/2.21.12.21 A';
+  Map<String, String>? allHeaders = {
     ...headers,
     'User-Agent': userAgent ?? userAgentFallback,
   };
@@ -43,6 +42,7 @@ Future<http.Response> getYoutubeData(
 }) async {
   const userAgentFallback =
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3';
+  const userAgentFallback = 'WhatsApp/2.21.12.21 A';
   Map<String, String>? allHeaders = {
     ...?headers,
     'User-Agent': userAgent ?? userAgentFallback,

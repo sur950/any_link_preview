@@ -1,3 +1,17 @@
+# **3.0.3 - What's New?**
+
+- 🛠 **Improved Error Handling:**  
+  The parser loop now gracefully continues on errors instead of breaking.  
+
+- 🌐 **Custom User-Agent Support:**  
+  Pass a custom `UserAgent` as props to tailor link previews to your needs.  
+
+- 📺 **New Helpers:**  
+  Added YouTube video and redirection helpers for smoother handling of specific links.  
+
+- 🚀 **Enhanced Metadata Fetching:**  
+  The `getMetadata()` function now supports a `userAgent` option for more flexible metadata retrieval.
+
 # 3.0.2
 
 **New Features:**

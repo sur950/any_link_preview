@@ -2,7 +2,7 @@ name: any_link_preview
 description: Dart package that helps with preview of any links.
   Fully customizable and has the ability to render from cached data.
   Useful for apps where we had chat feature.
-version: 3.0.2
+version: 3.0.3
 # author: Suresh Konakanchi
 homepage: https://suresh-konakanchi.in/
 repository: https://github.com/sur950/any_link_preview
@@ -14,18 +14,21 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_svg: ^2.0.10+1
-  html: ^0.15.4
-  http: ^1.2.1
-  shared_preferences: ^2.2.2
-  string_validator: ^1.0.2
-  url_launcher: ^6.2.5
+  flutter_svg: ^2.0.17
+  html: ^0.15.5
+  http: ^1.2.2
+  shared_preferences: ^2.3.5
+  string_validator: ^1.1.0
+  url_launcher: ^6.3.1
   xml: ^6.5.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 # The following section is specific to Flutter.
-flutter: null
+flutter:
+  assets:
+    - lib/assets/
+  uses-material-design: true

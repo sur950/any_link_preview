@@ -82,26 +82,30 @@ class LinkViewVertical extends StatelessWidget {
               if (showMultiMedia)
                 Expanded(
                   flex: 2,
-                  child: imageProvider.image == null &&
-                          imageProvider.svgImage == null
-                      ? Container(color: bgColor ?? Colors.grey)
-                      : Container(
-                          padding: const EdgeInsets.only(bottom: 15),
-                          decoration: BoxDecoration(
-                            borderRadius: radius == 0
-                                ? BorderRadius.zero
-                                : BorderRadius.vertical(
-                                    top: Radius.circular(radius!),
-                                  ),
-                            image: imageProvider.image != null
-                                ? DecorationImage(
-                                    image: imageProvider.image!,
-                                    fit: BoxFit.fitWidth,
-                                  )
-                                : null,
-                          ),
-                          child: imageProvider.svgImage,
-                        ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(radius ?? 12),
+                      ),
+                      color: bgColor ?? Colors.grey,
+                      image: imageProvider.image != null
+                          ? DecorationImage(
+                              image: imageProvider.image!,
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                    ),
+                    child: imageProvider.svgImage ??
+                        (imageProvider.image == null
+                            ? const Center(
+                                child: Icon(
+                                  Icons.broken_image,
+                                  size: 30,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : null),
+                  ),
                 )
               else
                 const SizedBox(height: 5),
