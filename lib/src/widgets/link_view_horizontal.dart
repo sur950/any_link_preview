@@ -14,9 +14,10 @@ class LinkViewHorizontal extends StatelessWidget {
   final int? bodyMaxLines;
   final double? radius;
   final Color? bgColor;
+  final EdgeInsets? bodyPadding;
+  final EdgeInsets? titlePadding;
 
   const LinkViewHorizontal({
-    super.key,
     required this.url,
     required this.title,
     required this.description,
@@ -29,6 +30,9 @@ class LinkViewHorizontal extends StatelessWidget {
     this.bodyMaxLines,
     this.bgColor,
     this.radius,
+    this.titlePadding,
+    this.bodyPadding,
+    super.key,
   });
 
   double computeTitleFontSize(double width) {
@@ -140,9 +144,9 @@ class LinkViewHorizontal extends StatelessWidget {
     );
   }
 
-  Widget _buildTitleContainer(TextStyle titleStyle, int? maxLines_) {
+  Widget _buildTitleContainer(TextStyle titleStyle, int? maxLines) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 2, 3, 1),
+      padding: titlePadding ?? const EdgeInsets.fromLTRB(4, 2, 3, 1),
       child: Column(
         children: <Widget>[
           Container(
@@ -151,7 +155,7 @@ class LinkViewHorizontal extends StatelessWidget {
               title,
               style: titleStyle,
               overflow: TextOverflow.ellipsis,
-              maxLines: maxLines_,
+              maxLines: maxLines,
             ),
           ),
         ],
@@ -159,11 +163,11 @@ class LinkViewHorizontal extends StatelessWidget {
     );
   }
 
-  Widget _buildBodyContainer(TextStyle bodyStyle, int? maxLines_) {
+  Widget _buildBodyContainer(TextStyle bodyStyle, int? maxLines) {
     return Expanded(
       flex: 2,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(5, 3, 5, 0),
+        padding: bodyPadding ?? const EdgeInsets.fromLTRB(5, 3, 5, 0),
         child: Column(
           children: <Widget>[
             Expanded(
@@ -174,7 +178,7 @@ class LinkViewHorizontal extends StatelessWidget {
                   textAlign: TextAlign.left,
                   style: bodyStyle,
                   overflow: bodyTextOverflow ?? TextOverflow.ellipsis,
-                  maxLines: bodyMaxLines ?? maxLines_,
+                  maxLines: bodyMaxLines ?? maxLines,
                 ),
               ),
             ),
