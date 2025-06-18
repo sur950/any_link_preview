@@ -64,8 +64,6 @@ String? getYouTubeVideoId(String url) {
   // Apply the regex to the URL
   final match = regExp.firstMatch(url);
 
-  print(match?.group(1));
-
   // If a match is found, return the first capture group, which is the video ID
   return match?.group(1);
 }
