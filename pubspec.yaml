@@ -25,6 +25,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  test: ^1.25.1
   flutter_lints: ^5.0.0
 
 # The following section is specific to Flutter.
