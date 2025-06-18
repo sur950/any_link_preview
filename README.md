@@ -92,7 +92,7 @@ A Flutter package for beautifully displaying web URL previews with full customiz
   final String? errorImage;
 
   /// Sets the overflow type for body text (description) of the link.
-  /// Deaults to [TextOverflow.ellipsis].
+  /// Defaults to [TextOverflow.ellipsis].
   final TextOverflow bodyTextOverflow;
 
   /// Sets the limit to body text (description) of the link. Defaults to `3`.
@@ -111,13 +111,13 @@ A Flutter package for beautifully displaying web URL previews with full customiz
   /// Whether to show metadata image if it's present. Defaults to `true`.
   final bool showMultimedia;
 
-  /// [BorderRadius] for the card. Deafults to `12`.
+  /// [BorderRadius] for the card. Defaults to `12`.
   final double? borderRadius;
 
   /// If set to true, removes card widget's elevation. Defaults to `false`.
   final bool removeElevation;
 
-  /// Box shadow for the card. Deafults to
+  /// Box shadow for the card. Defaults to
   /// `[BoxShadow(blurRadius: 3, color: Colors.grey)]`.
   final List<BoxShadow>? boxShadow;
 
