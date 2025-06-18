@@ -1,12 +1,17 @@
-// import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
-// import 'package:any_link_preview/any_link_preview.dart';
+import 'package:any_link_preview/any_link_preview.dart';
 
-// void main() {
-//   test('adds one to input values', () {
-//     final calculator = Calculator();
-//     expect(calculator.addOne(2), 3);
-//     expect(calculator.addOne(-7), -6);
-//     expect(calculator.addOne(0), 1);
-//   });
-// }
+void main() {
+  group('AnyLinkPreview.isValidLink', () {
+    test('returns true for a valid url', () {
+      const url = 'https://example.com';
+      expect(AnyLinkPreview.isValidLink(url), isTrue);
+    });
+
+    test('returns false for an invalid url', () {
+      const url = 'not a url';
+      expect(AnyLinkPreview.isValidLink(url), isFalse);
+    });
+  });
+}
