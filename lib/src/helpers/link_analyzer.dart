@@ -41,7 +41,8 @@ class LinkAnalyzer {
     Metadata? info_;
 
     try {
-      final infoJson = await CacheManager.getJson(key: url);
+      final Map<String, dynamic>? infoJson =
+          await CacheManager.getJson(key: url);
       if (infoJson != null) {
         info_ = Metadata.fromJson(infoJson);
         var isEmpty_ = info_.title == null || info_.title == 'null';
