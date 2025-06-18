@@ -157,5 +157,5 @@ ImageProvider? buildNetworkImage(String url, String? errorImageUrl) {
 /// Checks if a URL is valid.
 bool isValidUrl(String url) {
   final uri = Uri.tryParse(url);
-  return uri != null && uri.hasAbsolutePath;
+  return uri != null && uri.isAbsolute;
 }
