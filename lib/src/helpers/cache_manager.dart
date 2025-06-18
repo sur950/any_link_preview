@@ -20,7 +20,9 @@ class CacheManager {
 
   static Future deleteKey(String key, [VoidCallback? takeAction]) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.remove(key).whenComplete(() => takeAction?.call());
+    await sharedPreferences
+        .remove(key)
+        .whenComplete(() => (takeAction as void Function()?)?.call());
   }
 
   static Future setJson({
