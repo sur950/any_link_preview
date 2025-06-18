@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CacheManager {
-  static Future getJson({required String key}) async {
-    dynamic cache;
+  static Future<Map<String, dynamic>?> getJson({required String key}) async {
+    String? cache;
     try {
       final sharedPreferences = await SharedPreferences.getInstance();
       cache = sharedPreferences.getString(key);
     } catch (e) {
       debugPrint('Cache URL had a change => $e');
     }
-    dynamic jsonMapCache;
+    Map<String, dynamic>? jsonMapCache;
     if (cache != null) {
-      jsonMapCache = jsonDecode(cache) as Map<dynamic, dynamic>;
+      jsonMapCache = jsonDecode(cache) as Map<String, dynamic>;
     }
     return jsonMapCache;
   }
@@ -25,12 +25,11 @@ class CacheManager {
         .whenComplete(() => (takeAction as void Function()?)?.call());
   }
 
-  static Future setJson({
+  static Future<void> setJson({
     required String key,
-    required Map<dynamic, dynamic> value,
+    required Map<String, dynamic> value,
   }) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    var jsonMap = value;
-    await sharedPreferences.setString(key, jsonEncode(jsonMap));
+    await sharedPreferences.setString(key, jsonEncode(value));
   }
 }
