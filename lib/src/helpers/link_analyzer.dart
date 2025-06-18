@@ -100,14 +100,15 @@ class LinkAnalyzer {
     }
     if (info != null) return info;
 
+    // Initialize with fallback values in case the network call fails
+    info = Metadata()
+      ..title = getDomain(url)
+      ..desc = url
+      ..siteName = getDomain(url)
+      ..url = url;
+
     if (!isURL(url)) return null;
 
-    // Default values; Domain name as the [title],
-    // URL as the [description]
-    info?.title = getDomain(url);
-    info?.desc = url;
-    info?.siteName = getDomain(url);
-    info?.url = url;
 
     try {
       // Make our network call
@@ -149,7 +150,7 @@ class LinkAnalyzer {
     } catch (error) {
       debugPrint('AnyLinkPreview - Error in $url response ($error)');
       // Any sort of exceptions due to wrong URL's, host lookup failure etc.
-      return null;
+      return info;
     }
   }
 

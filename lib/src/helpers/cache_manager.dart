@@ -18,9 +18,9 @@ class CacheManager {
     return jsonMapCache;
   }
 
-  static Future deleteKey(String key, [dynamic takeAction]) async {
+  static Future deleteKey(String key, [VoidCallback? takeAction]) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.remove(key).whenComplete(() => takeAction);
+    await sharedPreferences.remove(key).whenComplete(() => takeAction?.call());
   }
 
   static Future setJson({
