@@ -66,7 +66,7 @@ class AnyLinkPreview extends StatefulWidget {
   /// and always make a request for latest metadata.
   final Duration cache;
 
-  /// Customize body [TextStyle].
+  /// Customize title [TextStyle].
   final TextStyle? titleStyle;
 
   /// Customize body [TextStyle].

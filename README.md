@@ -102,7 +102,7 @@ A Flutter package for beautifully displaying web URL previews with full customiz
   /// and always make a request for latest metadata.
   final Duration cache;
 
-  /// Customize body [TextStyle].
+  /// Customize title [TextStyle].
   final TextStyle? titleStyle;
 
   /// Customize body [TextStyle].
